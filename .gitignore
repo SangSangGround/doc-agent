@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+
+# 가상환경 (저장소 내부 venv 를 사용하되 커밋하지 않는다)
+.venv/
+venv/
+env/
+
+# 테스트·커버리지
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# 타입 검사·린트 캐시
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# 에디터·OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+Desktop.ini
+
+# 산출물·작업 데이터
+# 실제 문서 스캔 이미지에는 개인정보가 포함될 수 있으므로 절대 커밋하지 않는다.
+data/private/
+data/scans/
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.pdf
+!docs/**/*.png
+
+# 세션 로그 (개인정보 포함 가능)
+logs/
+sessions/
+*.session.json
+
+# 모델 가중치
+*.pt
+*.onnx
+*.pth

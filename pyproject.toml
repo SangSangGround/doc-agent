@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docagent"
+version = "0.1.0"
+description = "시각장애인이 공공·금융 종이문서를 스스로 이해·선택·작성·확인하도록 돕는 AI 음성·촉각 문서작성 에이전트"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+keywords = ["accessibility", "document", "agent", "vision", "pii"]
+
+# 핵심 3모듈(Vision / PII / Agent)이 실제로 쓰는 런타임 의존성만 둔다.
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "Pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# 아래 그룹은 모두 "선택적 어댑터" 전용이다.
+# 설치되지 않은 상태에서도 pytest 와 데모가 100% 통과해야 하며,
+# 어댑터는 모듈 최상단이 아니라 함수·생성자 내부에서 지연 import 한다.
+yolo = ["ultralytics>=8.0", "torch>=2.0"]
+llm = ["anthropic>=0.34"]
+serial = ["pyserial>=3.5"]
+ocr = ["pytesseract>=0.3.10"]
+dev = ["pytest>=7.4"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# 패키지를 설치하지 않아도 저장소 루트에서 바로 pytest 가 돌게 한다.
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
