@@ -19,9 +19,9 @@ __all__ = ["DetectorPreference", "build_detector", "describe_detector"]
 _LOG = logging.getLogger(__name__)
 
 #: :func:`build_detector` 의 ``prefer`` 인자 허용 값.
-DetectorPreference = Literal["auto", "yolo", "heuristic"]
+DetectorPreference = Literal["auto", "yolo", "heuristic", "roboflow"]
 
-_ALLOWED_PREFERENCES: tuple[str, ...] = ("auto", "yolo", "heuristic")
+_ALLOWED_PREFERENCES: tuple[str, ...] = ("auto", "yolo", "heuristic", "roboflow")
 
 
 def build_detector(
@@ -29,7 +29,7 @@ def build_detector(
     prefer: DetectorPreference = "auto",
     *,
     params: HeuristicParams | None = None,
-    conf: float = 0.25,
+    conf: float | None = None,
     iou: float = 0.45,
     imgsz: int = 640,
     device: str | None = None,
@@ -38,6 +38,7 @@ def build_detector(
 
     선택 규칙:
 
+    * ``prefer="roboflow"`` — 서버리스 API 사용. 실패 시 폴백하지 않는다.
     * ``prefer="heuristic"`` — 항상 :class:`~docagent.vision.heuristic.HeuristicDetector`.
     * ``prefer="yolo"`` — 반드시 YOLO 를 쓴다. 가중치가 없거나 ultralytics 가
       설치되지 않았으면 **폴백하지 않고 예외를 던진다**(사용자가 YOLO 를 명시했으므로).
@@ -45,9 +46,9 @@ def build_detector(
       YOLO, 그 밖에는 규칙 기반으로 폴백하고 그 이유를 ``INFO`` 로그로 남긴다.
 
     :param weights: 학습된 YOLO 가중치 경로. ``None`` 이면 규칙 기반을 쓴다.
-    :param prefer: 선택 전략. ``"auto"`` / ``"yolo"`` / ``"heuristic"``.
+    :param prefer: 선택 전략. ``"auto"`` / ``"yolo"`` / ``"heuristic"`` / ``"roboflow"``.
     :param params: 규칙 기반 탐지기의 임계값. ``None`` 이면 기본값.
-    :param conf: YOLO 신뢰도 임계값.
+    :param conf: 탐지 신뢰도 임계값. None 이면 YOLO 0.25, Roboflow 0.5.
     :param iou: YOLO NMS IoU 임계값.
     :param imgsz: YOLO 추론 입력 크기(px).
     :param device: YOLO 추론 장치(예: ``"cpu"``).
@@ -61,6 +62,13 @@ def build_detector(
             f"prefer 는 {', '.join(_ALLOWED_PREFERENCES)} 중 하나여야 합니다: {prefer!r}"
         )
 
+    if prefer == "roboflow":
+        from docagent.detector.roboflow_detector import DEFAULT_CONFIDENCE, RoboflowDetector
+
+        _LOG.info("Roboflow 서버리스 탐지기를 사용합니다(prefer='roboflow').")
+        return RoboflowDetector(conf=DEFAULT_CONFIDENCE if conf is None else conf)
+
+    conf = 0.25 if conf is None else conf
     if prefer == "heuristic":
         _LOG.info("규칙 기반 탐지기를 사용합니다(prefer='heuristic').")
         return HeuristicDetector(params)
@@ -113,6 +121,10 @@ def describe_detector(detector: Detector) -> str:
     """
     if isinstance(detector, HeuristicDetector):
         return "규칙 기반 탐지기(OpenCV 윤곽선·형태학, 학습 가중치 불필요)"
+    from docagent.detector.roboflow_detector import RoboflowDetector
+
+    if isinstance(detector, RoboflowDetector):
+        return "Roboflow RF-DETR 탐지기(서버리스 Workflow)"
     weights = getattr(detector, "weights", None)
     if weights is not None:
         return f"YOLO 탐지기(가중치: {weights})"

@@ -144,7 +144,10 @@ class DocAgentConfig:
     :param llm_kind: ``"offline"`` 또는 ``"claude"``.
     :param llm_model: ``llm_kind="claude"`` 일 때 쓸 모델 id.
     :param detector_weights: YOLO 가중치 경로. ``None`` 이면 규칙 기반.
-    :param detector_prefer: ``"auto"`` / ``"yolo"`` / ``"heuristic"``.
+    :param detector_prefer: auto / yolo / heuristic / roboflow.
+    :param ocr_kind: stub(오프라인 기본값) 또는 tesseract(로컬 실제 OCR).
+    :param ocr_mode: page(전체 페이지) 또는 regions(탐지 주변 Crop).
+    :param ocr_lang: Tesseract 언어 조합. 기본 kor+eng.
     :param motion_tolerance_mm: 펜 도달 판정 허용 오차(mm, 0 초과).
     :param serial_port: 시리얼 포트 이름(예: ``"COM3"``). ``None`` 이면 하드웨어 미사용.
     :param serial_baudrate: 시리얼 통신 속도.
@@ -165,6 +168,9 @@ class DocAgentConfig:
     llm_model: str = "claude-sonnet-5"
     detector_weights: Path | None = None
     detector_prefer: str = DEFAULT_DETECTOR_PREFERENCE
+    ocr_kind: str = "stub"
+    ocr_mode: str = "page"
+    ocr_lang: str = "kor+eng"
     motion_tolerance_mm: float = MOTION_TOLERANCE_MM
     serial_port: str | None = None
     serial_baudrate: int = 115200
@@ -198,11 +204,17 @@ class DocAgentConfig:
             raise ValueError(
                 f"llm_kind 는 'offline' 또는 'claude' 여야 합니다: {self.llm_kind!r}"
             )
-        if self.detector_prefer not in ("auto", "yolo", "heuristic"):
+        if self.detector_prefer not in ("auto", "yolo", "heuristic", "roboflow"):
             raise ValueError(
-                "detector_prefer 는 auto, yolo, heuristic 중 하나여야 합니다: "
+                "detector_prefer 는 auto, yolo, heuristic, roboflow 중 하나여야 합니다: "
                 f"{self.detector_prefer!r}"
             )
+        if self.ocr_kind not in ("stub", "tesseract"):
+            raise ValueError("ocr_kind 는 stub 또는 tesseract 여야 합니다.")
+        if self.ocr_mode not in ("page", "regions"):
+            raise ValueError("ocr_mode 는 page 또는 regions 여야 합니다.")
+        if not self.ocr_lang.strip():
+            raise ValueError("ocr_lang 은 빈 문자열일 수 없습니다.")
         if self.motion_tolerance_mm <= 0:
             raise ValueError(
                 f"motion_tolerance_mm 은 0 보다 커야 합니다: {self.motion_tolerance_mm}"
@@ -257,6 +269,9 @@ class DocAgentConfig:
                 None if self.detector_weights is None else str(self.detector_weights)
             ),
             "detector_prefer": self.detector_prefer,
+            "ocr_kind": self.ocr_kind,
+            "ocr_mode": self.ocr_mode,
+            "ocr_lang": self.ocr_lang,
             "motion_tolerance_mm": self.motion_tolerance_mm,
             "serial_port": self.serial_port,
             "serial_baudrate": self.serial_baudrate,
@@ -285,6 +300,9 @@ class DocAgentConfig:
             llm_model=str(data.get("llm_model", defaults.llm_model)),
             detector_weights=_opt_path(data.get("detector_weights")),
             detector_prefer=str(data.get("detector_prefer", defaults.detector_prefer)),
+            ocr_kind=str(data.get("ocr_kind", defaults.ocr_kind)),
+            ocr_mode=str(data.get("ocr_mode", defaults.ocr_mode)),
+            ocr_lang=str(data.get("ocr_lang", defaults.ocr_lang)),
             motion_tolerance_mm=float(
                 data.get("motion_tolerance_mm", defaults.motion_tolerance_mm)
             ),
@@ -306,7 +324,8 @@ class DocAgentConfig:
         ``DOCAGENT_AUDIT_PATH`` / ``DOCAGENT_INDEX_CACHE`` / ``DOCAGENT_LLM_KIND`` /
         ``DOCAGENT_LLM_MODEL`` / ``DOCAGENT_DETECTOR_WEIGHTS`` /
         ``DOCAGENT_DETECTOR_PREFER`` / ``DOCAGENT_SERIAL_PORT`` /
-        ``DOCAGENT_SERIAL_BAUDRATE`` / ``DOCAGENT_STRICT_PII``.
+        ``DOCAGENT_SERIAL_BAUDRATE`` / ``DOCAGENT_STRICT_PII`` /
+        ``DOCAGENT_OCR_KIND`` / ``DOCAGENT_OCR_MODE`` / ``DOCAGENT_OCR_LANG``.
 
         :param environ: 환경변수 매핑. ``None`` 이면 :data:`os.environ`
             (테스트는 dict 를 주입해 결정론을 확보한다).
@@ -339,6 +358,9 @@ class DocAgentConfig:
             ("LLM_KIND", "llm_kind"),
             ("LLM_MODEL", "llm_model"),
             ("DETECTOR_PREFER", "detector_prefer"),
+            ("OCR_KIND", "ocr_kind"),
+            ("OCR_MODE", "ocr_mode"),
+            ("OCR_LANG", "ocr_lang"),
             ("SERIAL_PORT", "serial_port"),
         ):
             raw = env.get(ENV_PREFIX + env_name)

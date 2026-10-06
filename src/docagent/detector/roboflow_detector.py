@@ -281,7 +281,9 @@ class RoboflowDetector:
                 use_cache=True,
             )
         except Exception as exc:  # noqa: BLE001 - SDK 의 HTTP·연결 예외를 도메인 예외로 감싼다.
-            raise VisionError(f"Roboflow API 호출에 실패했습니다: {exc}") from exc
+            raise VisionError(
+                "Roboflow API 호출에 실패했습니다. API 키·모델 설정과 네트워크를 확인하십시오."
+            ) from exc
 
         predictions = [p for p in parse_workflow_result(result) if p.confidence >= self.conf]
         predictions.sort(key=lambda p: p.confidence, reverse=True)

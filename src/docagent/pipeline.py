@@ -80,7 +80,7 @@ from docagent.pii.gate import GatedLlmClient, LlmEgressGate
 from docagent.pii.policy import build_public_payload, classify_field
 from docagent.vision.detector_factory import build_detector
 from docagent.vision.normalize import NormalizedDocument, normalize_document
-from docagent.vision.ocr import StubOcr
+from docagent.vision.ocr import StubOcr, TesseractOcr
 from docagent.vision.structuring import build_structure
 from docagent.vision.verify import verify_field as verify_field_images
 from docagent.vision.verify import verify_options as verify_options_images
@@ -95,6 +95,8 @@ __all__ = [
     "align_to_page",
     "apply_pii_policy",
     "build_session",
+    "VisionAnalysis",
+    "analyze_document",
 ]
 
 _LOG = logging.getLogger(__name__)
@@ -121,7 +123,7 @@ NO_OCR_WARNING: str = (
 class StageReport:
     """파이프라인 한 단계의 신뢰도 보고.
 
-    :param stage: 단계 이름(``normalize`` / ``detect`` / ``structure`` / ``pii``).
+    :param stage: 단계 이름(``normalize`` / ``detect`` / ``ocr`` / ``structure`` / ``pii``).
     :param confidence: 그 단계의 대표 신뢰도(0.0~1.0).
     :param ok: 임계값을 만족했는지 여부.
     :param detail: 사람이 읽는 한국어 설명.
@@ -618,19 +620,25 @@ class DocumentSession:
 # --------------------------------------------------------------------------
 
 
-def _resolve_ocr(ocr: Any | None, warnings: list[str]) -> Any:
+def _resolve_ocr(ocr: Any | None, warnings: list[str], cfg: DocAgentConfig) -> Any:
     """OCR 엔진을 확정한다.
 
-    ``pytesseract`` 는 설치되어 있지 않다. 그래서 기본값은 **글자를 하나도
-    읽지 못하는 빈 :class:`StubOcr`** 이며, 그 사실을 경고로 남긴다.
+    기본값은 **글자를 하나도 읽지 못하는 빈 :class:`StubOcr`** 이며,
+    그 사실을 경고로 남긴다. tesseract 를 명시하면 로컬 실제 OCR 을 사용한다.
     조용히 "OCR 결과가 없다"로 넘어가면 항목명이 비어 있는 이유를 알 수 없다.
 
     :param ocr: 주입된 OCR 엔진. ``None`` 이면 기본값을 만든다.
     :param warnings: 경고를 덧붙일 리스트(제자리 수정).
+    :param cfg: OCR 종류·언어·영역 설정.
     :returns: :class:`~docagent.interfaces.OcrEngine` 구현.
     """
     if ocr is not None:
         return ocr
+    if cfg.ocr_kind == "tesseract":
+        return TesseractOcr(
+            lang=cfg.ocr_lang, page_size_mm=cfg.page_size_mm,
+            config="--psm 11" if cfg.ocr_mode == "regions" else "",
+        )
     warnings.append(NO_OCR_WARNING)
     _LOG.info("OCR 엔진이 주입되지 않아 빈 StubOcr 로 진행합니다.")
     return StubOcr(())
@@ -670,57 +678,35 @@ def _build_inner_llm(cfg: DocAgentConfig) -> Any:
     return OfflineTemplateLlm()
 
 
-def build_session(
+@dataclass(frozen=True)
+class VisionAnalysis:
+    """로컬 탐지·OCR 결과. LLM 전송용 payload나 실행 에이전트를 만들지 않는다."""
+
+    structure: DocumentStructure
+    normalized: NormalizedDocument
+    config: DocAgentConfig
+    stages: tuple[StageReport, ...]
+    detections: tuple[Detection, ...]
+    words: tuple[OcrWord, ...]
+    downgraded_field_ids: tuple[str, ...] = ()
+
+
+def analyze_document(
     image: Any,
     *,
     detector: Any | None = None,
     ocr: Any | None = None,
     dpi: int | None = None,
-    corpus_dir: Path | str | None = None,
-    llm: Any | None = None,
-    motion: Any | None = None,
-    speech: Any | None = None,
     config: DocAgentConfig | None = None,
     document_id: str = DEFAULT_DOCUMENT_ID,
     doc_title: str = "",
     source_image: str | None = None,
-    gate: LlmEgressGate | None = None,
-    audit: AuditLog | None = None,
-    retriever: LocalTfidfRetriever | None = None,
-    verifier: Any | None = None,
-    clock: Any | None = None,
-    classifier: Any | None = None,
-    propagate_document_confidence: bool = False,
-) -> DocumentSession:
-    """문서 이미지 한 장으로 대화 가능한 세션을 만든다.
+) -> VisionAnalysis:
+    """정합 → 탐지 → OCR → 구조화만 실행한다.
 
-    :param image: 촬영·스캔 원본 이미지. ``(H, W)`` 또는 ``(H, W, 3)`` uint8.
-    :param detector: 기입란 탐지기. ``None`` 이면
-        :func:`~docagent.vision.detector_factory.build_detector` 로 만든다.
-    :param ocr: OCR 엔진. ``None`` 이면 빈 :class:`StubOcr`(경고 기록).
-    :param dpi: 정합 결과 해상도. ``None`` 이면 ``config.dpi``.
-    :param corpus_dir: 근거 코퍼스 디렉터리. ``None`` 이면 ``config`` 값.
-    :param llm: LLM 클라이언트. ``None`` 이면 오프라인 구현. 어느 쪽이든
-        **반드시 게이트로 감싸서** 에이전트에 넘긴다.
-    :param motion: 펜 제어기. ``None`` 이면 :class:`~docagent.io.motion.MockMotionController`.
-    :param speech: 음성 입출력. ``None`` 이면 :class:`~docagent.io.speech.ScriptedSpeechIO`.
-    :param config: 조립 설정. ``None`` 이면 기본 :class:`~docagent.config.DocAgentConfig`.
-    :param document_id: 문서 인스턴스 식별자(세션 복원 키).
-    :param doc_title: 문서 제목. 빈 문자열이면 OCR 최상단 행에서 유추한다.
-    :param source_image: 원본 이미지 경로·식별자(감사 표기용).
-    :param gate: 개인정보 게이트. ``None`` 이면 새로 만든다.
-    :param audit: 감사 로그. ``None`` 이면 ``config.audit_path`` 로 만든다.
-    :param retriever: 근거 검색기. ``None`` 이면 코퍼스로 색인을 만든다.
-    :param verifier: Verify 구현. ``None`` 이면 :class:`ImageVerifier`.
-    :param clock: :class:`~docagent.interfaces.Clock`. ``None`` 이면 에이전트 기본 시계.
-    :param classifier: 의도 분류기. ``None`` 이면 규칙 기반 분류기.
-    :param propagate_document_confidence: True 면 문서 단위 신뢰도를 항목별
-        신뢰도에 곱해 전파한다(더 엄격한 배치용, 기본 False).
-    :returns: :class:`DocumentSession`.
-    :raises docagent.errors.DocumentNotFoundError: 이미지에서 문서를 찾지 못했거나
-        탐지·OCR 결과가 모두 비어 구조를 만들 수 없는 경우.
-    :raises docagent.errors.VisionError: 정합·탐지 단계가 실패한 경우.
-    :raises docagent.agent.rag.CorpusError: 근거 코퍼스를 읽지 못한 경우.
+    반환 결과는 로컬 검토용이며 외부 전송이 승인된 payload가 아니다.
+    Roboflow 탐지기를 선택한 경우 이미지 추론 요청만 외부에서 실행된다.
+    LLM 게이트·RAG·펜·음성 초기화는 build_session 에서 수행한다.
     """
     cfg = config if config is not None else DocAgentConfig()
     resolved_dpi = int(dpi) if dpi is not None else cfg.dpi
@@ -770,8 +756,26 @@ def build_session(
     )
 
     # --- 3. OCR -------------------------------------------------------
-    reader = _resolve_ocr(ocr, stage_warnings)
-    words = tuple(reader.read(normalized.image))
+    reader = _resolve_ocr(ocr, stage_warnings, cfg)
+    if cfg.ocr_mode == "regions":
+        read_regions = getattr(reader, "read_regions", None)
+        if not callable(read_regions):
+            raise VisionError("regions 모드에는 read_regions 를 지원하는 OCR 엔진이 필요합니다.")
+        words = tuple(read_regions(normalized.image, detections))
+        stage_warnings.append(
+            "탐지 주변 영역만 OCR 했습니다. 문서 제목·약관·필수 안내가 생략될 수 있으므로 "
+            "문서 전체 해석에는 page 모드로 다시 확인하십시오."
+        )
+    else:
+        words = tuple(reader.read(normalized.image))
+    if detections and not words:
+        stage_warnings.append("탐지된 작성 영역의 텍스트를 읽지 못했습니다. 항목 확인이 필요합니다.")
+    ocr_confidence = min((word.confidence for word in words), default=0.0)
+    stages.append(StageReport(
+        stage="ocr", confidence=ocr_confidence,
+        ok=bool(words) and ocr_confidence >= VISION_TRUST_THRESHOLD,
+        detail=f"OCR 단어 {len(words)}개를 읽었습니다(모드: {cfg.ocr_mode}).",
+    ))
 
     # --- 4. 구조화 ----------------------------------------------------
     if not detections and not words:
@@ -817,6 +821,76 @@ def build_session(
         source_image=structure.source_image,
         warnings=merged_warnings,
     )
+
+    return VisionAnalysis(
+        structure=structure, normalized=normalized, config=cfg,
+        stages=tuple(stages), detections=detections, words=words,
+        downgraded_field_ids=downgraded,
+    )
+
+
+def build_session(
+    image: Any,
+    *,
+    detector: Any | None = None,
+    ocr: Any | None = None,
+    dpi: int | None = None,
+    corpus_dir: Path | str | None = None,
+    llm: Any | None = None,
+    motion: Any | None = None,
+    speech: Any | None = None,
+    config: DocAgentConfig | None = None,
+    document_id: str = DEFAULT_DOCUMENT_ID,
+    doc_title: str = "",
+    source_image: str | None = None,
+    gate: LlmEgressGate | None = None,
+    audit: AuditLog | None = None,
+    retriever: LocalTfidfRetriever | None = None,
+    verifier: Any | None = None,
+    clock: Any | None = None,
+    classifier: Any | None = None,
+    propagate_document_confidence: bool = False,
+) -> DocumentSession:
+    """문서 이미지 한 장으로 대화 가능한 세션을 만든다.
+
+    :param image: 촬영·스캔 원본 이미지. ``(H, W)`` 또는 ``(H, W, 3)`` uint8.
+    :param detector: 기입란 탐지기. ``None`` 이면
+        :func:`~docagent.vision.detector_factory.build_detector` 로 만든다.
+    :param ocr: OCR 엔진. None 이면 config.ocr_kind 로 선택(기본 빈 StubOcr).
+    :param dpi: 정합 결과 해상도. ``None`` 이면 ``config.dpi``.
+    :param corpus_dir: 근거 코퍼스 디렉터리. ``None`` 이면 ``config`` 값.
+    :param llm: LLM 클라이언트. ``None`` 이면 오프라인 구현. 어느 쪽이든
+        **반드시 게이트로 감싸서** 에이전트에 넘긴다.
+    :param motion: 펜 제어기. ``None`` 이면 :class:`~docagent.io.motion.MockMotionController`.
+    :param speech: 음성 입출력. ``None`` 이면 :class:`~docagent.io.speech.ScriptedSpeechIO`.
+    :param config: 조립 설정. ``None`` 이면 기본 :class:`~docagent.config.DocAgentConfig`.
+    :param document_id: 문서 인스턴스 식별자(세션 복원 키).
+    :param doc_title: 문서 제목. 빈 문자열이면 OCR 최상단 행에서 유추한다.
+    :param source_image: 원본 이미지 경로·식별자(감사 표기용).
+    :param gate: 개인정보 게이트. ``None`` 이면 새로 만든다.
+    :param audit: 감사 로그. ``None`` 이면 ``config.audit_path`` 로 만든다.
+    :param retriever: 근거 검색기. ``None`` 이면 코퍼스로 색인을 만든다.
+    :param verifier: Verify 구현. ``None`` 이면 :class:`ImageVerifier`.
+    :param clock: :class:`~docagent.interfaces.Clock`. ``None`` 이면 에이전트 기본 시계.
+    :param classifier: 의도 분류기. ``None`` 이면 규칙 기반 분류기.
+    :param propagate_document_confidence: True 면 문서 단위 신뢰도를 항목별
+        신뢰도에 곱해 전파한다(더 엄격한 배치용, 기본 False).
+    :returns: :class:`DocumentSession`.
+    :raises docagent.errors.DocumentNotFoundError: 이미지에서 문서를 찾지 못했거나
+        탐지·OCR 결과가 모두 비어 구조를 만들 수 없는 경우.
+    :raises docagent.errors.VisionError: 정합·탐지 단계가 실패한 경우.
+    :raises docagent.agent.rag.CorpusError: 근거 코퍼스를 읽지 못한 경우.
+    """
+    analysis = analyze_document(
+        image, detector=detector, ocr=ocr, dpi=dpi, config=config,
+        document_id=document_id, doc_title=doc_title, source_image=source_image,
+    )
+    cfg = analysis.config
+    page_size_mm = cfg.page_size_mm
+    normalized, structure = analysis.normalized, analysis.structure
+    detections, words = analysis.detections, analysis.words
+    stages = list(analysis.stages)
+    downgraded = analysis.downgraded_field_ids
 
     document_confidence = min(report.confidence for report in stages)
     if propagate_document_confidence:

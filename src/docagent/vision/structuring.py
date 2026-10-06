@@ -24,8 +24,8 @@
    가로 간격 ≤ :data:`CHECKBOX_ROW_MAX_GAP_MM`) 또는 인접 행(가로로 겹치고
    세로 간격 ≤ :data:`CHECKBOX_STACK_GAP_MM`)의 체크박스를 하나로 묶는다.
    2개 이상이면 :attr:`FieldType.CHOICE`, 1개뿐이면 :attr:`FieldType.CHECKBOX`.
-2. **선택지 라벨** — 각 체크박스의 **오른쪽** 근접 텍스트를 우선 사용하고,
-   없으면 왼쪽을 본다. 허용 간격은 :data:`OPTION_LABEL_MAX_GAP_MM`.
+2. **선택지 라벨** — 같은 행의 좌/우 배치를 비교하고 문구를 중복 할당하지 않는다.
+   배치가 모호하면 빈 라벨로 남긴다. 허용 간격은 :data:`OPTION_LABEL_MAX_GAP_MM`.
 3. **제목·약관** — 그룹 위쪽으로 행을 거슬러 올라가며
    :data:`CLAUSE_MAX_LINE_GAP_MM` 이내로 이어지는 문단을 ``clause_text`` 로 모으고,
    소제목 패턴(:data:`HEADING_PREFIXES`)을 만나면 그 행을 ``title`` 로 확정하고 멈춘다.
@@ -131,6 +131,10 @@ CLAUSE_MAX_LINE_GAP_MM: float = 10.0
 ROW_OVERLAP_MIN_MM: float = 0.8
 #: 제목으로 채택할 최대 글자 수. 이보다 길면 본문으로 본다.
 TITLE_MAX_CHARS: int = 40
+#: 좌우 라벨 간격 차이가 이 값 이하면 위치만으로 방향을 확정하지 않는다.
+_LABEL_DIRECTION_MARGIN_MM: float = 2.0
+#: 서명 상자 바로 위 라벨의 최대 세로 간격.
+_SIGNATURE_ABOVE_GAP_MM: float = 8.0
 
 
 # --------------------------------------------------------------------------
@@ -270,9 +274,14 @@ def strip_markers(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
+def _compact_ocr_text(text: str) -> str:
+    """키워드 판정에서만 OCR 이 삽입한 공백을 무시한다. 원문은 보존한다."""
+    return re.sub(r"\s+", "", text)
+
+
 def _has_explicit_required_marker(text: str) -> bool:
     """명시적 필수 마커가 있으면 True."""
-    return any(marker in text for marker in EXPLICIT_REQUIRED_MARKERS)
+    return any(marker in _compact_ocr_text(text) for marker in EXPLICIT_REQUIRED_MARKERS)
 
 
 def _has_star_marker(text: str) -> bool:
@@ -471,23 +480,53 @@ def _group_checkboxes(detections: Sequence[Detection]) -> list[list[Detection]]:
     return groups
 
 
-def _option_label(
-    box: BoxMm, words: Sequence[OcrWord], *, next_box_x_mm: float | None
-) -> str:
-    """체크박스 하나의 선택지 라벨을 찾는다(오른쪽 우선, 없으면 왼쪽).
+def _checkbox_label_words(
+    group: Sequence[Detection], words: Sequence[OcrWord]
+) -> list[list[OcrWord]]:
+    """행별 좌/우 배치를 비교해 라벨을 할당한다. 같은 단어를 재사용하지 않는다.
 
-    :param box: 체크박스 mm 좌표.
-    :param words: 문서 전체 단어 목록.
-    :param next_box_x_mm: 같은 행 다음 체크박스의 x(mm). 여기서 수집을 멈춘다.
-    :returns: 라벨 문자열. 찾지 못하면 빈 문자열.
+    양쪽이 똑같이 그럴듯하면 빈 라벨로 남겨 확인을 요청한다.
+    누락된 라벨을 옆 체크박스의 문구로 채우지 않는다.
     """
-    right = _words_right_of(
-        words, box, max_gap_mm=OPTION_LABEL_MAX_GAP_MM, stop_x_mm=next_box_x_mm
-    )
-    if right:
-        return strip_markers(_join(right))
-    left = _words_left_of(words, box, max_gap_mm=OPTION_LABEL_MAX_GAP_MM)
-    return strip_markers(_join(left))
+    labels: list[list[OcrWord]] = [[] for _ in group]
+    remaining = set(range(len(group)))
+    while remaining:
+        first = min(remaining)
+        row = sorted(
+            [i for i in remaining if i == first or _same_row(group[first].box_mm, group[i].box_mm)],
+            key=lambda i: group[i].box_mm.x_mm,
+        )
+        remaining.difference_update(row)
+        lefts: list[list[OcrWord]] = []
+        rights: list[list[OcrWord]] = []
+        for position, index in enumerate(row):
+            box = group[index].box_mm
+            previous = group[row[position - 1]].box_mm if position else None
+            following = group[row[position + 1]].box_mm if position + 1 < len(row) else None
+            left_candidates = [
+                word for word in words
+                if previous is None or word.box_mm.x_mm >= previous.right_mm
+            ]
+            lefts.append(_words_left_of(left_candidates, box, max_gap_mm=OPTION_LABEL_MAX_GAP_MM))
+            rights.append(_words_right_of(
+                words, box, max_gap_mm=OPTION_LABEL_MAX_GAP_MM,
+                stop_x_mm=following.x_mm if following else None,
+            ))
+        left_count, right_count = sum(map(bool, lefts)), sum(map(bool, rights))
+        if left_count != right_count:
+            chosen = lefts if left_count > right_count else rights
+        else:
+            left_gap = sum(group[i].box_mm.x_mm - ls[-1].box_mm.right_mm
+                           for i, ls in zip(row, lefts) if ls)
+            right_gap = sum(rs[0].box_mm.x_mm - group[i].box_mm.right_mm
+                            for i, rs in zip(row, rights) if rs)
+            if abs(left_gap - right_gap) <= _LABEL_DIRECTION_MARGIN_MM * max(left_count, 1):
+                chosen = [[] for _ in row]
+            else:
+                chosen = lefts if left_gap < right_gap else rights
+        for index, selected in zip(row, chosen):
+            labels[index] = selected
+    return labels
 
 
 def _title_and_clause(
@@ -571,6 +610,7 @@ def classify_role(label_text: str) -> tuple[FieldRole, bool]:
     """
     if not label_text.strip():
         return (FieldRole.UNKNOWN, True)
+    label_text = _compact_ocr_text(label_text)
     matched: list[FieldRole] = []
     for role, keywords in ROLE_KEYWORDS:
         if any(keyword in label_text for keyword in keywords):
@@ -598,7 +638,7 @@ def classify_sensitivity(field_type: FieldType, title: str) -> Sensitivity:
     """
     if field_type not in PUBLIC_FIELD_TYPES:
         return Sensitivity.PRIVATE
-    if any(keyword in title for keyword in PRIVATE_LABEL_KEYWORDS):
+    if any(keyword in _compact_ocr_text(title) for keyword in PRIVATE_LABEL_KEYWORDS):
         return Sensitivity.PRIVATE
     return Sensitivity.PUBLIC
 
@@ -623,15 +663,11 @@ def _draft_choice(
 ) -> _Draft:
     """체크박스 그룹 하나를 선택형 항목 초안으로 만든다."""
     boxes = [item.box_mm for item in group]
-    options: list[Option] = []
-    for index, item in enumerate(group):
-        next_x = None
-        for other in group[index + 1 :]:
-            if _same_row(item.box_mm, other.box_mm):
-                next_x = other.box_mm.x_mm
-                break
-        label = _option_label(item.box_mm, words, next_box_x_mm=next_x)
-        options.append(Option(label=label, box_mm=item.box_mm, checked=None))
+    label_words = _checkbox_label_words(group, words)
+    options = [
+        Option(label=strip_markers(_join(matched)), box_mm=item.box_mm, checked=None)
+        for item, matched in zip(group, label_words)
+    ]
 
     group_box = union_box(boxes)
     title, clause_text = _title_and_clause(group_box, lines, detections)
@@ -657,7 +693,15 @@ def _draft_choice(
     )
     field_type = FieldType.CHOICE if len(group) >= 2 else FieldType.CHECKBOX
 
-    confidence = sum(item.confidence for item in group) / len(group)
+    confidence = min(item.confidence for item in group)
+    matched_words = [word for matched in label_words for word in matched]
+    if heading:
+        matched_words.extend(heading.words)
+    if clause_text:
+        matched_words.extend(word for line in lines
+                             if line.text in clause_text for word in line.words)
+    if matched_words:
+        confidence = min(confidence, min(word.confidence for word in matched_words))
     if not heading:
         confidence -= _PENALTY_NO_TITLE
     if any(not option.label for option in options):
@@ -718,7 +762,7 @@ def _is_date_line(detection: Detection, words: Sequence[OcrWord]) -> bool:
     :returns: 날짜 기입선으로 보이면 True.
     """
     left = _words_left_of(words, detection.box_mm, max_gap_mm=LABEL_MAX_GAP_MM)
-    label = strip_markers(_join(left))
+    label = _compact_ocr_text(strip_markers(_join(left)))
     if not label:
         return False
     if any(keyword in label for keyword in ("서명", "날인", "서명란")):
@@ -734,16 +778,23 @@ def _draft_signature(
     :returns: ``(초안, 역할 모호 여부)``.
     """
     left = _words_left_of(words, detection.box_mm, max_gap_mm=LABEL_MAX_GAP_MM)
+    if not left:
+        above = [line for line in group_words_to_lines(words)
+                 if 0 <= detection.box_mm.y_mm - line.box_mm.bottom_mm <= _SIGNATURE_ABOVE_GAP_MM
+                 and _horizontal_overlap(line.box_mm, detection.box_mm) > 0]
+        if above:
+            left = list(max(above, key=lambda line: line.box_mm.bottom_mm).words)
     label_text = _join(left)
     role, ambiguous = classify_signature_role(label_text)
 
     title = strip_markers(label_text)
-    title = f"{title} 서명" if title else "서명"
+    if not _compact_ocr_text(title).endswith("서명"):
+        title = f"{title} 서명" if title else "서명"
     required = _is_required(label_text, star_rule=star_rule) or (
         role in SIGNATURE_REQUIRED_ROLES
     )
 
-    confidence = detection.confidence
+    confidence = min(detection.confidence, min((word.confidence for word in left), default=1.0))
     if not label_text:
         confidence -= _PENALTY_NO_LABEL
     if ambiguous:
@@ -776,10 +827,10 @@ def _draft_input(
         FieldType.TEXT_INPUT,
         FieldType.UNKNOWN,
         FieldType.SIGNATURE,
-    ) and any(keyword in title for keyword in DATE_KEYWORDS):
+    ) and any(keyword in _compact_ocr_text(title) for keyword in DATE_KEYWORDS):
         field_type = FieldType.DATE
 
-    confidence = detection.confidence
+    confidence = min(detection.confidence, min((word.confidence for word in left), default=1.0))
     if not label_text:
         confidence -= _PENALTY_NO_LABEL
 
@@ -905,6 +956,10 @@ def build_structure(
                 confidence=draft.confidence,
             )
         )
+        if any(not option.label for option in draft.options):
+            warnings.append(
+                f"[{field_id}] 선택지 문구가 없거나 좌우 매칭이 불명확합니다. 확인이 필요합니다."
+            )
         if not draft.title:
             warnings.append(
                 f"[{field_id}] 항목명을 찾지 못했습니다. 근처 텍스트가 인식되지 않았을 수 있습니다."

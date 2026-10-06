@@ -220,7 +220,7 @@ class TestQuadDetection:
         assert detection.fallback is True
         assert detection.method == "image_bounds"
         assert detection.confidence < VISION_TRUST_THRESHOLD
-        assert detection.warnings and "문서 사각형을 찾지 못해" in detection.warnings[0]
+        assert detection.warnings and "이미지 전체를" in detection.warnings[0]
         height, width = clean_form.image.shape[:2]
         assert order_quad(detection.quad).tolist() == [
             [0.0, 0.0],
@@ -477,3 +477,23 @@ class TestNormalizeBoxes:
     def test_empty_input(self) -> None:
         """빈 목록은 빈 목록을 돌려준다."""
         assert normalize_boxes([], A4CoordinateSystem.from_dpi(300)) == []
+
+
+@pytest.mark.parametrize("grayscale", [False, True])
+def test_a4_scan_keeps_signature_outside_large_table(grayscale):
+    """An interior A4-shaped table must not crop the page's title or signature."""
+    image = np.full((849, 600, 3), 255, dtype=np.uint8)
+    cv2.rectangle(image, (80, 90), (515, 705), (0, 0, 0), 3)
+    cv2.putText(image, "TITLE", (190, 45), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv2.rectangle(image, (420, 790), (475, 810), (0, 0, 0), -1)
+    if grayscale:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    detection = detect_document_quad_detailed(image)
+    assert detection.method == "image_bounds"
+    assert detection.quad.tolist() == [[0.0, 0.0], [599.0, 0.0], [599.0, 848.0], [0.0, 848.0]]
+    assert detection.confidence < VISION_TRUST_THRESHOLD
+    doc = normalize_document(image, dpi=100)
+    # The bottom signature remains near its original proportional position.
+    assert abs(doc.skew_deg) < 0.01
+    x, y = round(450 * doc.image.shape[1] / 600), round(800 * doc.image.shape[0] / 849)
+    assert float(np.mean(doc.image[y-2:y+3, x-2:x+3])) < 20
