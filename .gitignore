@@ -55,3 +55,11 @@ sessions/
 *.pt
 *.onnx
 *.pth
+
+# 비밀 정보 (API 키 등) — 절대 커밋하지 않는다. 형식은 .env.example 참고
+.env
+.env.*
+!.env.example
+
+# 탐지 결과 이미지
+outputs/

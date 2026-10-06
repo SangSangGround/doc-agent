@@ -26,6 +26,7 @@ yolo = ["ultralytics>=8.0", "torch>=2.0"]
 llm = ["anthropic>=0.34"]
 serial = ["pyserial>=3.5"]
 ocr = ["pytesseract>=0.3.10"]
+roboflow = ["inference-sdk>=1.7", "python-dotenv>=1.0"]
 dev = ["pytest>=7.4"]
 
 [tool.setuptools]
