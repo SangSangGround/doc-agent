@@ -349,3 +349,10 @@ payload = document.public_payload()
 
 * [`docs/interface-spec.md`](docs/interface-spec.md) — 계약 전문. 좌표계 규약, 타입별 표,
   fields JSON 예시, 공개/개인정보 영역 분리 원칙, Protocol 목록, 예외 계층, 계약 변경 절차.
+
+## 실제 빈 양식 탐지·OCR 실행
+
+Roboflow 체크박스·서명란 탐지와 로컬 Tesseract OCR을 연결한 Step 2 명령은
+`python -m docagent.analyze`다. 설치, `.env`, 실행 예시는
+[탐지·OCR 연동 안내](docs/ocr-integration.md)를 참고한다.
+기존 `python -m docagent.demo`는 오프라인 통합 데모로 유지된다.

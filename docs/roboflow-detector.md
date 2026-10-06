@@ -11,7 +11,9 @@ Roboflow 에서 학습한 RF-DETR 모델을 서버리스 Workflow 로 호출해
 | 출력 | `detect()` → A4 mm `Detection` 목록 / `predict()` → 픽셀 `RawPrediction` 목록 |
 | `Detection.source` | `"roboflow_rfdetr"` |
 
-이번 범위는 **탐지까지만**이다. OCR · LLM · TTS 연결, `build_detector()` 팩토리 연동은 하지 않았다.
+이 모듈은 **탐지**를 담당한다. `build_detector(prefer="roboflow")`로 선택할 수 있다.
+탐지 → 로컬 OCR → 구조화 실행은 [Step 2 실행 안내](ocr-integration.md)를 참고한다.
+LLM 의미 해석과 TTS 연결은 후속 범위다.
 
 ## 설치
 
@@ -106,7 +108,7 @@ raw = detector.predict("page.png")           # 픽셀 좌표(중심 기준) RawP
 | 이미지 파일 없음 (CLI) | `[ERROR] 이미지 파일이 없습니다` · 종료 코드 1 |
 | API 키 없음 | `ValueError` (설정 안내 포함) |
 | `inference-sdk` 미설치 | `AdapterUnavailable` (설치 안내 포함) |
-| API 호출 실패(401 등) | `VisionError("Roboflow API 호출에 실패했습니다: ...")` |
+| API 호출 실패(401 등) | `VisionError` (설정·연결 확인 안내, SDK 오류 원문은 출력하지 않음) |
 | 예상하지 못한 응답 구조 | `VisionError` |
 | 탐지 0건 | 빈 리스트 · CLI 는 `Total objects: 0` |
 

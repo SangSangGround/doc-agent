@@ -28,7 +28,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Sequence
 
-from docagent.contracts import A4_PAGE_SIZE_MM, BoxMm, OcrWord
+from docagent.contracts import A4_PAGE_SIZE_MM, BoxMm, Detection, OcrWord
 from docagent.errors import AdapterUnavailable, VisionError
 from docagent.interfaces import ImageArray
 
@@ -354,6 +354,10 @@ class TesseractOcr:
         height_px, width_px = _image_shape(image)
         pytesseract = self._import_pytesseract()
 
+        # OpenCV 입력은 BGR, pytesseract/Pillow 는 RGB 를 기대한다.
+        if len(image.shape) == 3 and image.shape[2] == 3:
+            image = image[:, :, ::-1].copy()
+
         try:
             data = pytesseract.image_to_data(
                 image,
@@ -398,6 +402,50 @@ class TesseractOcr:
                     confidence=confidence,
                 )
             )
+        return sort_reading_order(words)
+
+    def check_available(self) -> None:
+        """API 호출 전에 로컬 OCR 실행 파일과 언어 데이터 설치를 확인한다."""
+        pytesseract = self._import_pytesseract()
+        try:
+            languages = set(pytesseract.get_languages(config=""))
+        except Exception as exc:
+            raise AdapterUnavailable(
+                package="Tesseract 실행 파일 및 언어 데이터",
+                feature="종이 문서 OCR 문자 인식", extra="ocr",
+            ) from exc
+        missing = set(self.lang.split("+")) - languages
+        if missing:
+            raise VisionError(
+                "Tesseract 언어 데이터가 없습니다: " + ", ".join(sorted(missing))
+                + ". tesseract --list-langs 로 설치 언어를 확인하십시오."
+            )
+
+    def read_regions(
+        self, image: ImageArray, detections: Sequence[Detection]
+    ) -> list[OcrWord]:
+        """탐지 주변 Crop 을 OCR 하고 정합 페이지의 mm 좌표로 돌려준다.
+
+        Crop 을 A4 로 취급하면 좌표가 확대되므로 각 Crop 의 실제 mm 크기로
+        별도 어댑터를 만든다. self 의 페이지 크기·설정은 변경하지 않는다.
+        """
+        from docagent.vision.regions import detection_regions
+
+        _image_shape(image)
+        regions = detection_regions(
+            detections, image.shape, page_size_mm=self.page_size_mm
+        )
+        words: list[OcrWord] = []
+        for region in regions:
+            box = region.box_px
+            crop = image[box.y:box.y + box.h, box.x:box.x + box.w]
+            engine = TesseractOcr(
+                lang=self.lang,
+                page_size_mm=(region.box_mm.w_mm, region.box_mm.h_mm),
+                min_confidence=self.min_confidence,
+                config=self.config,
+            )
+            words.extend(region.restore(engine.read(crop)))
         return sort_reading_order(words)
 
 

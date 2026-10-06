@@ -108,11 +108,12 @@ class TestPipelineAssembly:
             assert item.confidence >= VISION_TRUST_THRESHOLD, item.id
 
     def test_stage_reports_cover_every_stage(self, demo_form: SyntheticForm) -> None:
-        """단계별 신뢰도 보고가 네 단계 모두를 담는다."""
+        """단계별 신뢰도 보고가 OCR 을 포함한 다섯 단계를 담는다."""
         session = build_demo_session(demo_form)
         assert [report.stage for report in session.stages] == [
             "normalize",
             "detect",
+            "ocr",
             "structure",
             "pii",
         ]

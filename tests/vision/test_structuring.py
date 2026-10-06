@@ -10,6 +10,8 @@ Tesseract 실행 파일 없이도 전 항목이 통과한다.
 
 from __future__ import annotations
 
+import sys
+
 import ast
 import json
 from pathlib import Path
@@ -306,8 +308,9 @@ class TestOcrModule:
         for forbidden in ("torch", "ultralytics", "anthropic"):
             assert not any(forbidden in name for name in top_level)
 
-    def test_tesseract_adapter_reports_missing_package_in_korean(self) -> None:
+    def test_tesseract_adapter_reports_missing_package_in_korean(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """``pytesseract`` 미설치 시 한국어 설치 안내가 담긴 예외를 던진다."""
+        monkeypatch.setitem(sys.modules, "pytesseract", None)
         engine = TesseractOcr()
         dummy = [[0] * 8 for _ in range(8)]
 

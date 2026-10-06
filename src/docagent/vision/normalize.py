@@ -514,6 +514,21 @@ def _image_bounds_quad(shape: Sequence[int]) -> np.ndarray:
     )
 
 
+def _looks_like_full_page_scan(gray: np.ndarray) -> bool:
+    """정확한 A4 비율과 네 변의 흰 여백이 있는 페이지 렌더를 구별한다.
+
+    큰 표 테두리를 문서 윤곽으로 선택하면 표 밖의 제목·서명란이 잘린다.
+    이미지 자체가 페이지로 보이는 경우에만 전체 경계를 우선하며, 이 판단은
+    실제 종이 경계 검출이 아니므로 기존 대체 경로의 낮은 신뢰도를 유지한다.
+    """
+    height, width = gray.shape[:2]
+    if abs(height / float(width) / A4_ASPECT_RATIO - 1.0) > 0.02:
+        return False
+    band = max(2, min(height, width) // 100)
+    borders = (gray[:band, :], gray[-band:, :], gray[:, :band], gray[:, -band:])
+    return all(float(np.mean(border >= 245)) >= 0.99 for border in borders)
+
+
 def _fallback_confidence(gray: np.ndarray) -> tuple[float, str]:
     """대체 경로(이미지 전체)에 줄 신뢰도와 근거를 정한다.
 
@@ -571,7 +586,8 @@ def detect_document_quad_detailed(image: Any) -> QuadDetection:
     """
     array = _ensure_image(image)
     gray = _to_gray(array)
-    candidates = _candidates(gray)
+    full_page = _looks_like_full_page_scan(gray)
+    candidates = [] if full_page else _candidates(gray)
     if candidates:
         confidence, quad, method, area_ratio, aspect = candidates[0]
         return QuadDetection(
@@ -595,7 +611,9 @@ def detect_document_quad_detailed(image: Any) -> QuadDetection:
         area_ratio=1.0,
         aspect=height / float(width),
         warnings=(
-            "문서 사각형을 찾지 못해 이미지 전체를 문서로 간주했습니다. " + reason,
+            ("A4 비율과 흰 여백을 확인해 이미지 전체를 페이지로 유지했습니다. "
+             if full_page else "문서 사각형을 찾지 못해 이미지 전체를 문서로 간주했습니다. ")
+            + reason,
         ),
     )
 
