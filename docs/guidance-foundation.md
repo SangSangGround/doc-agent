@@ -56,3 +56,58 @@ Step 2 JSON의 `document_id`는 파일명일 수 있으므로 지원 문서 ID�
 
 미등록 문서/버전/페이지, 미승인 항목, 모호한 후보, 낮은 신뢰도는 모두 고정된
 실패 문구를 반환한다. 반환 JSON은 관측 OCR 원문을 복사하지 않는다.
+
+## 이미지 마스킹과 저장 정책
+
+```sh
+python -m docagent.mask_image blank-form.png --output-dir outputs/mask-review --dpi 300
+```
+
+네트워크 호출 없이 `normalized.png`와 미승인 `mask-plan.json`을 만든다.
+검토 이미지를 보고 `boxes`에 `[x, y, width, height]` 픽셀 좌표를 입력한다.
+`padding_px`는 박스 바깥에 추가할 여백(기본 3픽셀)이다. 필요한 영역이 모두
+포함되는지 사람이 검토한 후 아래와 같이 승인 기록과 변경 감지 해시를 저장한다.
+가려야 할 영역을 자동 발견하거나 누락이 없다고 인증하는 기능은 아니다.
+
+```python
+import json
+from pathlib import Path
+from docagent.pii.image_mask import plan_digest
+p = Path('outputs/mask-review/mask-plan.json')
+plan = json.loads(p.read_text())
+# 실제 검토 이후에만 실행: boxes 입력과 검토자/시각을 먼저 채운다.
+plan['approval'] = {
+    'status': 'approved', 'reviewed_by': '실제 검토자',
+    'reviewed_at': '실제 검토 시각', 'content_sha256': plan_digest(plan),
+}
+p.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding='utf-8')
+```
+
+```sh
+python -m docagent.mask_image blank-form.png --output-dir outputs/mask-review \
+  --plan outputs/mask-review/mask-plan.json --dpi 300
+python -m docagent.analyze blank-form.png --detector roboflow \
+  --mask-plan outputs/mask-review/mask-plan.json --dpi 300 --output outputs/analysis.json
+```
+
+미리보기 `masked.png`를 확인한 뒤 분석한다. 두 명령에는 **동일한 원본과 DPI**를
+사용한다. 계획은 정합 이미지 픽셀 해시·형태·박스·여백에 묶여 있어 다른 촬영본,
+해상도나 보정 결과에는 재사용할 수 없다. 잘못된/빈 박스, 미승인·변경된 계획,
+다른 이미지는 전송을 차단한다. 원본을 대체 전송하는 fallback은 없다.
+양식별 자동 정렬·검토된 템플릿 적용은 문서 선정 후 후속 작업이다.
+
+CLI에서 Roboflow를 사용할 때는 마스킹 계획이 필수다. 개인정보가 없는 빈 양식을
+직접 확인한 경우에 한해 `--allow-unmasked-blank`로 원본 전송을 명시할 수 있다.
+이는 자동 안전 검사나 마스킹 완료 표시가 아니다. 두 옵션은 함께 쓸 수 없다.
+`MaskedDetector`는 같은 좌표계의 검은 사본만 전달하므로 탐지 좌표를 그대로 쓴다.
+로컬 OCR은 원래 정합 이미지에서 수행한다. 마스킹으로 탐지 품질이 바뀔 수 있다.
+
+마스킹 보호는 새 CLI와 명시적으로 `MaskedDetector`를 적용한 경로에만 해당한다.
+저수준 `RoboflowDetector.predict()`나 기존 `build_session()`을 직접 호출하는 코드는
+이미지를 자동으로 가리지 않는다. 원본 외부 전송 경로로 사용하지 않아야 한다.
+
+분석 JSON 기본값은 OCR 텍스트·항목 제목·선택지 문구·설명·경고 원문을 제외한다.
+`--include-ocr-text` 또는 `build_report(..., include_text=True)`는 **로컬 검토 전용**
+옵션이며 개인정보가 그대로 포함될 수 있다. 모든 개인정보를 정규식으로 제거했다고
+간주하지 않는다. OCR 원문·검토 이미지·마스킹 계획은 `outputs/` 등 Git 제외 경로에서
+관리하고 외부 공유 전에 별도 검토한다. 기존 테스트 산출물에 소급 적용되지는 않는다.

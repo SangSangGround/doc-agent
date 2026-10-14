@@ -48,13 +48,13 @@ ROBOFLOW_API_KEY=팀에서_공유받은_키
 전송을 보호하지 않으므로 작성된 문서에는 사용하지 않는다.
 
 ```sh
-python -m docagent.analyze /path/to/blank-form.png --detector roboflow --output outputs/analysis.json
+python -m docagent.analyze /path/to/blank-form.png --detector roboflow --allow-unmasked-blank --include-ocr-text --output outputs/analysis.json
 ```
 
 기본 OCR 모드는 `regions`다. 문서 제목과 약관 전체가 필요하면 `page`로 실행한다.
 
 ```sh
-python -m docagent.analyze /path/to/blank-form.png --detector roboflow --ocr-mode page --output outputs/page-analysis.json
+python -m docagent.analyze /path/to/blank-form.png --detector roboflow --allow-unmasked-blank --include-ocr-text --ocr-mode page --output outputs/page-analysis.json
 ```
 
 API 없이 로컬 탐지와 OCR만 확인할 수도 있다.
@@ -89,7 +89,7 @@ analysis = analyze_document(cv2.imread("blank-form.png"), config=config)
 print(analysis.structure.to_dict())
 ```
 
-`analyze_document()`는 로컬 분석만 수행한다. `build_session()`은 그 결과로
+`analyze_document()`는 이미지 분석만 수행하며, Roboflow 선택 시 이미지 탐지는 외부 API를 사용한다. `build_session()`은 그 결과로
 LLM 전송용 payload·RAG·대화 에이전트를 추가로 만들며 기존 개인정보 게이트를
 계속 적용한다. 로컬 분석 JSON은 외부 전송 승인을 받은 데이터가 아니다.
 
@@ -103,6 +103,10 @@ LLM 전송용 payload·RAG·대화 에이전트를 추가로 만들며 기존 �
    양쪽 매칭이 비슷하거나 문구가 누락되면 임의로 채우지 않고 확인 경고를 남긴다.
 6. 서명란은 왼쪽 라벨을 먼저 확인하고, 없으면 8 mm 이내 위쪽 라벨을 확인한다.
    기입 주체를 확정하지 못하면 기존 UNKNOWN 및 재확인 규칙을 적용한다.
+
+JSON은 기본적으로 OCR 원문과 항목 문구를 제외한다. 로컬 검토에서만
+`--include-ocr-text`를 사용한다. 이미지 마스킹과 저장 정책은
+[공통 안내 기능](guidance-foundation.md#이미지-마스킹과-저장-정책)을 참고한다.
 
 JSON은 `detections`와 `ocr_words`의 신뢰도를 따로 보존한다.
 `fields`는 기존 구조화 결과이며, 해석 신뢰도는 매칭에 사용한 OCR 신뢰도보다

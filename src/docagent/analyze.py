@@ -15,12 +15,13 @@ from docagent.config import DocAgentConfig
 from docagent.contracts import FieldRole, FieldType, VISION_TRUST_THRESHOLD
 from docagent.detector.roboflow_detector import _load_dotenv
 from docagent.errors import DocAgentError, VisionError
+from docagent.pii.image_mask import MaskPlan, MaskedDetector
 from docagent.pipeline import DocumentSession, VisionAnalysis, analyze_document
 from docagent.vision.detector_factory import build_detector
 from docagent.vision.ocr import TesseractOcr
 
 
-def build_report(session: DocumentSession | VisionAnalysis) -> dict[str, Any]:
+def build_report(session: DocumentSession | VisionAnalysis, *, include_text: bool = False) -> dict[str, Any]:
     """탐지와 OCR 신뢰도를 각각 보존하는 로컬 검증용 JSON."""
     fields = []
     for field in session.structure.fields:
@@ -32,7 +33,7 @@ def build_report(session: DocumentSession | VisionAnalysis) -> dict[str, Any]:
             or (field.type is FieldType.SIGNATURE and field.role is FieldRole.UNKNOWN)
         )
         fields.append(item)
-    return {
+    report = {
         "document_id": session.structure.document_id,
         "coordinate_system": "normalized_a4_mm",
         "ocr_mode": session.config.ocr_mode,
@@ -47,6 +48,22 @@ def build_report(session: DocumentSession | VisionAnalysis) -> dict[str, Any]:
         "warnings": list(session.structure.warnings),
         "stages": [stage.to_dict() for stage in session.stages],
     }
+    report["text_included"] = include_text
+    if not include_text:
+        # Pattern masking cannot guarantee removal of names/address/OCR errors.
+        # Remove all free text in shareable output, preserving numeric evidence.
+        report["document_id"] = "local-analysis"
+        report["warnings_count"] = len(report.pop("warnings"))
+        for item in report["fields"]:
+            item["title"] = ""
+            item["clause_text"] = ""
+            for option in item["options"]:
+                option["label"] = ""
+        for word in report["ocr_words"]:
+            word["text"] = ""
+        for stage in report["stages"]:
+            stage["detail"] = ""
+    return report
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -62,6 +79,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--conf", type=float, help="탐지 신뢰도 임계값")
     parser.add_argument("--dpi", type=int, help="정합 해상도 (기본 300)")
     parser.add_argument("--output", type=Path, help="검증 결과 JSON 저장 경로")
+    privacy = parser.add_mutually_exclusive_group()
+    privacy.add_argument("--mask-plan", type=Path, help="검토된 정합 이미지 마스킹 계획")
+    privacy.add_argument("--allow-unmasked-blank", action="store_true",
+                         help="개인정보 없는 빈 양식임을 직접 확인한 경우에만 원본 전송 허용")
+    parser.add_argument("--include-ocr-text", action="store_true",
+                        help="로컬 검토용 OCR 원문 포함. 개인정보가 포함될 수 있으므로 공유 금지")
     args = parser.parse_args(argv)
 
     try:
@@ -86,12 +109,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             config="--psm 11" if cfg.ocr_mode == "regions" else "",
         )
         reader.check_available()
+        if cfg.detector_prefer == "roboflow" and not (args.mask_plan or args.allow_unmasked_blank):
+            raise VisionError("Roboflow에는 --mask-plan 또는 빈 양식 확인 --allow-unmasked-blank 가 필요합니다.")
+        plan = MaskPlan.load(args.mask_plan) if args.mask_plan else None
         detector = build_detector(cfg.detector_weights, cfg.detector_prefer, conf=args.conf)
+        if plan is not None:
+            detector = MaskedDetector(detector, plan)
         session = analyze_document(
             image, detector=detector, ocr=reader, config=cfg,
             document_id=args.image.stem,
         )
-        report = json.dumps(build_report(session), ensure_ascii=False, indent=2)
+        report = json.dumps(build_report(session, include_text=args.include_ocr_text), ensure_ascii=False, indent=2)
         if args.output:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(report + "\n", encoding="utf-8")
