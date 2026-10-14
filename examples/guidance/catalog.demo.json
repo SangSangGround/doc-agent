@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "purpose": "demo",
+  "fields": [
+    {
+      "document_id": "fictional-survey",
+      "document_version": "demo-1",
+      "page": 1,
+      "field_id": "participation",
+      "field_type": "checkbox",
+      "surrounding_text": "가상 설문 참여 / 동의함 / 거부함",
+      "keywords": [
+        "가상 설문 참여",
+        "동의함",
+        "거부함"
+      ],
+      "forbidden_keywords": [
+        "철회"
+      ],
+      "instruction": "이것은 가상 문서 테스트입니다. 설문 참여 여부를 동의함 또는 거부함 중에서 선택하세요.",
+      "approval": {
+        "status": "approved",
+        "reviewed_by": "synthetic-fixture-only",
+        "reviewed_at": "2026-10-15",
+        "content_sha256": "c2631f4011bbdd5d86f93092963325f08146ecbf305c9dd99bd7ff4a25e874bb"
+      }
+    }
+  ]
+}
