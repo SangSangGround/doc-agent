@@ -1,0 +1,55 @@
+<!doctype html><html lang="ko"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>문서 마스킹 검수</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#172538;font:16px/1.6 system-ui,sans-serif}header{padding:22px 32px;background:#142a43;color:white}h1{font-size:25px;margin:0}header p{margin:4px 0;color:#ccdae9}main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;padding:24px}.stage,aside{background:white;padding:20px;border:1px solid #dce3eb;border-radius:12px}.viewport{overflow:auto;max-height:75vh;background:#e3e9f0;border:1px solid #c4d0dc}canvas{display:block;touch-action:none;max-width:none;cursor:crosshair}button,input,textarea{font:inherit}button{border:1px solid #9eafc3;background:#fff;border-radius:7px;padding:8px 12px;cursor:pointer;color:#172538}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #1764cb;outline-offset:2px}.primary{background:#1555b2;color:white;border:0;width:100%;margin-top:12px}.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.badge{display:inline-block;background:#fff1c2;color:#644300;padding:3px 10px;border-radius:20px;font-weight:600}.hint{font-size:14px;color:#52657b}.box-row{display:flex;justify-content:space-between;gap:4px;border-bottom:1px solid #e2e8f0;padding:8px 0}.selected{background:#e9f2ff}.editor{display:grid;grid-template-columns:1fr 1fr;gap:8px}.editor input{width:100%;border:1px solid #9eafc3;padding:6px;border-radius:5px}#boxes{max-height:220px;overflow:auto;margin:12px 0}#status{min-height:48px;font-size:14px}h2{font-size:18px;margin:14px 0 8px}#hover{white-space:pre-wrap;overflow-wrap:anywhere;max-height:140px;overflow:auto}label{cursor:pointer}@media(max-width:900px){main{grid-template-columns:1fr}header{padding:20px}main{padding:12px}}
+</style>
+<header><h1>문서 마스킹 검수</h1><p>영역을 직접 확인하고 초안을 저장하세요. 승인 기록은 검토 후 CLI에서 별도로 남깁니다.</p></header>
+<main><section class="stage" aria-label="문서 미리보기">
+<div class="toolbar"><label><input type="checkbox" id="detections" checked> 탐지 박스 <span style="color:#007e89">■</span></label><label><input type="checkbox" id="ocr" checked> OCR 영역 <span style="color:#b55a00">■</span></label><label><input type="checkbox" id="preview"> 마스킹 미리보기</label><label>확대 <input id="zoom" type="range" min="15" max="100" value="35" aria-label="확대 비율"></label></div>
+<div class="viewport"><canvas id="canvas" aria-label="드래그로 마스킹 박스 추가. 좌표 입력으로도 추가할 수 있습니다."></canvas></div>
+<p class="hint">드래그로 영역 추가 · 목록에서 박스 선택 후 좌표 수정 · 수치는 정합 이미지의 픽셀 좌표입니다.</p>
+<div id="hover" class="hint" aria-live="polite"></div></section>
+<aside><span class="badge">미승인 초안</span><h2>마스킹 영역</h2><p class="hint">이 파일에는 문서 이미지와 OCR가 포함될 수 있습니다. 로컬에서만 보관하세요.</p>
+<div class="toolbar"><button id="add">좌표로 추가</button><button id="undo">실행 취소</button></div>
+<div id="boxes" aria-label="마스킹 박스 목록"></div>
+<div class="editor"><label>x <input id="x" type="number" step="1"></label><label>y <input id="y" type="number" step="1"></label><label>너비 <input id="w" type="number" min="1" step="1"></label><label>높이 <input id="h" type="number" min="1" step="1"></label></div>
+<div class="toolbar" style="margin-top:12px"><button id="apply">선택 영역 수정</button><button id="remove">선택 영역 삭제</button></div>
+<label>여백(px) <input id="padding" type="number" min="0" max="100" step="1" style="width:80px"></label>
+<button id="save" class="primary">미승인 마스킹 계획 저장</button><p id="status" role="status"></p>
+<p class="hint">모든 개인정보가 가려지는지 미리보기로 확인하세요. 이미지나 영역이 바뀌면 다시 검토해야 합니다.</p></aside></main>
+<script id="data" type="application/json">__REVIEW_DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('data').textContent), plan=data.plan;
+const $=id=>document.getElementById(id), canvas=$('canvas'), ctx=canvas.getContext('2d'), img=new Image();
+let selected=-1,start=null,history=[];
+const clone=x=>JSON.parse(JSON.stringify(x));
+function draft(){plan.approval={status:'draft',reviewed_by:'',reviewed_at:'',content_sha256:''};}
+function remember(){history.push({boxes:clone(plan.boxes),padding:plan.padding_px});draft();}
+function status(text){$('status').textContent=text;}
+function select(index){selected=index;const box=plan.boxes[index]||[0,0,50,50];['x','y','w','h'].forEach((k,i)=>$(k).value=box[i]);render();}
+function render(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0);
+ const scale=Number($('zoom').value)/100;canvas.style.width=(canvas.width*scale)+'px';canvas.style.height=(canvas.height*scale)+'px';
+ for(const [key,toggle,color] of [['detections','detections','#007e89'],['ocr_words','ocr','#b55a00']])if($(toggle).checked){ctx.strokeStyle=color;ctx.lineWidth=3;for(const item of data.overlays[key])ctx.strokeRect(...item.box);}
+ plan.boxes.forEach((b,i)=>{if($('preview').checked){const p=plan.padding_px,x=Math.max(0,Math.floor(b[0])-p),y=Math.max(0,Math.floor(b[1])-p);ctx.fillStyle='#000';ctx.fillRect(x,y,Math.min(canvas.width,Math.ceil(b[0]+b[2])+p)-x,Math.min(canvas.height,Math.ceil(b[1]+b[3])+p)-y);}else{ctx.fillStyle='rgba(211,34,91,.18)';ctx.fillRect(...b);ctx.strokeStyle=i===selected?'#1555b2':'#d3225b';ctx.lineWidth=5;ctx.strokeRect(...b);}});
+ $('boxes').replaceChildren();plan.boxes.forEach((b,i)=>{const row=document.createElement('button');row.className='box-row'+(i===selected?' selected':'');row.style.width='100%';row.textContent=`영역 ${i+1}: ${b.map(v=>Math.round(v)).join(', ')}`;row.onclick=()=>select(i);$('boxes').append(row);});
+ $('padding').value=plan.padding_px;
+}
+function valid(b){return b.every(Number.isFinite)&&b[2]>0&&b[3]>0&&b[0]>=0&&b[1]>=0&&b[0]+b[2]<=canvas.width&&b[1]+b[3]<=canvas.height;}
+function point(e){const r=canvas.getBoundingClientRect();return [Math.max(0,Math.min(canvas.width,(e.clientX-r.left)*canvas.width/r.width)),Math.max(0,Math.min(canvas.height,(e.clientY-r.top)*canvas.height/r.height))];}
+canvas.onpointerdown=e=>{start=point(e);canvas.setPointerCapture(e.pointerId);};
+canvas.onpointerup=e=>{if(!start)return;const end=point(e),b=[Math.floor(Math.min(start[0],end[0])),Math.floor(Math.min(start[1],end[1])),Math.floor(Math.abs(end[0]-start[0])),Math.floor(Math.abs(end[1]-start[1]))];start=null;if(!valid(b))return;remember();plan.boxes.push(b);select(plan.boxes.length-1);status('영역이 추가되었습니다. 승인 상태는 초안입니다.');};
+canvas.onpointercancel=()=>{start=null;};
+canvas.onpointermove=e=>{const [x,y]=point(e);$('hover').textContent=data.overlays.ocr_words.filter(o=>x>=o.box[0]&&y>=o.box[1]&&x<=o.box[0]+o.box[2]&&y<=o.box[1]+o.box[3]).map(o=>o.label).join(' / ');};
+$('add').onclick=()=>{const b=['x','y','w','h'].map(k=>Number($(k).value));if(!valid(b)){status('이미지 안의 유효한 좌표를 입력하세요.');return;}remember();plan.boxes.push(b);select(plan.boxes.length-1);};
+$('apply').onclick=()=>{const b=['x','y','w','h'].map(k=>Number($(k).value));if(selected<0||!valid(b)){status('영역을 선택하고 유효한 좌표를 입력하세요.');return;}remember();plan.boxes[selected]=b;render();status('수정된 영역은 다시 검토해야 합니다.');};
+$('remove').onclick=()=>{if(selected<0)return;remember();plan.boxes.splice(selected,1);select(-1);};
+$('undo').onclick=()=>{const state=history.pop();if(!state)return;plan.boxes=state.boxes;plan.padding_px=state.padding;draft();select(-1);};
+$('padding').onchange=()=>{const n=Number($('padding').value);if(!Number.isInteger(n)||n<0||n>100){status('여백은 0~100 정수입니다.');render();return;}remember();plan.padding_px=n;render();};
+for(const id of ['detections','ocr','preview','zoom'])$(id).oninput=render;
+$('save').onclick=()=>{if(!plan.boxes.length){status('마스킹 영역을 먼저 추가하세요.');return;}draft();const url=URL.createObjectURL(new Blob([JSON.stringify(plan,null,2)+'\n'],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='mask-plan.draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);status('초안을 저장했습니다. 실제 검토 후 mask-approve 명령으로 승인하세요.');};
+img.onload=()=>{canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;select(-1);status('이미지를 확인하고 필요한 영역을 지정하세요.');};img.src=data.image;
+</script></html>
