@@ -1,0 +1,12 @@
+{
+  "document_id": "fictional-survey",
+  "document_version": "demo-1",
+  "page": 1,
+  "field_type": "checkbox",
+  "surrounding_text": "가상 설문 참여 동의함 거부함",
+  "document_confidence": 0.99,
+  "detection_confidence": 0.95,
+  "ocr_confidence": 0.96,
+  "identity_verified": true,
+  "needs_review": false
+}

@@ -356,3 +356,25 @@ Roboflow 체크박스·서명란 탐지와 로컬 Tesseract OCR을 연결한 Ste
 `python -m docagent.analyze`다. 설치, `.env`, 실행 예시는
 [탐지·OCR 연동 안내](docs/ocr-integration.md)를 참고한다.
 기존 `python -m docagent.demo`는 오프라인 통합 데모로 유지된다.
+
+
+## 승인된 안내문 기반 공통 기능 (문서 선정 전)
+
+지원 문서의 작성 안내는 사람이 검토한 문구를 그대로 제공한다. 새 경로는
+LLM 생성·요약을 호출하지 않으며, 기존 `docagent.demo`의 설명 경로와 구분한다.
+실제 지원 문서 목록은 아직 비어 있고 예시는 가상 데이터만 포함한다.
+
+```sh
+python -m docagent.guide --catalog examples/guidance/catalog.demo.json \
+  --observation examples/guidance/observation.demo.json --demo
+```
+
+- 안내 목록·승인 변경 감지, 문서/버전/페이지별 Rule Matching 및 실패 안내
+- 검토한 이미지별 좌표 마스킹, API 전송 전 차단, 기본 분석 JSON의 원문 제외
+- 촬영 품질 검사와 재촬영 안내 (`python -m docagent.check_capture`)
+- macOS 로컬 고정 문구 TTS, 정지·다시 듣기 (`docagent.guide --speak --interactive`)
+
+[공통 안내 기능 실행·검증 안내](docs/guidance-foundation.md)에서 명령과 범위를 확인한다.
+Roboflow 분석 CLI에는 `--mask-plan` 또는 직접 확인한 빈 양식에 대한
+`--allow-unmasked-blank`가 필요하다. OCR 원문은 로컬 검토에서만
+`--include-ocr-text`로 포함한다. 실제 문서 선정·안내문 승인·양식별 마스킹 검증은 후속 작업이다.

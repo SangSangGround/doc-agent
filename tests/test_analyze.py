@@ -134,7 +134,7 @@ def test_cli_writes_report_without_llm_or_motion(blank_image, fake_tesseract, tm
     client = WorkflowClient()
     monkeypatch.setattr(analyze, 'build_detector', lambda *a, **kw: rf.RoboflowDetector(client=client))
     assert analyze.main([str(image_path), '--detector', 'roboflow', '--dpi', '254',
-                         '--output', str(output)]) == 0
+                         '--output', str(output), '--allow-unmasked-blank']) == 0
     report = json.loads(output.read_text())
     assert report['ocr_mode'] == 'regions'
     assert len(report['fields']) == 2
@@ -188,3 +188,50 @@ def test_local_analysis_never_initializes_egress_or_agent(
     )
     assert len(result.structure.fields) == 2
     assert [stage.stage for stage in result.stages] == ['normalize', 'detect', 'ocr', 'structure']
+
+
+def test_cli_requires_privacy_policy_before_constructing_api(blank_image, fake_tesseract, tmp_path, monkeypatch, capsys):
+    image = tmp_path/'form.png'; image.write_bytes(cv2.imencode('.png',blank_image)[1].tobytes())
+    monkeypatch.setattr(analyze,'_load_dotenv',lambda:None)
+    def forbidden(*args,**kwargs): pytest.fail('must not create API client')
+    monkeypatch.setattr(analyze,'build_detector',forbidden)
+    assert analyze.main([str(image),'--detector','roboflow']) == 1
+    assert '--mask-plan' in capsys.readouterr().err
+
+
+def test_cli_sends_masked_pixels_but_ocr_stays_local(blank_image, fake_tesseract, tmp_path, monkeypatch):
+    from docagent.vision.normalize import normalize_document
+    from docagent.pii.image_mask import draft_plan, plan_digest
+    image = tmp_path/'form.png'; image.write_bytes(cv2.imencode('.png',blank_image)[1].tobytes())
+    normalized = normalize_document(blank_image,dpi=254).image
+    p = draft_plan(normalized); p['boxes'] = [[50,50,100,100]]
+    p['approval'] = dict(status='approved',reviewed_by='test',reviewed_at='2026-10-15',content_sha256=plan_digest(p))
+    plan = tmp_path/'plan.json';plan.write_text(json.dumps(p))
+    output=tmp_path/'result.json'
+    monkeypatch.setattr(analyze,'_load_dotenv',lambda:None)
+    client=WorkflowClient()
+    monkeypatch.setattr(analyze,'build_detector',lambda *a,**kw:rf.RoboflowDetector(client=client))
+    assert analyze.main([str(image),'--detector','roboflow','--dpi','254','--mask-plan',str(plan),'--output',str(output)]) == 0
+    sent=client.calls[0]['images']['image']
+    assert np.all(sent[50:150,50:150] == 0)
+    assert not np.array_equal(sent,normalized)
+    assert np.all(blank_image == 255)
+    report=json.loads(output.read_text())
+    assert report['text_included'] is False
+    assert all(w['text']=='' for w in report['ocr_words'])
+    assert all(f['title']=='' for f in report['fields'])
+    # A changed mask cannot cause a second upload.
+    p['boxes'][0][0]=51; plan.write_text(json.dumps(p))
+    assert analyze.main([str(image),'--detector','roboflow','--dpi','254','--mask-plan',str(plan)]) == 1
+    assert len(client.calls)==1
+
+
+def test_report_text_export_is_explicit(blank_image,fake_tesseract):
+    from dataclasses import replace
+    from docagent.pipeline import analyze_document
+    from docagent.contracts import OcrWord, BoxMm
+    session=analyze_document(blank_image,detector=rf.RoboflowDetector(client=WorkflowClient()),
+                            config=DocAgentConfig(dpi=254,ocr_kind='tesseract',ocr_mode='regions'))
+    session=replace(session,words=(OcrWord('synthetic-private-name',BoxMm(0,0,3,3),.99),))
+    assert 'synthetic-private-name' not in json.dumps(analyze.build_report(session))
+    assert 'synthetic-private-name' in json.dumps(analyze.build_report(session,include_text=True))
