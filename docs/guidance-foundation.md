@@ -111,3 +111,28 @@ CLI에서 Roboflow를 사용할 때는 마스킹 계획이 필수다. 개인정�
 옵션이며 개인정보가 그대로 포함될 수 있다. 모든 개인정보를 정규식으로 제거했다고
 간주하지 않는다. OCR 원문·검토 이미지·마스킹 계획은 `outputs/` 등 Git 제외 경로에서
 관리하고 외부 공유 전에 별도 검토한다. 기존 테스트 산출물에 소급 적용되지는 않는다.
+
+## 촬영 품질 검사
+
+```sh
+python -m docagent.check_capture photo.png --mode photo --output outputs/quality.json
+# 품질 검사를 통과한 경우에만 탐지/OCR/API를 진행
+python -m docagent.analyze photo.png --capture-mode photo --detector roboflow \
+  --mask-plan outputs/mask-review/mask-plan.json --output outputs/analysis.json
+```
+
+- `photo`: 문서 경계 불명·낮은 경계 신뢰도는 `review`, 가장자리 접촉·과도한
+  평면 기울기·흐림·저해상도·저조도·낮은 대비는 `retake`다. 둘 다 진행을 막는다.
+- `scan`: 사용자가 이미 페이지로 잘라낸 원본이라고 지정한 경우다. 촬영 경계/잘림
+  검사를 생략하므로 이 모드를 촬영본의 경계 검사 우회에 사용하지 않는다.
+- 독립 검사 CLI 종료 코드는 pass 0, review/retake 2, 파일/실행 오류 1이다.
+- `analyze --capture-mode`를 생략하면 기존 동작을 유지하며 결과에
+  `capture_quality.status: not_checked`를 명시한다. 검사한 것으로 간주하면 안 된다.
+- 기본 임계값: 짧은 변 600px, 최대 변 1200px로 축소 후 Laplacian 분산 60,
+  회색조 표준편차 12, 밝기 평균 45, 경계 신뢰도 0.85, 평면 기울기 12도.
+  `QualityPolicy`로 조정할 수 있으나 실제 촬영 장치·문서별 보정은 아직 없다.
+- 기본 검사는 일부 문제의 후보를 찾는 휴리스틱이다. 내부 표를 페이지 경계로
+  오인할 수 있고, 이미 잘린 문서·반사광·국소 흐림·원근 왜곡·그림자를 모두 검출하지
+  못한다. pass도 문서 전체 포함·OCR 정확도·안내 안전성을 보장하지 않는다.
+
+검사 결과에는 픽셀 이미지나 OCR 원문이 없고 상태·측정값·고정 안내문만 포함된다.

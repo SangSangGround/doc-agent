@@ -19,6 +19,7 @@ from docagent.pii.image_mask import MaskPlan, MaskedDetector
 from docagent.pipeline import DocumentSession, VisionAnalysis, analyze_document
 from docagent.vision.detector_factory import build_detector
 from docagent.vision.ocr import TesseractOcr
+from docagent.vision.quality import assess_capture
 
 
 def build_report(session: DocumentSession | VisionAnalysis, *, include_text: bool = False) -> dict[str, Any]:
@@ -85,6 +86,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                          help="개인정보 없는 빈 양식임을 직접 확인한 경우에만 원본 전송 허용")
     parser.add_argument("--include-ocr-text", action="store_true",
                         help="로컬 검토용 OCR 원문 포함. 개인정보가 포함될 수 있으므로 공유 금지")
+    parser.add_argument("--capture-mode", choices=("photo", "scan"),
+                        help="전송 전 품질 검사. photo: 촬영본, scan: 이미 잘라낸 원본. 미통과 시 중단")
     args = parser.parse_args(argv)
 
     try:
@@ -95,6 +98,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             raise VisionError("이미지를 읽을 수 없습니다. PNG 또는 JPEG 파일을 사용하십시오.")
         if args.conf is not None and not 0 <= args.conf <= 1:
             raise ValueError("--conf 는 0.0~1.0 이어야 합니다.")
+        quality = assess_capture(image, mode=args.capture_mode) if args.capture_mode else None
+        if quality is not None and not quality.can_continue:
+            raise VisionError(quality.instruction)
         _load_dotenv()
         cfg = DocAgentConfig.from_env(base=DocAgentConfig(ocr_mode="regions"))
         cfg = cfg.with_(
@@ -119,7 +125,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             image, detector=detector, ocr=reader, config=cfg,
             document_id=args.image.stem,
         )
-        report = json.dumps(build_report(session, include_text=args.include_ocr_text), ensure_ascii=False, indent=2)
+        payload = build_report(session, include_text=args.include_ocr_text)
+        payload["capture_quality"] = quality.to_dict() if quality is not None else {"status": "not_checked"}
+        report = json.dumps(payload, ensure_ascii=False, indent=2)
         if args.output:
             args.output.parent.mkdir(parents=True, exist_ok=True)
             args.output.write_text(report + "\n", encoding="utf-8")
