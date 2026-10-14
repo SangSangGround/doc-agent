@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
+from docagent.guidance.analysis import observation_from_analysis
 from docagent.errors import DocAgentError
 from docagent.io.playback import GuidancePlayer, SayBackend
 from docagent.guidance.rules import Observation, RuleCatalog
@@ -15,7 +16,11 @@ from docagent.guidance.rules import Observation, RuleCatalog
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="확인된 문서와 OCR 관측값으로 승인 문구만 검색합니다.")
     parser.add_argument("--catalog", type=Path, required=True)
-    parser.add_argument("--observation", type=Path, required=True)
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--observation", type=Path)
+    source.add_argument("--analysis", type=Path, help="로컬 원문을 포함한 Step 2 JSON")
+    parser.add_argument("--document-context", type=Path, help="별도로 확인한 문서 ID·버전·페이지")
+    parser.add_argument("--field-id", help="분석 결과의 대상 항목 ID")
     parser.add_argument("--demo", action="store_true", help="가상 데이터 사용 허용; 실제 문서 안내 금지")
     parser.add_argument("--output", type=Path)
     audio = parser.add_mutually_exclusive_group()
@@ -26,10 +31,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.interactive and not args.speak:
         parser.error("--interactive 는 --speak 와 함께 사용합니다.")
+    if args.analysis and not (args.document_context and args.field_id):
+        parser.error("--analysis 에는 --document-context 와 --field-id 가 필요합니다.")
+    if args.observation and (args.document_context or args.field_id):
+        parser.error("--document-context 와 --field-id 는 --analysis 와 함께 사용합니다.")
     player = None
     try:
         catalog = RuleCatalog.load(args.catalog)
-        observation = Observation.from_dict(json.loads(args.observation.read_text(encoding="utf-8")))
+        if args.analysis:
+            observation = observation_from_analysis(
+                json.loads(args.analysis.read_text(encoding="utf-8")),
+                json.loads(args.document_context.read_text(encoding="utf-8")), args.field_id,
+            )
+        else:
+            observation = Observation.from_dict(json.loads(args.observation.read_text(encoding="utf-8")))
         result = catalog.match(observation, demo=args.demo)
         if args.speak or args.audio_file:
             player = GuidancePlayer(catalog, SayBackend(voice=args.voice, output_file=args.audio_file))

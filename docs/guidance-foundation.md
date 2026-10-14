@@ -161,3 +161,62 @@ python -m docagent.guide --catalog examples/guidance/catalog.demo.json \
 - 제한된 실행 환경에서 OS 음성 서비스 접근이 막힐 수 있다. 일반 터미널에서 실행해 확인한다.
 - 현재 환경에서 Yuna로 가상 안내문의 실제 AIFF 6.38초를 생성해 확인했다.
   스피커·이어폰의 실제 출력과 시각장애인 사용성 검증은 별도다.
+
+## Step 2 분석 JSON에서 연결
+
+로컬 검토용 `--include-ocr-text` 결과와 **별도로 확인한** 문서 정보가 필요하다.
+`document-context.json`은 아래 형식이다. 실제 문서가 아직 없으므로 가상 값이다.
+
+```json
+{
+  "document_id": "fictional-survey",
+  "document_version": "demo-1",
+  "page": 1,
+  "confidence": 0.99,
+  "identity_verified": true
+}
+```
+
+```sh
+python -m docagent.guide --catalog examples/guidance/catalog.demo.json --demo \
+  --analysis outputs/analysis-local.json --document-context outputs/document-context.json \
+  --field-id choice_01
+```
+
+`--field-id`는 원문을 포함한 분석 JSON의 항목 ID다. 분석 파일명은 지원 문서 ID로
+추측하지 않는다. 해당 항목 주변 OCR과 겹치는 탐지 박스를 사용하고, 문서 식별·
+정합·탐지·OCR 신뢰도 중 낮은 값과 모든 검토 경고를 보존한다. 촬영 검사가 미실행
+또는 미통과여도 안내를 거절한다. 원문이 제거된 기본 보고서는 검색 입력으로 쓸 수 없다.
+
+특히 Step 2 `regions`의 문서 검토 표시와 낮은 정합 신뢰도는 자동 해제하지 않는다.
+따라서 현재 실제 자료가 연결돼도 대부분 재확인 결과가 나올 수 있다. 실제 지원
+문서에 대한 식별/레이아웃 검증, 전체 문맥 확인 기준을 정하기 전까지 임의로 JSON의
+플래그나 신뢰도를 올려 사용자 안내를 진행하면 안 된다.
+
+## 검증 및 남은 작업
+
+```sh
+python -m pytest tests/guidance tests/pii/test_image_mask.py tests/vision/test_quality.py \
+  tests/io/test_playback.py tests/test_analyze.py -q
+python -m pytest -q
+```
+
+자동 검증은 네트워크/API 키 없이 가상 안내, 합성 이미지, 가짜 탐지/OCR/음성
+응답으로 수행한다. 승인 변경·미승인/모호한 검색·신뢰도·원본 전송 차단·마스킹
+픽셀·촬영 실패·문장 보존·재생 제어·개인정보 원문 없는 출력이 검증 대상이다.
+실제 Roboflow에는 이번 작업에서 새 문서를 전송하지 않았다.
+
+현재 완료: 공통 데이터/검색, 검토 계획 기반 이미지 마스킹, 기본 촬영 검사,
+로컬 음성 제어, 분석 JSON 연결, 가상 데이터 테스트·실행 문서.
+
+후속 작업:
+
+1. 지원 문서 3~5종과 버전·페이지 목록 확정, 문서 식별 근거 구축.
+2. 문서별 항목 키워드·부정/충돌 표현·전체 음성 문구를 사람이 검토하고 승인.
+3. 촬영 정렬과 양식별 개인정보 좌표를 검증하고 마스킹 누락 평가.
+4. 학습과 구분된 평가 자료에 정답 라벨을 만들고 안내 오매칭·거절률 평가.
+5. 실제 기기/조명에서 촬영 임계값 조정, 음성 출력과 사용성 확인.
+6. 검토된 문서 단위로만 필요한 RAG·UI·문서 자동 식별을 확장.
+
+검증 기록 (2026-10-15): Python 3.12의 프로젝트 `venv/`에서 전체 테스트 1,410개
+통과. 가상 안내 CLI의 문장 일치와 Yuna AIFF의 실제 오디오 프레임도 확인했다.

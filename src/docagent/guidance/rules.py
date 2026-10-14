@@ -73,6 +73,8 @@ class RuleCatalog:
     """신뢰하는 로컬 파일에서만 읽는 안내 목록. OCR 응답을 목록으로 사용하지 않는다."""
 
     def __init__(self, data: dict[str, Any]) -> None:
+        if not isinstance(data, dict):
+            raise ValueError("안내 데이터는 JSON 객체여야 합니다.")
         if type(data.get("schema_version")) is not int or data["schema_version"] != 1:
             raise ValueError("안내 데이터 schema_version 은 1이어야 합니다.")
         if data.get("purpose") not in ("demo", "production"):

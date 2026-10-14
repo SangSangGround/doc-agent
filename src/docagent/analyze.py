@@ -55,11 +55,14 @@ def build_report(session: DocumentSession | VisionAnalysis, *, include_text: boo
         # Remove all free text in shareable output, preserving numeric evidence.
         report["document_id"] = "local-analysis"
         report["warnings_count"] = len(report.pop("warnings"))
-        for item in report["fields"]:
+        for index, item in enumerate(report["fields"], 1):
+            item["id"] = f"field_{index}"
             item["title"] = ""
             item["clause_text"] = ""
             for option in item["options"]:
                 option["label"] = ""
+        for detection in report["detections"]:
+            detection["source"] = "detector"
         for word in report["ocr_words"]:
             word["text"] = ""
         for stage in report["stages"]:
