@@ -15,7 +15,7 @@ from docagent.config import DocAgentConfig
 from docagent.contracts import FieldRole, FieldType, VISION_TRUST_THRESHOLD
 from docagent.detector.roboflow_detector import _load_dotenv
 from docagent.errors import DocAgentError, VisionError
-from docagent.pii.image_mask import MaskPlan, MaskedDetector
+from docagent.pii.image_mask import MaskPlan, MaskedDetector, BlankDocumentDetector, image_digest
 from docagent.pipeline import DocumentSession, VisionAnalysis, analyze_document
 from docagent.vision.detector_factory import build_detector
 from docagent.vision.ocr import TesseractOcr
@@ -36,6 +36,7 @@ def build_report(session: DocumentSession | VisionAnalysis, *, include_text: boo
         fields.append(item)
     report = {
         "document_id": session.structure.document_id,
+        "image_sha256": image_digest(session.normalized.image),
         "coordinate_system": "normalized_a4_mm",
         "ocr_mode": session.config.ocr_mode,
         "needs_review": (
@@ -124,6 +125,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         detector = build_detector(cfg.detector_weights, cfg.detector_prefer, conf=args.conf)
         if plan is not None:
             detector = MaskedDetector(detector, plan)
+        elif args.allow_unmasked_blank:
+            detector = BlankDocumentDetector(detector)
         session = analyze_document(
             image, detector=detector, ocr=reader, config=cfg,
             document_id=args.image.stem,

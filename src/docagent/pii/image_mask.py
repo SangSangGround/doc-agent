@@ -102,5 +102,20 @@ class MaskedDetector:
         self._plan = plan
 
     def detect(self, image: np.ndarray):
+        from docagent.detector.roboflow_detector import RoboflowDetector
+        if isinstance(self._detector, RoboflowDetector):
+            return self._detector.detect(image, mask_plan=self._plan)
         masked = self._plan.apply(image)
         return self._detector.detect(masked)
+
+
+class BlankDocumentDetector:
+    """개인정보가 없는 빈 양식을 호출자가 명시적으로 확인한 경로."""
+    def __init__(self, detector: Any):
+        self._detector = detector
+
+    def detect(self, image: np.ndarray):
+        from docagent.detector.roboflow_detector import RoboflowDetector
+        if isinstance(self._detector, RoboflowDetector):
+            return self._detector.detect(image, allow_unmasked_blank=True)
+        return self._detector.detect(image)

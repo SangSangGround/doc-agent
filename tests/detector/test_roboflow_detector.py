@@ -122,7 +122,7 @@ def test_satisfies_detector_protocol() -> None:
 
 def test_predict_filters_by_confidence_and_sorts_desc() -> None:
     client = FakeClient(_workflow_response(SAMPLE_PREDICTIONS))
-    predictions = RoboflowDetector(client=client, conf=0.5).predict("page.jpg")
+    predictions = RoboflowDetector(client=client, conf=0.5).predict("page.jpg", allow_unmasked_blank=True)
     assert [p.class_name for p in predictions] == ["signature_field", "check_box"]
     assert client.calls[0]["parameters"] == {"model_id": DEFAULT_MODEL_ID}
     assert client.calls[0]["images"] == {"image": "page.jpg"}
@@ -130,7 +130,7 @@ def test_predict_filters_by_confidence_and_sorts_desc() -> None:
 
 def test_detect_returns_a4_mm_detections() -> None:
     client = FakeClient(_workflow_response(SAMPLE_PREDICTIONS))
-    detections = RoboflowDetector(client=client).detect(_blank_page())
+    detections = RoboflowDetector(client=client).detect(_blank_page(), allow_unmasked_blank=True)
 
     assert [d.type for d in detections] == [FieldType.CHECKBOX, FieldType.SIGNATURE]
     assert all(d.source == SOURCE_ROBOFLOW for d in detections)
@@ -146,7 +146,7 @@ def test_detect_skips_unknown_class() -> None:
     response = _workflow_response(
         [{"x": 10.0, "y": 10.0, "width": 5.0, "height": 5.0, "confidence": 0.9, "class": "object"}]
     )
-    assert RoboflowDetector(client=FakeClient(response)).detect(_blank_page()) == []
+    assert RoboflowDetector(client=FakeClient(response)).detect(_blank_page(), allow_unmasked_blank=True) == []
 
 
 def test_detect_rejects_non_array() -> None:
@@ -157,7 +157,7 @@ def test_detect_rejects_non_array() -> None:
 def test_api_failure_is_wrapped_as_vision_error() -> None:
     detector = RoboflowDetector(client=FakeClient(error=RuntimeError("401 Unauthorized")))
     with pytest.raises(VisionError, match="Roboflow API 호출에 실패"):
-        detector.predict("page.jpg")
+        detector.predict("page.jpg", allow_unmasked_blank=True)
 
 
 def test_missing_api_key_raises(monkeypatch: pytest.MonkeyPatch) -> None:
