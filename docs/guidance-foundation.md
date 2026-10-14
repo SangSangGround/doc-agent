@@ -136,3 +136,28 @@ python -m docagent.analyze photo.png --capture-mode photo --detector roboflow \
   못한다. pass도 문서 전체 포함·OCR 정확도·안내 안전성을 보장하지 않는다.
 
 검사 결과에는 픽셀 이미지나 OCR 원문이 없고 상태·측정값·고정 안내문만 포함된다.
+
+## 승인 문구 그대로 음성 재생
+
+macOS의 설치된 `say` 음성을 사용한다. 새 API 키·클라우드 TTS·LLM은 필요 없다.
+기존 콘솔/STT 어댑터와 분리되어 있으며 Windows/Linux용 재생 어댑터는 후속 작업이다.
+
+```sh
+# 기본 한국어 음성 Yuna로 재생, s/r/q 입력으로 제어
+python -m docagent.guide --catalog examples/guidance/catalog.demo.json \
+  --observation examples/guidance/observation.demo.json --demo --speak --interactive
+# 스피커를 사용하지 않고 오디오 파일 생성
+python -m docagent.guide --catalog examples/guidance/catalog.demo.json \
+  --observation examples/guidance/observation.demo.json --demo \
+  --audio-file outputs/guidance-demo.aiff
+```
+
+- `s` 정지, `r` 마지막 고정 문장 다시 듣기, `q` 종료. Ctrl+C/EOF도 소유한 재생 프로세스를 정리한다.
+- `--interactive` 없이 `--speak`하면 한 번 읽고 종료한다. `--voice`로 설치된 음성을 선택한다.
+- 거절된 검색은 OCR 원문이나 이전 안내문 대신 고정 실패 문구만 읽는다.
+- 읽을 문자열은 명령 인자/셸이 아닌 stdin으로 전달하며 문장을 다시 쓰지 않는다.
+- 승인된 문구 파일은 신뢰 경계다. 검토되지 않은 문장이나 음성 제어 마크업을 등록하지 않는다.
+- 엔진 실패는 종료 코드 1이며, 파일 저장 시 프레임이 없는 빈 AIFF도 실패로 처리한다.
+- 제한된 실행 환경에서 OS 음성 서비스 접근이 막힐 수 있다. 일반 터미널에서 실행해 확인한다.
+- 현재 환경에서 Yuna로 가상 안내문의 실제 AIFF 6.38초를 생성해 확인했다.
+  스피커·이어폰의 실제 출력과 시각장애인 사용성 검증은 별도다.
