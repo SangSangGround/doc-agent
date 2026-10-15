@@ -184,3 +184,19 @@ def sample_structure() -> DocumentStructure:
             seed=DEFAULT_SEED,
         )
     )
+
+
+@pytest.fixture(autouse=True)
+def block_network_in_offline_suite(monkeypatch: pytest.MonkeyPatch) -> None:
+    """CI 및 명시적인 로컬 오프라인 검증에서 실제 소켓 연결을 차단한다."""
+    import os
+    import socket
+    if os.environ.get("DOCAGENT_TEST_OFFLINE") != "1":
+        return
+
+    def denied(*args, **kwargs):
+        raise AssertionError("오프라인 테스트에서 실제 네트워크 연결을 시도했습니다.")
+
+    monkeypatch.setattr(socket.socket, "connect", denied)
+    monkeypatch.setattr(socket.socket, "connect_ex", denied)
+    monkeypatch.setattr(socket, "create_connection", denied)
