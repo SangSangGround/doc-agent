@@ -124,6 +124,12 @@ class RuleCatalog:
             raise ValueError("안내 데이터는 JSON 객체여야 합니다.")
         return cls(data)
 
+    def supports(self, document_id: str, document_version: str, page: int) -> bool:
+        """문서·버전·페이지에 승인된 안내가 하나 이상 등록돼 있는지 확인한다."""
+        return any((e["document_id"], e["document_version"], e["page"]) ==
+                   (document_id, document_version, page) and e["approval"]["status"] == "approved"
+                   for e in self._entries)
+
     def match(self, observed: Observation, *, demo: bool = False,
               minimum_confidence: float = 0.85) -> GuidanceResult:
         if not _confidence(minimum_confidence) or minimum_confidence <= 0:

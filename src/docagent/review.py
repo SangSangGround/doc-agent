@@ -21,7 +21,10 @@ from docagent.vision.normalize import normalize_document
 
 
 def read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding='utf-8'))
+    data = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(data, dict):
+        raise ValueError('JSON 객체가 필요합니다.')
+    return data
 
 
 def write_new(path: Path, data: dict[str, Any] | str) -> None:
@@ -46,7 +49,7 @@ def context_draft(report: dict[str, Any]) -> dict[str, Any]:
     """순서는 초안일 뿐이며 사람이 확인해야 한다. 분석 플래그는 수정하지 않는다."""
     return dict(schema_version=1, document_id='', document_version='', page=1, confidence=0,
                 identity_verified=False, analysis_sha256=digest(report),
-                analysis_document_id=report['document_id'],
+                analysis_document_id=report['document_id'], source_image_sha256=report.get('source_image_sha256'),
                 field_order=[f['id'] for f in report['fields'] if f['type'] in ('choice','checkbox','signature')],
                 approval=draft_approval())
 

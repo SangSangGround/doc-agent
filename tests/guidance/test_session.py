@@ -17,7 +17,9 @@ from tests.guidance.test_analysis import report, context
 
 
 def reviewed_context(data):
-    c = dict(context(), schema_version=1, analysis_sha256=digest(data), field_order=['choice_01'])
+    from docagent.pii.image_mask import image_digest
+    c = dict(context(), schema_version=1, analysis_sha256=digest(data), field_order=['choice_01'],
+             source_image_sha256=data.get('source_image_sha256',image_digest(np.ones((10,10),np.uint8))))
     c['approval'] = dict(status='approved', reviewed_by='synthetic-reviewer', reviewed_at='2026-10-15',
                          content_sha256=context_digest(c))
     return c
@@ -64,7 +66,7 @@ def test_human_context_cannot_override_analysis_warnings(change):
 def test_invalid_context_stops_before_capture_or_api(change):
     data = report(); c = reviewed_context(data); change(c)
     def forbidden(*a, **kw): pytest.fail('preflight must stop')
-    result, session = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8),
+    result, session = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8), demo=True,
                                   detector_factory=forbidden, ocr_factory=forbidden)
     assert session is None and result['reason'] == 'document_review_invalid'
 
@@ -89,11 +91,11 @@ def test_quality_and_missing_mask_block_before_api(monkeypatch):
     data = report(); c = reviewed_context(data)
     def forbidden(*a, **kw): pytest.fail('API/OCR factory must not run')
     monkeypatch.setattr(run, 'assess_capture', lambda *a, **kw: CaptureQuality('retake', ('blurred',)))
-    result, _ = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8),
+    result, _ = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8), demo=True,
                            detector_factory=forbidden, ocr_factory=forbidden)
     assert result['reason'] == 'capture_quality'
     monkeypatch.setattr(run, 'assess_capture', lambda *a, **kw: CaptureQuality('pass'))
-    result, _ = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8),
+    result, _ = run.execute(catalog=catalog(), context=c, image=np.ones((10,10),np.uint8), demo=True,
                            config=DocAgentConfig(detector_prefer='roboflow'),
                            detector_factory=forbidden, ocr_factory=forbidden)
     assert result['reason'] == 'mask_required'
@@ -118,3 +120,23 @@ def test_image_to_guidance_and_cli_offline(monkeypatch, tmp_path, capsys):
     output=capsys.readouterr().out
     assert 'unrelated-private-text' not in output
     assert json.loads(output)['status']=='ready'
+
+
+def test_unsupported_or_demo_document_never_initializes_api():
+    def forbidden(*a, **kw): pytest.fail('unsupported document must not upload')
+    data=report(); c=reviewed_context(data)
+    result,_=run.execute(catalog=catalog(),context=c,image=np.ones((10,10),np.uint8),
+                         detector_factory=forbidden,ocr_factory=forbidden)
+    assert result['reason']=='unsupported_or_demo_document'
+    c['document_id']='unsupported';c['approval']['content_sha256']=context_digest(c)
+    result,_=run.execute(catalog=catalog(),context=c,image=np.ones((10,10),np.uint8),demo=True,
+                         detector_factory=forbidden,ocr_factory=forbidden)
+    assert result['reason']=='unsupported_or_demo_document'
+
+
+def test_changed_source_image_stops_before_quality_ocr_or_upload(monkeypatch):
+    def forbidden(*a, **kw): pytest.fail('changed source must not proceed')
+    monkeypatch.setattr(run,'assess_capture',forbidden)
+    result,_=run.execute(catalog=catalog(),context=reviewed_context(report()),image=np.zeros((10,10),np.uint8),
+                         demo=True,detector_factory=forbidden,ocr_factory=forbidden)
+    assert result['reason']=='source_image_changed'

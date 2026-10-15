@@ -36,9 +36,20 @@ def execute(*, catalog: RuleCatalog, context: dict[str, Any], report: dict[str, 
     try:
         validate_context(context)
         events.append(dict(stage=stage, status="passed"))
+        stage = "catalog"
+        if (catalog.purpose == "demo" and not demo) or not catalog.supports(
+                context["document_id"], context["document_version"], context["page"]):
+            return dict(status="blocked", reason="unsupported_or_demo_document", events=events + [
+                dict(stage=stage, status="blocked")]), None
+        events.append(dict(stage=stage, status="passed"))
         if (image is None) == (report is None):
             raise ValueError("이미지 또는 분석 결과 하나가 필요합니다.")
         if image is not None:
+            stage = "source_image"
+            if context.get("source_image_sha256") != image_digest(image):
+                return dict(status="blocked", reason="source_image_changed", events=events + [
+                    dict(stage=stage, status="blocked")]), None
+            events.append(dict(stage=stage, status="passed"))
             stage = "capture_quality"
             quality = assess_capture(image, mode=capture_mode)
             events.append(dict(stage=stage, status=quality.status, reasons=list(quality.reasons)))
