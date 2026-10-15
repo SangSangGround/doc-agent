@@ -13,7 +13,7 @@ Roboflow 에서 학습한 RF-DETR 모델을 서버리스 Workflow 로 호출해
 
 이 모듈은 **탐지**를 담당한다. `build_detector(prefer="roboflow")`로 선택할 수 있다.
 탐지 → 로컬 OCR → 구조화 실행은 [Step 2 실행 안내](ocr-integration.md)를 참고한다.
-LLM 의미 해석과 TTS 연결은 후속 범위다.
+승인 안내와 로컬 TTS는 [통합 실행 도구](pipeline-review-evaluation.md)에서 연결한다.
 
 ## 설치
 
@@ -35,9 +35,9 @@ ROBOFLOW_API_KEY=<팀에서 공유받은 키>
 
 ```powershell
 $env:PYTHONPATH = "src"
-.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로>
-.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로> --conf 0.3 --output outputs/result.jpg
-.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로> --no-draw
+.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로> --allow-unmasked-blank
+.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로> --allow-unmasked-blank --conf 0.3 --output outputs/result.jpg
+.venv\Scripts\python.exe -m docagent.detector.roboflow_detector <이미지 경로> --allow-unmasked-blank --no-draw
 ```
 
 출력 예:
@@ -58,6 +58,10 @@ Total objects: 5
 
 기본 confidence 임계값은 0.5 이다. `outputs/` 는 커밋하지 않는다.
 
+위 예시는 개인정보 없는 빈 양식을 직접 확인한 경우만 사용한다.
+마스킹 적용은 `docagent.analyze --mask-plan` 또는 `detect(image, mask_plan=plan)`을 사용한다.
+정책을 생략한 직접 호출은 차단된다.
+
 ## 코드에서 쓰기
 
 ```python
@@ -65,8 +69,8 @@ import cv2
 from docagent.detector.roboflow_detector import RoboflowDetector
 
 detector = RoboflowDetector(conf=0.5)        # ROBOFLOW_API_KEY 환경변수 사용
-detections = detector.detect(cv2.imread("page.png"))   # A4 mm Detection 목록
-raw = detector.predict("page.png")           # 픽셀 좌표(중심 기준) RawPrediction 목록
+detections = detector.detect(cv2.imread("page.png"), allow_unmasked_blank=True)   # A4 mm Detection 목록
+raw = detector.predict("page.png", allow_unmasked_blank=True)           # 픽셀 좌표(중심 기준) RawPrediction 목록
 ```
 
 ## Workflow 응답 구조 (실제 호출로 확인)

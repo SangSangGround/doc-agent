@@ -39,8 +39,8 @@ CLI 는 ``python-dotenv`` 가 있으면 저장소 루트의 ``.env`` 를 읽는�
 
 CLI 사용 예::
 
-    python -m docagent.detector.roboflow_detector images/test.jpg
-    python -m docagent.detector.roboflow_detector images/test.jpg --conf 0.3 --output outputs/result.jpg
+    python -m docagent.detector.roboflow_detector images/test.jpg --allow-unmasked-blank
+    python -m docagent.detector.roboflow_detector images/test.jpg --allow-unmasked-blank --conf 0.3 --output outputs/result.jpg
 """
 
 from __future__ import annotations
@@ -56,7 +56,8 @@ from typing import Any, Sequence
 import numpy as np
 
 from docagent.contracts import BoxPx, Detection, FieldType
-from docagent.errors import AdapterUnavailable, VisionError
+from docagent.errors import AdapterUnavailable, VisionError, PiiEgressBlocked
+from docagent.pii.image_mask import MaskPlan
 from docagent.vision.heuristic import coordinate_system_from_image
 
 __all__ = [
@@ -263,7 +264,8 @@ class RoboflowDetector:
 
     # -- 공개 API --------------------------------------------------------
 
-    def predict(self, image: Any) -> list[RawPrediction]:
+    def predict(self, image: Any, *, mask_plan: MaskPlan | None = None,
+                allow_unmasked_blank: bool = False) -> list[RawPrediction]:
         """Workflow 를 호출해 픽셀 좌표 탐지 결과를 돌려준다(신뢰도 필터 적용).
 
         :param image: 이미지 파일 경로(``str``/:class:`~pathlib.Path`) 또는
@@ -271,7 +273,14 @@ class RoboflowDetector:
         :returns: 신뢰도 내림차순 :class:`RawPrediction` 목록.
         :raises docagent.errors.VisionError: API 호출 실패 또는 응답 구조 이상.
         """
-        source = str(image) if isinstance(image, Path) else image
+        if mask_plan is not None and allow_unmasked_blank is not False:
+            raise PiiEgressBlocked("마스킹과 빈 양식 예외는 함께 사용할 수 없습니다.")
+        if mask_plan is not None:
+            source = mask_plan.apply(image)
+        elif allow_unmasked_blank is True:
+            source = str(image) if isinstance(image, Path) else image
+        else:
+            raise PiiEgressBlocked("검토된 마스킹 계획 또는 명시적인 빈 양식 확인이 필요합니다.")
         try:
             result = self._client.run_workflow(
                 workspace_name=self.workspace,
@@ -290,7 +299,8 @@ class RoboflowDetector:
         _LOG.debug("Roboflow 탐지 %d건(conf>=%.2f).", len(predictions), self.conf)
         return predictions
 
-    def detect(self, image: Any) -> list[Detection]:
+    def detect(self, image: Any, *, mask_plan: MaskPlan | None = None,
+               allow_unmasked_blank: bool = False) -> list[Detection]:
         """이미지에서 기입란 후보를 탐지한다.
 
         :param image: A4 로 정립된 문서 이미지.
@@ -308,7 +318,7 @@ class RoboflowDetector:
 
         coords = coordinate_system_from_image(image)
         detections: list[Detection] = []
-        for prediction in self.predict(image):
+        for prediction in self.predict(image, mask_plan=mask_plan, allow_unmasked_blank=allow_unmasked_blank):
             field_type = CLASS_NAME_TO_FIELD_TYPE.get(prediction.class_name)
             if field_type is None:
                 _LOG.warning(
@@ -425,6 +435,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="bbox 결과 이미지 저장 경로 (기본 outputs/result.jpg)",
     )
     parser.add_argument("--no-draw", action="store_true", help="결과 이미지 저장 안 함")
+    parser.add_argument("--allow-unmasked-blank", action="store_true",
+                        help="개인정보 없는 빈 양식을 직접 확인한 경우만 전송. 마스킹은 docagent.analyze 사용")
     args = parser.parse_args(argv)
 
     image_path = Path(args.image)
@@ -432,10 +444,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"[ERROR] 이미지 파일이 없습니다: {image_path}", file=sys.stderr)
         return 1
 
+    if not args.allow_unmasked_blank:
+        print("[ERROR] --allow-unmasked-blank 확인 또는 docagent.analyze --mask-plan 이 필요합니다.", file=sys.stderr)
+        return 1
     _load_dotenv()
     try:
         detector = RoboflowDetector(conf=args.conf)
-        predictions = detector.predict(image_path)
+        predictions = detector.predict(image_path, allow_unmasked_blank=True)
     except (ValueError, AdapterUnavailable, VisionError) as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
         return 1

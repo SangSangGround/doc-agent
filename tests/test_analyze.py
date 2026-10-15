@@ -12,6 +12,7 @@ from docagent.contracts import FieldRole, FieldType
 from docagent.detector import roboflow_detector as rf
 from docagent.errors import DocumentNotFoundError, VisionError
 from docagent.pipeline import build_session
+from docagent.pii.image_mask import BlankDocumentDetector
 from docagent.vision.detector_factory import build_detector, describe_detector
 from docagent.vision.heuristic import HeuristicDetector
 from docagent.vision.ocr import TesseractOcr
@@ -58,7 +59,7 @@ def blank_image():
 def test_pipeline_real_adapter_and_crop_ocr(blank_image, fake_tesseract):
     client = WorkflowClient()
     session = build_session(
-        blank_image, detector=rf.RoboflowDetector(client=client),
+        blank_image, detector=BlankDocumentDetector(rf.RoboflowDetector(client=client)),
         config=DocAgentConfig(dpi=254, ocr_kind="tesseract", ocr_mode="regions"),
     )
     assert len(client.calls) == 1
@@ -78,14 +79,14 @@ def test_pipeline_real_adapter_and_crop_ocr(blank_image, fake_tesseract):
 
 def test_no_detections_in_regions_reports_error(blank_image, fake_tesseract):
     with pytest.raises(DocumentNotFoundError):
-        build_session(blank_image, detector=rf.RoboflowDetector(client=WorkflowClient(empty=True)),
+        build_session(blank_image, detector=BlankDocumentDetector(rf.RoboflowDetector(client=WorkflowClient(empty=True))),
                       config=DocAgentConfig(dpi=254, ocr_kind="tesseract", ocr_mode="regions"))
     assert fake_tesseract == []
 
 
 def test_regions_rejects_incompatible_ocr(blank_image):
     with pytest.raises(VisionError, match="read_regions"):
-        build_session(blank_image, detector=rf.RoboflowDetector(client=WorkflowClient()),
+        build_session(blank_image, detector=BlankDocumentDetector(rf.RoboflowDetector(client=WorkflowClient())),
                       config=DocAgentConfig(dpi=254, ocr_mode="regions"))
 
 
@@ -135,7 +136,7 @@ def test_cli_writes_report_without_llm_or_motion(blank_image, fake_tesseract, tm
     monkeypatch.setattr(analyze, 'build_detector', lambda *a, **kw: rf.RoboflowDetector(client=client))
     assert analyze.main([str(image_path), '--detector', 'roboflow', '--dpi', '254',
                          '--output', str(output), '--allow-unmasked-blank']) == 0
-    report = json.loads(output.read_text())
+    report = json.loads(output.read_text(encoding='utf-8'))
     assert report['ocr_mode'] == 'regions'
     assert len(report['fields']) == 2
     assert len(client.calls) == 1
@@ -165,7 +166,7 @@ def test_remote_failure_message_does_not_contain_secret():
         def run_workflow(self, **kwargs):
             raise RuntimeError('request failed api_key=TEST_SECRET_TOKEN')
     with pytest.raises(VisionError) as error:
-        rf.RoboflowDetector(client=FailingClient()).predict('image.png')
+        rf.RoboflowDetector(client=FailingClient()).predict('image.png', allow_unmasked_blank=True)
     assert 'TEST_SECRET_TOKEN' not in str(error.value)
 
 
@@ -183,7 +184,7 @@ def test_local_analysis_never_initializes_egress_or_agent(
                  'MockMotionController', 'ScriptedSpeechIO', 'DocumentAgent'):
         monkeypatch.setattr(pipeline, name, forbidden)
     result = pipeline.analyze_document(
-        blank_image, detector=rf.RoboflowDetector(client=WorkflowClient()),
+        blank_image, detector=BlankDocumentDetector(rf.RoboflowDetector(client=WorkflowClient())),
         config=DocAgentConfig(dpi=254, ocr_kind='tesseract', ocr_mode='regions'),
     )
     assert len(result.structure.fields) == 2
@@ -216,7 +217,7 @@ def test_cli_sends_masked_pixels_but_ocr_stays_local(blank_image, fake_tesseract
     assert np.all(sent[50:150,50:150] == 0)
     assert not np.array_equal(sent,normalized)
     assert np.all(blank_image == 255)
-    report=json.loads(output.read_text())
+    report=json.loads(output.read_text(encoding='utf-8'))
     assert report['text_included'] is False
     assert all(w['text']=='' for w in report['ocr_words'])
     assert all(f['title']=='' for f in report['fields'])
@@ -230,7 +231,7 @@ def test_report_text_export_is_explicit(blank_image,fake_tesseract):
     from dataclasses import replace
     from docagent.pipeline import analyze_document
     from docagent.contracts import OcrWord, BoxMm
-    session=analyze_document(blank_image,detector=rf.RoboflowDetector(client=WorkflowClient()),
+    session=analyze_document(blank_image,detector=BlankDocumentDetector(rf.RoboflowDetector(client=WorkflowClient())),
                             config=DocAgentConfig(dpi=254,ocr_kind='tesseract',ocr_mode='regions'))
     session=replace(session,words=(OcrWord('synthetic-private-name',BoxMm(0,0,3,3),.99),))
     assert 'synthetic-private-name' not in json.dumps(analyze.build_report(session))

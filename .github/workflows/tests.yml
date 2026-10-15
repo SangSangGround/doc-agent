@@ -1,0 +1,55 @@
+name: 오프라인 회귀 테스트
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      DOCAGENT_TEST_OFFLINE: "1"
+      PYTHONIOENCODING: "utf-8"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.10'
+          - os: ubuntu-latest
+            python: '3.12'
+          - os: windows-latest
+            python: '3.12'
+          - os: macos-latest
+            python: '3.12'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: 핵심 및 테스트 의존성 설치
+        run: python -m pip install -e ".[dev]"
+      - name: Ubuntu 합성 문서용 한글 폰트 설치
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y fonts-nanum
+      - name: 합성 문서용 한글 폰트 확인
+        run: >-
+          python -c "from docagent.testing.fonts import font_diagnostics;
+          info = font_diagnostics(); print(info);
+          assert info['available'], 'Korean font required for synthetic detection tests'"
+      - name: 전체 회귀 테스트
+        run: python -m pytest -q
+      - name: 합성 검수 및 평가 자료 생성
+        run: python -m docagent.testing.workflow --output-dir outputs/ci-demo
+      - name: 승인 안내 오프라인 실행
+        run: python -m docagent.run --analysis outputs/ci-demo/analysis.json --document-context outputs/ci-demo/context.json --catalog outputs/ci-demo/catalog.json --demo
+      - name: 합성 자료 평가
+        run: python -m docagent.evaluate outputs/ci-demo/manifest.json --output-dir outputs/ci-evaluation --demo

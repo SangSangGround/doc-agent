@@ -102,9 +102,11 @@ CLI에서 Roboflow를 사용할 때는 마스킹 계획이 필수다. 개인정�
 `MaskedDetector`는 같은 좌표계의 검은 사본만 전달하므로 탐지 좌표를 그대로 쓴다.
 로컬 OCR은 원래 정합 이미지에서 수행한다. 마스킹으로 탐지 품질이 바뀔 수 있다.
 
-마스킹 보호는 새 CLI와 명시적으로 `MaskedDetector`를 적용한 경로에만 해당한다.
-저수준 `RoboflowDetector.predict()`나 기존 `build_session()`을 직접 호출하는 코드는
-이미지를 자동으로 가리지 않는다. 원본 외부 전송 경로로 사용하지 않아야 한다.
+Roboflow 직접 호출도 이제 검토된 `mask_plan` 또는 명시적인
+`allow_unmasked_blank=True`가 없으면 차단한다. `build_session()`에 날것의
+Roboflow 탐지기를 주어도 동일하다. 코드 연결에는 `MaskedDetector` 또는
+`BlankDocumentDetector`를 사용한다. 상세한 검수·승인·통합 실행은
+[후속 도구 안내](pipeline-review-evaluation.md)를 참고한다.
 
 분석 JSON 기본값은 OCR 텍스트·항목 제목·선택지 문구·설명·경고 원문을 제외한다.
 `--include-ocr-text` 또는 `build_report(..., include_text=True)`는 **로컬 검토 전용**
