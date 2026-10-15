@@ -17,7 +17,7 @@ from docagent.errors import DocAgentError
 from docagent.guidance.rules import RuleCatalog
 from docagent.guidance.session import GuidanceSession, validate_context
 from docagent.io.playback import SayBackend
-from docagent.pii.image_mask import BlankDocumentDetector, MaskedDetector, MaskPlan
+from docagent.pii.image_mask import BlankDocumentDetector, MaskedDetector, MaskPlan, image_digest
 from docagent.pipeline import analyze_document
 from docagent.vision.detector_factory import build_detector
 from docagent.vision.ocr import TesseractOcr
@@ -69,6 +69,7 @@ def execute(*, catalog: RuleCatalog, context: dict[str, Any], report: dict[str, 
             analysis = analyze_document(image, detector=detector, ocr=reader, config=cfg,
                                         document_id=context.get("analysis_document_id", "session_0001"))
             report = build_report(analysis, include_text=True)
+            report["source_image_sha256"] = image_digest(image)
             report["capture_quality"] = quality.to_dict()
         events.append(dict(stage="analysis", status="completed"))
         stage = "guidance"

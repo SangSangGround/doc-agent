@@ -37,6 +37,8 @@ def build_report(session: DocumentSession | VisionAnalysis, *, include_text: boo
     report = {
         "document_id": session.structure.document_id,
         "image_sha256": image_digest(session.normalized.image),
+        "normalized_image_shape": list(session.normalized.image.shape),
+        "source_to_normalized": session.normalized.homography.tolist(),
         "coordinate_system": "normalized_a4_mm",
         "ocr_mode": session.config.ocr_mode,
         "needs_review": (
@@ -132,6 +134,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             document_id=args.image.stem,
         )
         payload = build_report(session, include_text=args.include_ocr_text)
+        payload["source_image_sha256"] = image_digest(image)
         payload["capture_quality"] = quality.to_dict() if quality is not None else {"status": "not_checked"}
         report = json.dumps(payload, ensure_ascii=False, indent=2)
         if args.output:

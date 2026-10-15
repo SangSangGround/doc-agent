@@ -101,6 +101,8 @@ def test_quality_and_missing_mask_block_before_api(monkeypatch):
 
 def test_image_to_guidance_and_cli_offline(monkeypatch, tmp_path, capsys):
     data = report(); quality = CaptureQuality('pass'); data['capture_quality'] = quality.to_dict()
+    from docagent.pii.image_mask import image_digest
+    data['source_image_sha256'] = image_digest(np.ones((10,10),np.uint8))
     c = reviewed_context(data)
     monkeypatch.setattr(run, 'assess_capture', lambda *a, **kw: quality)
     monkeypatch.setattr(run, 'analyze_document', lambda *a, **kw: object())
