@@ -261,12 +261,23 @@ DOCAGENT_TEST_OFFLINE=1 python -m pytest -q
 python -m compileall -q src
 ```
 
-GitHub Actions는 Linux Python 3.10/3.12, Windows/macOS Python 3.12에서 핵심 의존성만
-설치해 테스트·합성 예제 실행을 수행하도록 구성했다. 실제 API 키·OCR 엔진·스피커가
-필요하지 않다. 패키지 설치에는 네트워크가 필요하지만 테스트는 가짜 어댑터를 사용한다.
+GitHub Actions는 Linux Python 3.10/3.12, Windows/macOS Python 3.12에서 핵심·테스트
+의존성을 설치해 테스트·합성 예제를 실행한다. Ubuntu에는 `fonts-nanum`도 설치하고,
+모든 OS에서 한글 폰트 존재 여부를 확인한다. 폰트가 없으면 사각형 대체 글리프가
+체크박스로 오탐될 수 있으므로 탐지 정확도 테스트에는 한글 폰트가 필요하다.
+로컬 Linux에서도 `sudo apt-get install fonts-nanum`으로 설치할 수 있다.
+실제 API 키·OCR 엔진·스피커는 필요하지 않다. 패키지·폰트 설치에는 네트워크가
+필요하지만 테스트는 가짜 어댑터를 사용한다. 한글 JSON·보고서는 OS의 기본
+인코딩에 의존하지 않고 UTF-8로 읽는다. CI는 `PYTHONIOENCODING=utf-8`을 지정해
+Windows의 리다이렉트된 표준 출력에서도 한글 안내문을 기록할 수 있게 한다.
 Actions 버전은 [checkout](https://github.com/actions/checkout) 및
 [setup-python](https://github.com/actions/setup-python)의 공식 사용 예를 따른다.
-푸시하지 않았으므로 원격 CI 실행 결과는 아직 없다.
+PR #7의 첫 원격 실행에서 macOS는 통과했고, Ubuntu는 한글 폰트 부재로 인한
+합성 문서 오탐, Windows는 테스트 파일 읽기의 인코딩 누락으로 실패했다.
+폰트 설치·사전 확인 및 UTF-8 지정을 보완했으며, 수정 후 원격 결과는 푸시한 뒤 확인한다.
+수정 후 로컬 검증에서는 기본 macOS 환경과 나눔고딕·CP1252 기본 파일 읽기를
+적용한 재현 조건 모두 1,456개 테스트가 통과했다. 이는 다른 OS에서 직접 실행한
+결과가 아니므로 원격 CI 재실행으로 최종 확인해야 한다.
 
 실제 지원 문서 선정, 문서별 식별 근거와 안내문 승인, 개인정보 정답 영역,
 학습 이력 확인, 실제 촬영 장치에서의 임계값 보정과 접근성 검증은 이후 사람과 함께 진행한다.

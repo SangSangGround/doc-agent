@@ -75,7 +75,7 @@ def test_mask_union_and_excess_are_not_double_counted():
 
 def test_guidance_matches_mismatches_rejections_and_unlabeled():
     catalog=RuleCatalog.load('examples/guidance/catalog.demo.json')
-    obs=json.loads(Path('examples/guidance/observation.demo.json').read_text())
+    obs=json.loads(Path('examples/guidance/observation.demo.json').read_text(encoding='utf-8'))
     expected=dict(document_id='fictional-survey',document_version='demo-1',page=1,field_id='participation')
     denied=obs|{'needs_review':True}
     cases=[dict(observation=obs,expected=expected),dict(observation=obs,expected=None),
@@ -136,14 +136,14 @@ def test_invalid_manifest_is_rejected(tmp_path,change):
 
 def test_prediction_fingerprint_and_coordinate_system_are_required(tmp_path):
     path,data,_=fixture(tmp_path)
-    pred=json.loads((tmp_path/'pred.json').read_text());pred['image_sha256']='wrong';write(tmp_path/'pred.json',pred)
+    pred=json.loads((tmp_path/'pred.json').read_text(encoding='utf-8'));pred['image_sha256']='wrong';write(tmp_path/'pred.json',pred)
     with pytest.raises(ValueError): read_manifest(path)
 
 
 def test_cli_reports_no_images_or_ocr_and_prevents_overwrite(tmp_path,capsys):
     path,_,_=fixture(tmp_path);out=tmp_path/'report'
     assert evaluate.main([str(path),'--output-dir',str(out)])==0
-    j=json.loads((out/'evaluation.json').read_text());md=(out/'evaluation.md').read_text()
+    j=json.loads((out/'evaluation.json').read_text(encoding='utf-8'));md=(out/'evaluation.md').read_text(encoding='utf-8')
     assert j['overall']['detection']['classes']['checkbox']['f1']==1
     assert '측정 불가' in md
     for text in ('private-original-file','private-form-name','original.png','base64','ocr_words'):

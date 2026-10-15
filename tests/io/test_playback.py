@@ -14,7 +14,7 @@ OBS=Path(__file__).resolve().parents[2]/'examples/guidance/observation.demo.json
 
 def observation():
     import json
-    return Observation.from_dict(json.loads(OBS.read_text()))
+    return Observation.from_dict(json.loads(OBS.read_text(encoding='utf-8')))
 
 
 class Recorder:

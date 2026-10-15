@@ -136,7 +136,7 @@ def test_cli_writes_report_without_llm_or_motion(blank_image, fake_tesseract, tm
     monkeypatch.setattr(analyze, 'build_detector', lambda *a, **kw: rf.RoboflowDetector(client=client))
     assert analyze.main([str(image_path), '--detector', 'roboflow', '--dpi', '254',
                          '--output', str(output), '--allow-unmasked-blank']) == 0
-    report = json.loads(output.read_text())
+    report = json.loads(output.read_text(encoding='utf-8'))
     assert report['ocr_mode'] == 'regions'
     assert len(report['fields']) == 2
     assert len(client.calls) == 1
@@ -217,7 +217,7 @@ def test_cli_sends_masked_pixels_but_ocr_stays_local(blank_image, fake_tesseract
     assert np.all(sent[50:150,50:150] == 0)
     assert not np.array_equal(sent,normalized)
     assert np.all(blank_image == 255)
-    report=json.loads(output.read_text())
+    report=json.loads(output.read_text(encoding='utf-8'))
     assert report['text_included'] is False
     assert all(w['text']=='' for w in report['ocr_words'])
     assert all(f['title']=='' for f in report['fields'])
