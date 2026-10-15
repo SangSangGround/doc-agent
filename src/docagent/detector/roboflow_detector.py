@@ -39,8 +39,8 @@ CLI 는 ``python-dotenv`` 가 있으면 저장소 루트의 ``.env`` 를 읽는�
 
 CLI 사용 예::
 
-    python -m docagent.detector.roboflow_detector images/test.jpg
-    python -m docagent.detector.roboflow_detector images/test.jpg --conf 0.3 --output outputs/result.jpg
+    python -m docagent.detector.roboflow_detector images/test.jpg --allow-unmasked-blank
+    python -m docagent.detector.roboflow_detector images/test.jpg --allow-unmasked-blank --conf 0.3 --output outputs/result.jpg
 """
 
 from __future__ import annotations
