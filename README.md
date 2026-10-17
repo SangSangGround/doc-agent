@@ -98,3 +98,4 @@ See → Understand → Explain → Ask → Act → Verify 개발 데모다.
 - [탐지·OCR 연동](docs/ocr-integration.md)
 - [승인 안내·마스킹·촬영 검사 계약](docs/guidance-foundation.md)
 - [통합 실행·검수·평가](docs/pipeline-review-evaluation.md)
+- [실제 문서 후보 3종·안내 초안·로컬 검수 결과](docs/candidate-documents.md)
