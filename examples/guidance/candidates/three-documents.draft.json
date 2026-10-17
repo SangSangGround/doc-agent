@@ -1,0 +1,350 @@
+{
+  "schema_version": 1,
+  "dpi": 300,
+  "dataset_version": "roboflow-v3-candidates-local-20261017",
+  "analysis_kind": "opencv-heuristic+tesseract-page",
+  "selection_status": "candidate_only",
+  "candidates": [
+    {
+      "id": "d117",
+      "title": "개인정보 수집·이용동의 및 확인서(예술인)",
+      "document_id": "artist-privacy-consent",
+      "document_version": "local-614348e0",
+      "page": 1,
+      "image": "images/d117-1.jpg",
+      "file_sha256": "614348e0d9d93f268714e60e1385ac0fcb9b6478d210e323899013b9041bbae7",
+      "reference": {
+        "image_id": "34a92179b32bce541567e7bcdbc3fc4a",
+        "image_size": [
+          2066,
+          2924
+        ],
+        "version_splits": {
+          "2": "test",
+          "3": "test"
+        },
+        "boxes": [
+          {
+            "id": "2",
+            "class": "checkbox",
+            "center_xywh": [
+              855.94,
+              1402.41,
+              53.1,
+              65.62
+            ]
+          },
+          {
+            "id": "3",
+            "class": "checkbox",
+            "center_xywh": [
+              1253.09,
+              1404.82,
+              66.26,
+              57.28
+            ]
+          },
+          {
+            "id": "4",
+            "class": "checkbox",
+            "center_xywh": [
+              810.75,
+              1633.23,
+              59.24,
+              53.33
+            ]
+          },
+          {
+            "id": "5",
+            "class": "checkbox",
+            "center_xywh": [
+              1015.9,
+              1636.31,
+              52.66,
+              50.7
+            ]
+          }
+        ],
+        "url": "https://app.roboflow.com/-0qtd3/my-first-project-lkpc5/3/images/34a92179b32bce541567e7bcdbc3fc4a?split=test",
+        "coordinate_system": "roboflow_center_xywh_px",
+        "status": "alignment_unverified",
+        "observed_on": "2026-10-17"
+      },
+      "mask_regions": [],
+      "ocr_regions": [
+        {
+          "field_id": "privacy-consent",
+          "bbox": [
+            0.215,
+            0.44,
+            0.66,
+            0.055
+          ]
+        },
+        {
+          "field_id": "previous-loan",
+          "bbox": [
+            0.32,
+            0.5,
+            0.55,
+            0.08
+          ]
+        }
+      ],
+      "catalog": {
+        "schema_version": 1,
+        "purpose": "production",
+        "fields": [
+          {
+            "field_id": "privacy-consent",
+            "field_type": "checkbox",
+            "surrounding_text": "동의 여부 / 상기 개인정보 수집·이용에 동의하십니까? / 동의함 / 동의하지 않음",
+            "keywords": [
+              "동의하십니까",
+              "동의함",
+              "동의하지 않음"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "상기 개인정보 수집·이용에 동의하십니까? 선택지는 동의함, 동의하지 않음입니다.",
+            "document_id": "artist-privacy-consent",
+            "document_version": "local-614348e0",
+            "page": 1,
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          },
+          {
+            "field_id": "previous-loan",
+            "field_type": "checkbox",
+            "surrounding_text": "기존 융자 여부 확인 / 귀하께서는 한국예술인복지재단의 예술인 생활안정자금융자를 신청하여 지급받은 사실이 있나요? / 있음 / 없음",
+            "keywords": [
+              "지급받은 사실",
+              "있음",
+              "없음"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "귀하께서는 한국예술인복지재단의 예술인 생활안정자금융자를 신청하여 지급받은 사실이 있나요? 선택지는 있음, 없음입니다.",
+            "document_id": "artist-privacy-consent",
+            "document_version": "local-614348e0",
+            "page": 1,
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          }
+        ]
+      },
+      "training_membership": "unknown"
+    },
+    {
+      "id": "d092",
+      "title": "진료기록 열람 및 사본발급 동의서",
+      "document_id": "medical-record-consent",
+      "document_version": "local-5c844747",
+      "page": 1,
+      "image": "images/d092-1.jpg",
+      "file_sha256": "5c84474743730f52719641a5fc68b50216e9b6dcaaa273512a4719c08d3567d4",
+      "reference": {
+        "image_id": "fdc5704f342fb9ee098bfc8c3ca70c52",
+        "image_size": [
+          2066,
+          2921
+        ],
+        "version_splits": {
+          "2": "test",
+          "3": "test"
+        },
+        "boxes": [
+          {
+            "id": "1",
+            "class": "signature",
+            "center_xywh": [
+              1748.25,
+              2420.2,
+              159.36,
+              58.46
+            ]
+          }
+        ],
+        "url": "https://app.roboflow.com/-0qtd3/my-first-project-lkpc5/3/images/fdc5704f342fb9ee098bfc8c3ca70c52?split=test",
+        "coordinate_system": "roboflow_center_xywh_px",
+        "status": "alignment_unverified",
+        "observed_on": "2026-10-17"
+      },
+      "mask_regions": [
+        [
+          0.195,
+          0.145,
+          0.71,
+          0.245
+        ],
+        [
+          0.195,
+          0.395,
+          0.71,
+          0.2
+        ],
+        [
+          0.395,
+          0.68,
+          0.12,
+          0.035
+        ],
+        [
+          0.71,
+          0.75,
+          0.18,
+          0.04
+        ],
+        [
+          0.72,
+          0.8,
+          0.17,
+          0.05
+        ]
+      ],
+      "ocr_regions": [
+        {
+          "field_id": "patient-signature",
+          "bbox": [
+            0.53,
+            0.8,
+            0.36,
+            0.045
+          ]
+        }
+      ],
+      "catalog": {
+        "schema_version": 1,
+        "purpose": "production",
+        "fields": [
+          {
+            "field_id": "patient-signature",
+            "field_type": "signature",
+            "surrounding_text": "본인(또는 법정대리인) / (자필서명)",
+            "keywords": [
+              "본인",
+              "법정대리인",
+              "자필서명"
+            ],
+            "forbidden_keywords": [
+              "위임인"
+            ],
+            "instruction": "본인 또는 법정대리인의 자필서명란입니다.",
+            "document_id": "medical-record-consent",
+            "document_version": "local-5c844747",
+            "page": 1,
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          }
+        ]
+      },
+      "training_membership": "unknown"
+    },
+    {
+      "id": "d100",
+      "title": "진료기록 열람 및 사본발급 위임장",
+      "document_id": "medical-record-proxy",
+      "document_version": "local-0bacf2d1",
+      "page": 1,
+      "image": "images/d100-1.jpg",
+      "file_sha256": "0bacf2d1c3765ba5c3772977280f1c9bf8a3f51846fec17c3690ca2ae6202a01",
+      "reference": {
+        "image_id": "10502f970f2be3cb1b239158e7830952",
+        "image_size": [
+          2066,
+          2921
+        ],
+        "version_splits": {
+          "3": "test"
+        },
+        "boxes": [
+          {
+            "id": "1",
+            "class": "signature",
+            "center_xywh": [
+              1716.54,
+              1769.94,
+              162.8,
+              60.75
+            ]
+          }
+        ],
+        "url": "https://app.roboflow.com/-0qtd3/my-first-project-lkpc5/3/images/10502f970f2be3cb1b239158e7830952?split=test",
+        "coordinate_system": "roboflow_center_xywh_px",
+        "status": "alignment_unverified",
+        "observed_on": "2026-10-17"
+      },
+      "mask_regions": [
+        [
+          0.15,
+          0.185,
+          0.74,
+          0.255
+        ],
+        [
+          0.66,
+          0.55,
+          0.23,
+          0.03
+        ],
+        [
+          0.55,
+          0.59,
+          0.33,
+          0.04
+        ]
+      ],
+      "ocr_regions": [
+        {
+          "field_id": "principal-signature",
+          "bbox": [
+            0.48,
+            0.585,
+            0.4,
+            0.045
+          ]
+        }
+      ],
+      "catalog": {
+        "schema_version": 1,
+        "purpose": "production",
+        "fields": [
+          {
+            "field_id": "principal-signature",
+            "field_type": "signature",
+            "surrounding_text": "위임인 / (자필서명)",
+            "keywords": [
+              "위임인",
+              "자필서명"
+            ],
+            "forbidden_keywords": [
+              "법정대리인"
+            ],
+            "instruction": "위임인의 자필서명란입니다.",
+            "document_id": "medical-record-proxy",
+            "document_version": "local-0bacf2d1",
+            "page": 1,
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          }
+        ]
+      },
+      "training_membership": "unknown"
+    }
+  ],
+  "roboflow_version": 3
+}
