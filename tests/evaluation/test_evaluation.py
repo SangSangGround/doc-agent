@@ -160,3 +160,32 @@ def test_cli_reports_no_images_or_ocr_and_prevents_overwrite(tmp_path,capsys):
 def test_invalid_thresholds_rejected(tmp_path,value):
     path,_,_=fixture(tmp_path)
     with pytest.raises(ValueError): evaluate.evaluate_manifest(path,iou_threshold=value)
+
+
+@pytest.mark.parametrize('change',[
+    {'training_membership':'unknown'}, {'training_membership':'included'},
+    {'split':'train','training_membership':'included'}, {'split':'val'},
+    {'form_id':None}, {'source_id':None}, {'labels':None}, {'predictions':None},
+])
+def test_unseen_mode_rejects_incomplete_or_exposed_detection_evaluation(tmp_path,change):
+    path,data,_=fixture(tmp_path)
+    data['samples'][0].update(change);write(path,data)
+    with pytest.raises(ValueError): evaluate.evaluate_manifest(path,require_unseen=True)
+    # 비교·진단 모드는 자료 분리 경고를 유지하면서 실행할 수 있다.
+    assert evaluate.evaluate_manifest(path)['overall']['sample_count']==1
+
+
+def test_unseen_mode_accepts_declared_exclusion_and_complete_truth(tmp_path):
+    path,_,_=fixture(tmp_path)
+    result=evaluate.evaluate_manifest(path,require_unseen=True)
+    assert result['settings']['require_unseen'] is True
+    assert result['overall']['detection']['classes']['checkbox']['f1']==1
+
+
+def test_unseen_cli_explains_refusal_and_writes_no_scores(tmp_path,capsys):
+    path,data,_=fixture(tmp_path)
+    data['samples'][0]['labels']=None;write(path,data)
+    output=tmp_path/'report'
+    assert evaluate.main([str(path),'--require-unseen','--output-dir',str(output)])==1
+    assert not output.exists()
+    assert '정답·예측' in capsys.readouterr().err

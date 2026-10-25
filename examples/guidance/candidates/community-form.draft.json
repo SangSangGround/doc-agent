@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "dpi": 300,
+  "source_kind": "official_pdf",
+  "dataset_version": "community-form-external-development-20261025",
+  "analysis_kind": "roboflow-rfdetr-v3-f98b3b+tesseract-page",
+  "selection_status": "candidate_only",
+  "evaluation_role": "development_not_final_holdout",
+  "candidates": [
+    {
+      "id": "move-in-all",
+      "title": "전입신고서(세대 모두 이동)",
+      "document_id": "kr-move-in-all",
+      "document_version": "decree-form15-20260428",
+      "page": 1,
+      "image": "images/move-in-all-300dpi.png",
+      "file_sha256": "591c623864297db29ff39bc86580a6901ca3dd488dc031b889a43cba383dcfc0",
+      "official_source": {
+        "url": "https://law.go.kr/LSW/flDownload.do?bylClsCd=110202&flSeq=163702291&gubun=",
+        "pdf_sha256": "04c2056a26ca8fffb9cadac26a4d85f2db2eeb92a4275680c89d587724da5021",
+        "revision": "2026-04-28"
+      },
+      "training_membership": "excluded",
+      "training_audit": {
+        "status": "not_found_in_project_training",
+        "checked_versions": [
+          1,
+          2,
+          3
+        ],
+        "project_url": "https://app.roboflow.com/-0qtd3/my-first-project-lkpc5/versions",
+        "checked_on": "2026-10-25",
+        "evidence": "docs/community-form-audit.md",
+        "scope": "이 프로젝트의 v1 학습 10장, v3 전체 106장의 원본명과 v2 분할 이력. v3 학습 중 이름이 불명확한 18장은 화면으로 대조. 기반 모델 사전학습과 다른 프로젝트 이력은 확인 범위 밖입니다."
+      },
+      "reference": {
+        "image_size": [
+          2480,
+          3505
+        ],
+        "coordinate_system": "image_center_xywh_px",
+        "status": "draft",
+        "method": "PDF 문자 위치에서 제안한 대괄호 영역과 인쇄된 서명 표시. 사람 검수 전이며 실제 필기 빈 공간의 정답이 아닙니다.",
+        "boxes": [
+          {
+            "id": "signature-1",
+            "class": "signature",
+            "center_xywh": [
+              945.2037,
+              788.1609,
+              225.1811,
+              41.8433
+            ]
+          },
+          {
+            "id": "signature-2",
+            "class": "signature",
+            "center_xywh": [
+              1486.3855,
+              1050.2232,
+              225.1811,
+              41.8433
+            ]
+          },
+          {
+            "id": "checkbox-1",
+            "class": "checkbox",
+            "center_xywh": [
+              561.3236,
+              1270.3395,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-2",
+            "class": "checkbox",
+            "center_xywh": [
+              1419.6119,
+              1272.34,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-3",
+            "class": "checkbox",
+            "center_xywh": [
+              561.3236,
+              1311.3492,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-4",
+            "class": "checkbox",
+            "center_xywh": [
+              1419.6119,
+              1313.3498,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-5",
+            "class": "checkbox",
+            "center_xywh": [
+              561.3236,
+              1352.8591,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-6",
+            "class": "checkbox",
+            "center_xywh": [
+              1419.6119,
+              1354.8597,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-7",
+            "class": "checkbox",
+            "center_xywh": [
+              562.824,
+              1394.369,
+              77.6291,
+              45.8443
+            ]
+          },
+          {
+            "id": "checkbox-8",
+            "class": "checkbox",
+            "center_xywh": [
+              306.478,
+              3269.3147,
+              83.1112,
+              45.8443
+            ]
+          },
+          {
+            "id": "signature-3",
+            "class": "signature",
+            "center_xywh": [
+              2107.083,
+              3325.7642,
+              242.1648,
+              41.8433
+            ]
+          }
+        ]
+      },
+      "mask_regions": [],
+      "ocr_regions": [
+        {
+          "field_id": "reporter-signature",
+          "bbox": [
+            0.10084033613445378,
+            0.18430439952437574,
+            0.33613445378151263,
+            0.05112960760998811
+          ]
+        },
+        {
+          "field_id": "householder-signature",
+          "bbox": [
+            0.19831932773109243,
+            0.2746730083234245,
+            0.453781512605042,
+            0.0356718192627824
+          ]
+        },
+        {
+          "field_id": "move-reason",
+          "bbox": [
+            0.10084033613445378,
+            0.34958382877526756,
+            0.7983193277310925,
+            0.059453032104637336
+          ]
+        },
+        {
+          "field_id": "postal-consent",
+          "bbox": [
+            0.10084033613445378,
+            0.920332936979786,
+            0.7899159663865546,
+            0.02140309155766944
+          ]
+        },
+        {
+          "field_id": "postal-applicant-signature",
+          "bbox": [
+            0.5210084033613446,
+            0.93935790725327,
+            0.37815126050420167,
+            0.019024970273483946
+          ]
+        }
+      ],
+      "catalog": {
+        "schema_version": 1,
+        "purpose": "production",
+        "fields": [
+          {
+            "document_id": "kr-move-in-all",
+            "document_version": "decree-form15-20260428",
+            "page": 1,
+            "field_id": "reporter-signature",
+            "field_type": "signature",
+            "surrounding_text": "전입자(신고인) / 성명 / (서명 또는 인)",
+            "keywords": [
+              "전입자",
+              "신고인",
+              "서명"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "전입자, 신고인의 성명과 서명 또는 인 칸입니다.",
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          },
+          {
+            "document_id": "kr-move-in-all",
+            "document_version": "decree-form15-20260428",
+            "page": 1,
+            "field_id": "householder-signature",
+            "field_type": "signature",
+            "surrounding_text": "세대주 성명(※ 세대주가 신고할 때에는 작성하지 않습니다) / (서명 또는 인)",
+            "keywords": [
+              "세대주",
+              "작성하지 않습니다",
+              "서명"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "세대주 성명과 서명 또는 인 칸입니다. 원문에는 “세대주가 신고할 때에는 작성하지 않습니다”라고 적혀 있습니다.",
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          },
+          {
+            "document_id": "kr-move-in-all",
+            "document_version": "decree-form15-20260428",
+            "page": 1,
+            "field_id": "move-reason",
+            "field_type": "checkbox",
+            "surrounding_text": "전입 사유(※주된 1가지) / 직업(취업, 사업, 직장 이전 등) / 가족(가족과 함께 거주, 결혼, 분가 등) / 주택(주택 구입, 계약 만료, 집세, 재개발 등) / 그 밖의 사유 / 교육(진학, 학업, 자녀 교육 등) / 주거 환경(교통, 문화·편의 시설 등) / 자연 환경(건강, 공해, 전원생활 등)",
+            "keywords": [
+              "전입 사유",
+              "직업",
+              "가족",
+              "주택",
+              "교육",
+              "자연 환경"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "전입 사유 항목입니다. 원문에는 “주된 1가지”라고 적혀 있습니다. 선택지는 직업, 가족, 주택, 그 밖의 사유, 교육, 주거 환경, 자연 환경입니다.",
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          },
+          {
+            "document_id": "kr-move-in-all",
+            "document_version": "decree-form15-20260428",
+            "page": 1,
+            "field_id": "postal-consent",
+            "field_type": "checkbox",
+            "surrounding_text": "※ 우편물 전입지 전송 서비스를 신청하는 사람만 작성합니다. / [ ] 위의 사항을 확인했고 정보 제공에 동의합니다.",
+            "keywords": [
+              "위의 사항",
+              "정보 제공",
+              "동의합니다"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "우편물 전입지 전송 서비스를 신청하는 사람만 작성하는 부분입니다. 체크 문구는 “위의 사항을 확인했고 정보 제공에 동의합니다”입니다. 위의 서비스 설명과 정보 제공 내용을 확인하는 항목입니다.",
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          },
+          {
+            "document_id": "kr-move-in-all",
+            "document_version": "decree-form15-20260428",
+            "page": 1,
+            "field_id": "postal-applicant-signature",
+            "field_type": "signature",
+            "surrounding_text": "우편물 전입지 전송 서비스 신청서 및 개인정보 제공 동의서 / 신청인 / (서명 또는 인)",
+            "keywords": [
+              "신청인",
+              "서명"
+            ],
+            "forbidden_keywords": [],
+            "instruction": "우편물 전입지 전송 서비스 신청인의 서명 또는 인 칸입니다.",
+            "approval": {
+              "status": "draft",
+              "reviewed_by": "",
+              "reviewed_at": "",
+              "content_sha256": ""
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

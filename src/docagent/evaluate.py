@@ -20,12 +20,24 @@ from docagent.guidance.rules import RuleCatalog
 from docagent.guidance.session import digest
 
 
-def evaluate_manifest(path: Path, *, iou_threshold: float = .5, confidence: float = .5, demo: bool = False) -> dict:
+class UnseenEvaluationError(ValueError):
+    """명세의 미학습 탐지 평가 조건을 충족하지 못했다."""
+
+
+def evaluate_manifest(path: Path, *, iou_threshold: float = .5, confidence: float = .5,
+                      demo: bool = False, require_unseen: bool = False) -> dict:
     for value in (iou_threshold,confidence):
         if type(value) not in (int,float) or not math.isfinite(value) or not 0<=value<=1:
             raise ValueError('임계값은 0~1 사이여야 합니다.')
     if iou_threshold==0: raise ValueError('IoU 임계값은 0보다 커야 합니다.')
     data,samples=read_manifest(path)
+    audit = audit_dataset(samples)
+    if require_unseen and (
+            any(audit[k] for k in ('evaluation_training_overlap', 'unknown_training',
+                                   'unknown_group', 'unknown_split'))
+            or any(s.split not in ('test', 'external') for s in samples)
+            or any(s.truth is None or s.predictions is None for s in samples)):
+        raise UnseenEvaluationError('미학습 탐지 평가는 학습 제외·양식 그룹·정답·예측이 확인된 test/external 자료가 필요합니다.')
     catalog=RuleCatalog.load(path.parent/data['catalog']) if data.get('catalog') else None
     def metrics(subset):
         return dict(sample_count=len(subset),detection=detection_metrics(subset,threshold=iou_threshold,confidence=confidence),
@@ -36,8 +48,9 @@ def evaluate_manifest(path: Path, *, iou_threshold: float = .5, confidence: floa
                 dataset_fingerprint=data['_dataset_fingerprint'],prediction_fingerprint=data['_prediction_fingerprint'],manifest_sha256=digest({k:v for k,v in data.items() if not k.startswith('_')}),
                 catalog_sha256=digest(load_json(path.parent/data['catalog'])) if catalog else None,
                 settings=dict(iou_threshold=iou_threshold,confidence_threshold=confidence,demo=demo,
-                              matching='confidence_greedy_one_to_one',iou_space='original_image_axis_aligned_px'),
-                runtime=dict(python=platform.python_version(),packages=versions),audit=audit_dataset(samples),
+                              matching='confidence_greedy_one_to_one',iou_space='original_image_axis_aligned_px',
+                              require_unseen=require_unseen),
+                runtime=dict(python=platform.python_version(),packages=versions),audit=audit,
                 overall=metrics(samples),by_variant={k:metrics([s for s in samples if s.variant==k]) for k in ('original','photo')},
                 by_split={k:metrics([s for s in samples if s.split==k]) for k in sorted({s.split for s in samples})})
 
@@ -63,6 +76,7 @@ def render_markdown(report: dict) -> str:
            f"- 모델: {safe(report['model_version'])} / 예측: {safe(report['prediction_version'])}",
            f"- IoU 기준: {report['settings']['iou_threshold']} / 탐지 신뢰도: {report['settings']['confidence_threshold']}",
            '- 정답 없는 지표는 측정 불가입니다. 합성 자료 결과는 실제 서비스 성능을 뜻하지 않습니다.',
+           '- 학습 제외 검사는 입력 명세에 기록한 범위에 한정됩니다. 전체 학습 목록·사람의 라벨 검수·최종 테스트 미사용 여부를 자동으로 증명하지 않습니다.',
            '- 마스킹은 제공한 정답·예측 사각형 면적을 평가하며 개인정보 자동 검출 성능을 보장하지 않습니다.',
            '', '## 데이터 분리 검사','']
     audit=report['audit']
@@ -100,9 +114,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument('manifest',type=Path);parser.add_argument('--output-dir',type=Path,required=True)
     parser.add_argument('--iou',type=float,default=.5);parser.add_argument('--confidence',type=float,default=.5)
     parser.add_argument('--demo',action='store_true');parser.add_argument('--baseline',type=Path)
+    parser.add_argument('--require-unseen',action='store_true',help='학습 중복·이력 미상·정답/예측 누락이 있으면 탐지 평가를 거절')
     args=parser.parse_args(argv)
     try:
-        report=evaluate_manifest(args.manifest,iou_threshold=args.iou,confidence=args.confidence,demo=args.demo)
+        report=evaluate_manifest(args.manifest,iou_threshold=args.iou,confidence=args.confidence,
+                                 demo=args.demo,require_unseen=args.require_unseen)
         if args.baseline: report['comparison']=compare_reports(report,load_json(args.baseline))
         args.output_dir.mkdir(parents=True,exist_ok=True)
         paths=[args.output_dir/'evaluation.json',args.output_dir/'evaluation.md']
@@ -111,6 +127,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         paths[1].write_text(render_markdown(report),encoding='utf-8')
         print('JSON·Markdown 평가 보고서를 저장했습니다. 데이터 분리 경고를 함께 확인하세요.')
         return 0
+    except UnseenEvaluationError as exc:
+        print(f'[ERROR] {exc}',file=sys.stderr)
+        return 1
     except (OSError,ValueError,TypeError,KeyError,np.linalg.LinAlgError,cv2.error):
         print('[ERROR] 평가 명세·파일·클래스·좌표계·이미지 지문 또는 출력 중복을 확인하세요.',file=sys.stderr)
         return 1
