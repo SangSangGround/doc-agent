@@ -139,3 +139,55 @@ def test_real_candidate_config_has_no_approved_guidance():
         assert all(e['approval']['status']=='draft' for e in c['catalog']['fields'])
         assert c['reference']['version_splits']['3']=='test'
     assert read_json(Path('examples/guidance/catalog.production.json'))['fields']==[]
+
+
+def official_inputs(m):
+    m.pop('roboflow_version')
+    m['source_kind']='official_pdf'
+    c=m['candidates'][0]
+    c['reference'].pop('version_splits')
+    c['official_source']=dict(url='https://example.gov/form.pdf',pdf_sha256='a'*64,revision='2026-04-28')
+    return c
+
+
+def test_official_pdf_does_not_invent_roboflow_split_or_training_exclusion(inputs):
+    m,source,analyses,out,report=inputs
+    official_inputs(m)
+    cr.prepare(m,source,analyses,out)
+    _,samples=read_manifest(out/'evaluation.manifest.json')
+    assert samples[0].split=='external' and samples[0].training_membership=='unknown'
+    assert samples[0].truth is None
+    assert read_json(out/'sample/analysis.json')==report
+    assert read_json(out/'sample/context.draft.json')['approval']['status']=='draft'
+
+
+def test_official_training_exclusion_requires_and_preserves_scoped_evidence(inputs):
+    m,source,analyses,out,_=inputs
+    c=official_inputs(m)
+    c['training_membership']='excluded'
+    with pytest.raises(ValueError): cr.prepare(m,source,analyses,out)
+    assert not out.exists()
+    evidence=dict(status='not_found_in_project_training',checked_versions=[1,2,3],
+                  project_url='https://example.org/project',checked_on='2026-10-25',
+                  scope='This project only; pretraining unknown',evidence='audit.md')
+    c['training_audit']=evidence
+    result=cr.prepare(m,source,analyses,out)
+    s=result['candidates'][0]
+    assert s['training_membership']=='excluded' and s['training_audit']==evidence
+    assert s['independent_external_test'] is False and s['approved_fields']==0
+    record=read_json(out/'evaluation.manifest.json')['samples'][0]
+    assert record['training_audit']==evidence and record['labels'] is None
+
+
+@pytest.mark.parametrize('change',[
+    lambda m,c:m.update(source_kind='other'),
+    lambda m,c:c['official_source'].update(url='file:///private/form.pdf'),
+    lambda m,c:c['official_source'].update(url='https://user:secret@example.org/form.pdf'),
+    lambda m,c:c['official_source'].update(pdf_sha256='wrong'),
+    lambda m,c:c['official_source'].update(revision=''),
+])
+def test_invalid_official_provenance_rejected(inputs,change):
+    m,source,analyses,out,_=inputs
+    c=official_inputs(m);change(m,c)
+    with pytest.raises(ValueError): cr.prepare(m,source,analyses,out)
+    assert not out.exists()

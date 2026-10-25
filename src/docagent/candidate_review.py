@@ -11,6 +11,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Any, Sequence
+from urllib.parse import urlparse
 
 import cv2
 import numpy as np
@@ -32,7 +33,7 @@ def _inside(root: Path, name: str) -> Path:
 
 
 def _rectangles(candidate: dict, width: int, height: int) -> list[dict]:
-    """Roboflow 중심점 좌표를 표시용으로만 환산. 정답/예측으로 승격하지 않는다."""
+    """참조 중심점 좌표를 표시용으로만 환산. 정답/예측으로 승격하지 않는다."""
     reference = candidate['reference']
     rw, rh = reference['image_size']
     if any(type(n) is not int or n <= 0 for n in (rw, rh)):
@@ -46,6 +47,40 @@ def _rectangles(candidate: dict, width: int, height: int) -> list[dict]:
         result.append(dict(id=item['id'], **{'class': item['class']},
                            bbox=[x*width/rw, y*height/rh, bw*width/rw, bh*height/rh]))
     return result
+
+
+def _source_info(manifest: dict, candidate: dict) -> tuple[str, str]:
+    """외부 공식 서식과 Roboflow 자료의 출처·학습 제외 근거를 구별한다."""
+    kind = manifest.get('source_kind', 'roboflow')
+    if kind == 'roboflow':
+        version = manifest.get('roboflow_version')
+        if type(version) is not int or version < 1:
+            raise ValueError('Roboflow 버전이 필요합니다.')
+        split = candidate['reference']['version_splits'].get(str(version))
+        if split not in ('train', 'valid', 'test'):
+            raise ValueError('선택한 Roboflow 버전의 분할 근거가 필요합니다.')
+        return split, 'included' if split == 'train' else 'unknown'
+    if kind != 'official_pdf':
+        raise ValueError('지원하지 않는 출처 종류입니다.')
+    source = candidate['official_source']
+    url = urlparse(source['url'])
+    if (url.scheme != 'https' or not url.hostname or url.username or url.password
+            or not re.fullmatch(r'[0-9a-f]{64}', source['pdf_sha256'])
+            or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', source['revision'])):
+        raise ValueError('공식 원본 URL·지문·개정일을 확인하세요.')
+    membership = candidate.get('training_membership', 'unknown')
+    if membership not in ('unknown', 'included', 'excluded'):
+        raise ValueError('학습 포함 여부가 잘못되었습니다.')
+    if membership == 'excluded':
+        audit = candidate.get('training_audit', {})
+        versions = audit.get('checked_versions')
+        if (audit.get('status') != 'not_found_in_project_training'
+                or not isinstance(versions, list) or not versions
+                or any(type(v) is not int or v < 1 for v in versions)
+                or any(not isinstance(audit.get(k), str) or not audit[k].strip()
+                       for k in ('project_url', 'checked_on', 'evidence', 'scope'))):
+            raise ValueError('학습 제외에는 범위와 대조 기록이 필요합니다.')
+    return 'external', membership
 
 
 def _fraction_box(values: list, width: int, height: int) -> tuple[float, ...]:
@@ -108,8 +143,8 @@ def _reference_html(image: np.ndarray, candidate: dict, rectangles: list[dict], 
                       + html.escape(json.dumps(crop, ensure_ascii=False, indent=2) if crop else '미실행')
                       + '</pre></section>')
     return _page(candidate['title'], '<h1>' + html.escape(candidate['title']) + '</h1>'
-                 '<p class="notice">후보 검수 전용 · 서비스 지원 확정/사람 승인 아님. 빨간 박스는 Roboflow '
-                 '라벨을 다른 해상도의 로컬 원본에 비례 표시한 참고 좌표입니다. 이미지 동일성·정렬을 검토하기 '
+                 '<p class="notice">후보 검수 전용 · 서비스 지원 확정/사람 승인 아님. 빨간 박스는 출처 명세의 '
+                 '참조 좌표를 로컬 원본 해상도에 비례 표시한 검토 초안입니다. 이미지 동일성·라벨 기준·정렬을 검토하기 '
                  '전에는 평가 정답으로 사용하지 않습니다. 주변 OCR은 미리 지정한 영역의 진단이며 자동 탐지 결과가 아닙니다.</p>'
                  '<p><a href="review.html">정합 이미지의 탐지·OCR·마스킹 검수</a> · '
                  '<a href="catalog.draft.json">안내 초안 JSON</a> · <a href="../index.html">목록</a></p>'
@@ -123,8 +158,7 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
     if output.exists():
         raise ValueError('새 출력 폴더가 필요합니다. 검토 중인 파일은 덮어쓰지 않습니다.')
     if (type(manifest.get('schema_version')) is not int or manifest['schema_version'] != 1
-            or type(manifest.get('dpi')) is not int or not 72 <= manifest['dpi'] <= 600
-            or type(manifest.get('roboflow_version')) is not int or manifest['roboflow_version'] < 1):
+            or type(manifest.get('dpi')) is not int or not 72 <= manifest['dpi'] <= 600):
         raise ValueError('후보 명세 버전/DPI가 잘못되었습니다.')
     candidates = manifest['candidates']
     ids = [c['id'] for c in candidates]
@@ -156,9 +190,7 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
                 or any((e['document_id'],e['document_version'],e['page']) != identity for e in entries)):
             raise ValueError('후보에는 같은 문서·버전·페이지의 미승인 초안만 넣으세요.')
         h,w = image.shape[:2]
-        split = candidate['reference']['version_splits'].get(str(manifest['roboflow_version']))
-        if split not in ('train', 'valid', 'test'):
-            raise ValueError('선택한 Roboflow 버전의 분할 근거가 필요합니다.')
+        split, membership = _source_info(manifest, candidate)
         rectangles = _rectangles(candidate,w,h)
         plan = _mask_plan(image,normalized,candidate)
         context = context_draft(report)
@@ -186,7 +218,9 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
                        guidance_statuses=[catalog.match(o).status for o in observations],
                        approved_fields=0,independent_external_test=False,
                        dataset_split=split,
-                       training_membership='included' if split == 'train' else 'unknown',
+                       training_membership=membership,
+                       training_audit=copy.deepcopy(candidate.get('training_audit')),
+                       official_source=copy.deepcopy(candidate.get('official_source')),
                        reference_labels_status='alignment_unverified')
         # render_review also checks the report's coordinate system and image binding.
         review_html = render_review(normalized.image,plan=plan,report=report)
@@ -213,7 +247,9 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
         samples.append(dict(id=c['id'],image=str(source),image_size=[image.shape[1],image.shape[0]],
                             variant='original',split={'valid':'val'}.get(summary['dataset_split'],summary['dataset_split']),
                             form_id=c['document_id'],source_id=c['id'],
-                            training_membership=summary['training_membership'],labels=None,predictions=f"{c['id']}/analysis.json"))
+                            training_membership=summary['training_membership'],
+                            training_audit=summary['training_audit'],
+                            labels=None,predictions=f"{c['id']}/analysis.json"))
     write_new(output/'catalog.draft.json',dict(schema_version=1,purpose='production',fields=all_entries))
     write_new(output/'evaluation.manifest.json',dict(schema_version=1,dataset_version=manifest['dataset_version'],
               model_version=manifest['analysis_kind'],prediction_version='local-candidate-baseline-1',
@@ -222,14 +258,16 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
                   note='정답 좌표의 로컬 원본 정렬 미검증. 모델 성능·안내 정확도·마스킹 누락률을 주장할 수 없음.')
     write_new(output/'summary.json',result)
     rows = ''.join(f'<tr><td><a href="{s["id"]}/reference.html">{html.escape(s["title"])}</a></td>'
+                   f'<td>{html.escape(s["analysis_kind"])}</td>'
                    f'<td>{s["detection_count"]} / {s["reference_box_count"]}</td>'
                    f'<td>{s["ocr_word_count"]}</td><td>{html.escape(", ".join(s["failed_stages"]))}</td></tr>' for s in summaries)
-    write_new(output/'index.html',_page('문서 후보 3종 검수',
+    write_new(output/'index.html',_page('문서 후보 검수',
               '<h1>문서 후보 검수</h1><p class="notice">로컬 전용 · 원본과 OCR 포함 · 외부 공유 전 별도 검토 필요. '
-              '모든 안내·문서 식별·마스킹은 미승인 초안입니다. 모델 학습이나 외부 API 호출을 수행하지 않았습니다.</p>'
+              '모든 안내·문서 식별·마스킹은 미승인 초안입니다. 검수 팩 생성 단계는 저장된 분석만 읽으며 '
+              '추가 학습이나 외부 API 호출을 하지 않습니다.</p>'
               '<p>표의 탐지 수와 참조 라벨 수는 단순 개수이며 정확도 비교가 아닙니다. '
               '각 문서에서 원문, 안내 초안, 참조 박스, 주변 OCR을 확인할 수 있습니다.</p>'
-              '<table><thead><tr><th>후보</th><th>탐지 / 참조 라벨</th><th>OCR 단어</th><th>재확인 단계</th></tr></thead>'
+              '<table><thead><tr><th>후보</th><th>분석 종류</th><th>탐지 / 참조 라벨</th><th>OCR 단어</th><th>재확인 단계</th></tr></thead>'
               '<tbody>'+rows+'</tbody></table>'))
     return result
 
