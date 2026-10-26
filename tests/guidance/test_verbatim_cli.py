@@ -58,7 +58,7 @@ def test_page_review_requires_correct_original_and_explicit_confirmation(tmp_pat
     source.write_text('검수용 원본',encoding='utf-8')
     assert review.main(args+['--confirm-reviewed'])==0
     assert RuleCatalog.load(output).read_document('fixture-document','1').instruction==original
-    approved=json.loads(output.read_text())
+    approved=json.loads(output.read_text(encoding='utf-8'))
     draft=review.page_edit(approved,'fixture-document','1',1)
     assert draft['pages'][0]['source_text']==original
     assert RuleCatalog(draft).read_page('fixture-document','1',1).status=='unapproved'

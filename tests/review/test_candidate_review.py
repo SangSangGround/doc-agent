@@ -172,7 +172,7 @@ def test_pack_preserves_full_page_original_and_escapes_text(inputs):
             approval=draft_approval())]
     cr.prepare(m,source,analyses,out)
     assert read_json(out/'catalog.draft.json')['pages'][0]['source_text']==original
-    page=(out/'sample/reference.html').read_text()
+    page=(out/'sample/reference.html').read_text(encoding='utf-8')
     assert '마지막 유의사항' in page and '</pre><script>원문' not in page
     assert RuleCatalog.load(out/'catalog.draft.json').read_document('fictional','v1').status=='unapproved'
 
