@@ -137,7 +137,8 @@
               "content_sha256": ""
             }
           }
-        ]
+        ],
+        "source_status": "pending_verbatim_transcription; old authored drafts must not be spoken"
       },
       "training_membership": "unknown"
     },
@@ -246,7 +247,8 @@
               "content_sha256": ""
             }
           }
-        ]
+        ],
+        "source_status": "pending_verbatim_transcription; old authored drafts must not be spoken"
       },
       "training_membership": "unknown"
     },
@@ -341,7 +343,8 @@
               "content_sha256": ""
             }
           }
-        ]
+        ],
+        "source_status": "pending_verbatim_transcription; old authored drafts must not be spoken"
       },
       "training_membership": "unknown"
     }

@@ -41,6 +41,8 @@ def build_report(session: DocumentSession | VisionAnalysis, *, include_text: boo
         "source_to_normalized": session.normalized.homography.tolist(),
         "coordinate_system": "normalized_a4_mm",
         "ocr_mode": session.config.ocr_mode,
+        "ocr_preprocess": session.config.ocr_preprocess,
+        "ocr_psm": session.config.ocr_psm,
         "needs_review": (
             not fields or any(field["needs_review"] for field in fields)
             or any(not stage.ok for stage in session.stages)
@@ -52,6 +54,9 @@ def build_report(session: DocumentSession | VisionAnalysis, *, include_text: boo
         "warnings": list(session.structure.warnings),
         "stages": [stage.to_dict() for stage in session.stages],
     }
+    evidence = getattr(session, "ocr_evidence", None)
+    if evidence is not None and include_text:
+        report["ocr_evidence"] = evidence
     report["text_included"] = include_text
     if not include_text:
         # Pattern masking cannot guarantee removal of names/address/OCR errors.
@@ -82,6 +87,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--detector", choices=("auto", "heuristic", "yolo", "roboflow"))
     parser.add_argument("--ocr-mode", choices=("page", "regions"),
                         help="page: 전체 문서, regions: 탐지 주변만 OCR (기본 regions)")
+    parser.add_argument("--ocr-preprocess", choices=("none", "form_lines"),
+                        help="선택 전처리. form_lines: 표 선 제거, 원본 OCR 증거 함께 보존")
+    parser.add_argument("--ocr-psm", type=int, choices=(3, 6, 11),
+                        help="Tesseract 분할 모드. 미지정 시 regions=11, page=기본값")
     parser.add_argument("--lang", help="OCR 언어 (기본 kor+eng)")
     parser.add_argument("--conf", type=float, help="탐지 신뢰도 임계값")
     parser.add_argument("--dpi", type=int, help="정합 해상도 (기본 300)")
@@ -114,11 +123,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             ocr_kind="tesseract", ocr_mode=args.ocr_mode or cfg.ocr_mode,
             ocr_lang=args.lang or cfg.ocr_lang,
             dpi=args.dpi if args.dpi is not None else cfg.dpi,
+            ocr_preprocess=args.ocr_preprocess or cfg.ocr_preprocess,
+            ocr_psm=args.ocr_psm if args.ocr_psm is not None else cfg.ocr_psm,
             llm_kind="offline", serial_port=None, audit_path=None,
         )
         reader = TesseractOcr(
             lang=cfg.ocr_lang, page_size_mm=cfg.page_size_mm,
-            config="--psm 11" if cfg.ocr_mode == "regions" else "",
+            config=cfg.tesseract_config(),
+            **({"preprocess": cfg.ocr_preprocess} if cfg.ocr_preprocess != "none" else {}),
         )
         reader.check_available()
         if cfg.detector_prefer == "roboflow" and not (args.mask_plan or args.allow_unmasked_blank):

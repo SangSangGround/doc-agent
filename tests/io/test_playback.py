@@ -35,6 +35,25 @@ def test_exact_play_stop_and_replay():
     assert backend.spoken==[result.instruction,result.instruction]
 
 
+def test_production_player_keeps_entire_original_text_on_play_and_replay():
+    import json
+    from docagent.guidance.rules import content_digest
+    data = json.loads(CATALOG.read_text(encoding='utf-8'))
+    data['purpose'] = 'production'
+    original = '  원문 제목\n\n' + ('□ 동의함 □ 거부함\n※ 동의하지 않아도 불이익은 없습니다.\n' * 100) + '(서명 또는 인)  '
+    entry = data['fields'][0]
+    entry.update(reading_mode='verbatim', source_text=original, instruction=original,
+                 source={'reference': 'synthetic-original-only', 'sha256': 'b' * 64})
+    entry['approval']['content_sha256'] = content_digest(entry)
+    backend = Recorder()
+    player = GuidancePlayer(RuleCatalog(data), backend)
+    result = player.play(observation())
+    assert result.status == 'matched'
+    assert result.source_text == original
+    player.replay()
+    assert backend.spoken == [original, original]
+
+
 def test_failure_speaks_only_fixed_fallback_and_replaces_previous():
     backend=Recorder();player=GuidancePlayer(RuleCatalog.load(CATALOG),backend)
     player.play(observation(),demo=True)

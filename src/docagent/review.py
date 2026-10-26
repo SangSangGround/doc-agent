@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import base64
 import copy
+import hashlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -14,7 +15,7 @@ import cv2
 import numpy as np
 
 from docagent.errors import DocAgentError
-from docagent.guidance.rules import RuleCatalog, content_digest
+from docagent.guidance.rules import RuleCatalog, content_digest, page_content_digest
 from docagent.guidance.session import context_digest, digest, validate_context
 from docagent.pii.image_mask import MaskPlan, draft_plan, image_digest, mask_boxes, plan_digest
 from docagent.vision.normalize import normalize_document
@@ -69,6 +70,25 @@ def catalog_edit(data: dict[str, Any], field_id: str, *, reviewer: str | None = 
     return result
 
 
+def page_edit(data: dict[str, Any], document_id: str, document_version: str, page: int, *,
+              reviewer: str | None = None, source_file: Path | None = None) -> dict[str, Any]:
+    """전체 원문을 초안화/승인한다. 승인 전 출처 파일 지문을 확인하며 문구는 바꾸지 않는다."""
+    result = copy.deepcopy(data)
+    matches = [p for p in result.get('pages', []) if
+               (p['document_id'], p['document_version'], p['page']) == (document_id, document_version, page)]
+    if len(matches) != 1:
+        raise ValueError('페이지 원문을 하나로 특정할 수 없습니다.')
+    original = matches[0]
+    original['approval'] = draft_approval()
+    RuleCatalog(result)
+    if reviewer is not None:
+        if source_file is None or hashlib.sha256(source_file.read_bytes()).hexdigest() != original['source']['sha256']:
+            raise ValueError('검토한 원본 파일의 지문이 다릅니다.')
+        original['approval'] = approval(reviewer, page_content_digest(original))
+    RuleCatalog(result)
+    return result
+
+
 def render_review(image: np.ndarray, *, plan: dict[str, Any] | None = None,
                   report: dict[str, Any] | None = None) -> str:
     """정합 이미지·오버레이를 포함하는 로컬 전용 HTML. 외부 요청 없음."""
@@ -109,11 +129,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     mask.add_argument('--analysis', type=Path)
     mask.add_argument('--dpi', type=int, default=300)
     mask.add_argument('--output', type=Path, required=True)
-    for name in ('catalog-check', 'catalog-draft', 'catalog-approve', 'context-draft', 'context-approve', 'mask-approve'):
+    for name in ('catalog-check', 'catalog-draft', 'catalog-approve', 'page-draft', 'page-approve',
+                 'context-draft', 'context-approve', 'mask-approve'):
         sub = commands.add_parser(name)
         sub.add_argument('input', type=Path)
         if name != 'catalog-check': sub.add_argument('--output', type=Path, required=True)
         if name in ('catalog-draft','catalog-approve'): sub.add_argument('--field-id', required=True)
+        if name in ('page-draft', 'page-approve'):
+            sub.add_argument('--document-id', required=True)
+            sub.add_argument('--document-version', required=True)
+            sub.add_argument('--page', type=int, required=True)
+        if name == 'page-approve': sub.add_argument('--source-file', type=Path, required=True)
         if name == 'context-approve': sub.add_argument('--analysis', type=Path, required=True)
         if name == 'mask-approve':
             sub.add_argument('--image', type=Path, required=True)
@@ -136,10 +162,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             if args.command == 'catalog-check':
                 catalog = RuleCatalog(data)
                 counts = {s: sum(e['approval']['status'] == s for e in data['fields']) for s in ('draft','approved')}
-                print(json.dumps(dict(status='valid', purpose=catalog.purpose, **counts), ensure_ascii=False))
+                pages = {s: sum(e['approval']['status'] == s for e in data.get('pages', [])) for s in ('draft','approved')}
+                print(json.dumps(dict(status='valid', purpose=catalog.purpose, **counts, pages=pages), ensure_ascii=False))
                 return 0
             if args.command in ('catalog-draft','catalog-approve'):
                 data = catalog_edit(data, args.field_id, reviewer=getattr(args, 'reviewer', None))
+            elif args.command in ('page-draft', 'page-approve'):
+                data = page_edit(data, args.document_id, args.document_version, args.page,
+                                 reviewer=getattr(args, 'reviewer', None), source_file=getattr(args, 'source_file', None))
             elif args.command == 'context-draft':
                 data = context_draft(data)
             elif args.command == 'context-approve':

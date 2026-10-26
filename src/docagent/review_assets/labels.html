@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'nonce-__SCRIPT_NONCE__'; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<title>정답 박스 검수 · 미승인 초안</title>
+<style>
+*{box-sizing:border-box}body{font:16px/1.6 system-ui,sans-serif;margin:0;color:#183142;background:#f5f8fa}
+header,main{max-width:1440px;margin:auto;padding:20px}header{padding-bottom:0}h1{font-size:26px;margin:0 0 12px}h2{font-size:19px;margin:0 0 12px}
+.notice{border-left:4px solid #c38b0b;background:#fff5d5;padding:12px 16px;border-radius:6px}p{margin:8px 0}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:18px}.panel{background:white;border:1px solid #cad7df;border-radius:10px;padding:16px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}button,select,input{font:inherit;border:1px solid #9daeb9;border-radius:5px;padding:7px 9px;background:white;color:inherit}
+button{cursor:pointer}button:disabled{opacity:.45;cursor:default}button.primary{background:#115eb3;color:white;border-color:#115eb3}button[aria-pressed=true]{background:#e0ecff;border-color:#115eb3}
+label{display:block;margin:8px 0}label input,label select{width:100%}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+#viewport{width:100%;overflow:auto;max-height:80vh;background:#e7edf2;border:1px solid #cad7df}svg{display:block;touch-action:none;max-width:none;background:white}
+rect.box{fill:rgba(203,39,47,.08);stroke:#cd272f;stroke-width:3;vector-effect:non-scaling-stroke;cursor:pointer}rect.box.selected{fill:rgba(17,94,179,.14);stroke:#115eb3;stroke-width:4}rect.ghost{fill:rgba(17,94,179,.15);stroke:#115eb3;stroke-dasharray:8 4;stroke-width:3;vector-effect:non-scaling-stroke}
+#box-list{max-height:260px;overflow:auto;margin:12px 0;padding:0;list-style:none}#box-list button{width:100%;text-align:left;margin:3px 0;font-size:14px}#status{min-height:48px}small,.muted{color:#536978}.step{margin:16px 0 8px}code{font-size:13px;overflow-wrap:anywhere}input:focus,button:focus,select:focus{outline:3px solid #8dbbff;outline-offset:2px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.panel{min-width:0}#viewport{max-height:65vh}}
+</style>
+<header>
+<h1 id="heading">정답 박스 검수</h1>
+<p class="notice">모든 박스는 미승인 초안입니다. 페이지 전체를 보면서 빠진 항목을 추가하고 잘못된 항목을 삭제하세요. 서명 위치는 인쇄된 ‘서명’ 글자와 실제 서명 공간을 구분해 팀의 라벨 기준으로 확인하세요. 저장만으로 정답 승인이나 정확도 측정이 완료되지 않습니다.</p>
+<p id="identity" class="muted"></p>
+</header>
+<main class="layout">
+<section class="panel" aria-label="원본과 박스 편집">
+<div class="controls">
+<button type="button" id="draw" aria-pressed="false">박스 추가 · 드래그</button>
+<label for="new-class" style="margin:0">추가 클래스</label>
+<select id="new-class"><option value="1">checkbox · 체크박스</option><option value="2">signature · 서명란</option></select>
+<label for="zoom" style="margin:0">확대</label>
+<select id="zoom"><option value="fit">너비 맞춤</option><option value="0.5">50%</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select>
+</div>
+<div id="viewport"><svg id="canvas" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="원본 문서 및 편집 가능한 정답 박스"><image id="source"/><g id="boxes"></g><g id="preview"></g></svg></div>
+</section>
+<aside class="panel">
+<h2>박스 확인</h2>
+<p>박스를 클릭한 뒤 좌표·크기·클래스를 수정할 수 있습니다. 좌표 단위는 <b>원본 이미지 픽셀</b>입니다.</p>
+<p id="count"></p>
+<ul id="box-list" aria-label="박스 목록"></ul>
+<label>선택한 박스 ID <input id="selected-id" readonly aria-label="선택한 박스 ID"></label>
+<label>클래스 <select id="class"><option value="1">checkbox · 체크박스</option><option value="2">signature · 서명란</option></select></label>
+<div class="grid">
+<label>X · 왼쪽 <input id="x" type="number" min="0" step="0.1"></label>
+<label>Y · 위쪽 <input id="y" type="number" min="0" step="0.1"></label>
+<label>너비 <input id="width" type="number" min="0.01" step="0.1"></label>
+<label>높이 <input id="height" type="number" min="0.01" step="0.1"></label>
+</div>
+<div class="controls"><button type="button" id="apply">수정 적용</button><button type="button" id="delete">선택 박스 삭제</button></div>
+<p id="status" role="status" aria-live="polite"></p>
+<h2 class="step">검수 결과 저장</h2>
+<p>모든 체크박스와 서명란의 누락·클래스·경계를 확인한 후 초안을 저장하세요. 대상이 전혀 없는 페이지는 박스 0개로 저장할 수 있습니다.</p>
+<button type="button" id="save" class="primary">미승인 초안 JSON 저장</button>
+<p><small>내보낸 JSON에는 COCO가 <code>coco</code> 키 안에 들어 있습니다. 사람이 검수한 뒤 <code>python -m docagent.label_review approve</code> 명령으로 승인해야 평가용 COCO가 생성됩니다.</small></p>
+<p><small>이 화면은 외부 서버에 접속하지 않습니다. 원본 파일은 수정하지 않으며 브라우저를 닫으면 저장하지 않은 변경은 사라집니다.</small></p>
+</aside>
+</main>
+<script type="application/json" id="payload" nonce="__SCRIPT_NONCE__">__LABEL_DATA__</script>
+<script nonce="__SCRIPT_NONCE__">
+'use strict';
+const payload = JSON.parse(document.getElementById('payload').textContent);
+const draft = structuredClone(payload.draft);
+const image = draft.coco.images[0];
+const ns = 'http://www.w3.org/2000/svg';
+const byId = id => document.getElementById(id);
+const canvas = byId('canvas');
+let selected = null;
+let drawing = false;
+let start = null;
+let pointer = null;
+const inputs = ['x','y','width','height'];
+function status(text) { byId('status').textContent = text; }
+function validBox(b) {
+  return Array.isArray(b) && b.length === 4 && b.every(Number.isFinite) &&
+    b[0] >= 0 && b[1] >= 0 && b[2] > 0 && b[3] > 0 &&
+    b[0] + b[2] <= image.width + 0.001 && b[1] + b[3] <= image.height + 0.001;
+}
+function current() { return draft.coco.annotations.find(a => a.id === selected); }
+function pendingEdits() {
+  const item = current();
+  return item && (Number(byId('class').value) !== item.category_id || inputs.some((id,index) =>
+    byId(id).value.trim() === '' || Number(byId(id).value) !== Number(item.bbox[index].toFixed(6))));
+}
+function selectBox(id) {
+  if (pendingEdits()) { status('입력한 좌표·클래스의 수정 적용 버튼을 먼저 눌러 주세요.'); return; }
+  selected = id; redraw();
+}
+function shape(b) {
+  const element = document.createElementNS(ns, 'rect');
+  for (const [key,value] of Object.entries({x:b[0],y:b[1],width:b[2],height:b[3]})) element.setAttribute(key,String(value));
+  return element;
+}
+function redraw() {
+  byId('boxes').replaceChildren();
+  byId('box-list').replaceChildren();
+  for (const annotation of draft.coco.annotations) {
+    const name = annotation.category_id === 1 ? 'checkbox' : 'signature';
+    const text = `${annotation.id} · ${name} · ${annotation.bbox.map(n => Number(n.toFixed(1))).join(', ')}`;
+    const rect = shape(annotation.bbox);
+    rect.setAttribute('class','box' + (annotation.id === selected ? ' selected' : ''));
+    rect.dataset.id = String(annotation.id);
+    const title = document.createElementNS(ns,'title'); title.textContent = text; rect.append(title);
+    byId('boxes').append(rect);
+    const row = document.createElement('li');
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = text;
+    button.setAttribute('aria-pressed',String(annotation.id === selected));
+    button.addEventListener('click',() => selectBox(annotation.id));
+    row.append(button); byId('box-list').append(row);
+  }
+  const item = current();
+  byId('selected-id').value = item ? String(item.id) : '';
+  byId('class').disabled = !item;
+  if (item) byId('class').value = String(item.category_id);
+  inputs.forEach((id,index) => { byId(id).disabled = !item; byId(id).value = item ? String(Number(item.bbox[index].toFixed(6))) : ''; });
+  byId('apply').disabled = !item; byId('delete').disabled = !item;
+  byId('count').textContent = `박스 ${draft.coco.annotations.length}개 · 체크박스 ${draft.coco.annotations.filter(a => a.category_id === 1).length}개 · 서명란 ${draft.coco.annotations.filter(a => a.category_id === 2).length}개`;
+}
+function scale() {
+  const mode = byId('zoom').value;
+  const width = mode === 'fit' ? byId('viewport').clientWidth : image.width * Number(mode);
+  canvas.style.width = `${Math.max(1,width)}px`; canvas.style.height = `${Math.max(1,width) * image.height/image.width}px`;
+}
+function point(event) {
+  const rect = canvas.getBoundingClientRect();
+  return [Math.max(0,Math.min(image.width,(event.clientX-rect.left)*image.width/rect.width)),
+    Math.max(0,Math.min(image.height,(event.clientY-rect.top)*image.height/rect.height))];
+}
+function drawn(end) { return [Math.min(start[0],end[0]),Math.min(start[1],end[1]),Math.abs(end[0]-start[0]),Math.abs(end[1]-start[1])]; }
+function endDraw() { start = null; pointer = null; byId('preview').replaceChildren(); }
+byId('draw').addEventListener('click',() => {
+  if (pendingEdits()) { status('입력한 좌표·클래스의 수정 적용 버튼을 먼저 눌러 주세요.'); return; }
+  drawing = !drawing; byId('draw').setAttribute('aria-pressed',String(drawing));
+  canvas.style.cursor = drawing ? 'crosshair' : 'default'; endDraw();
+  status(drawing ? '원본에서 박스의 왼쪽 위부터 오른쪽 아래까지 드래그하세요.' : '박스를 선택하거나 숫자로 수정하세요.');
+});
+canvas.addEventListener('pointerdown',event => {
+  if (event.button !== 0) return;
+  if (pendingEdits()) { status('입력한 좌표·클래스의 수정 적용 버튼을 먼저 눌러 주세요.'); return; }
+  if (!drawing) {
+    const rect = event.target.closest('[data-id]');
+    selectBox(rect ? Number(rect.dataset.id) : null); return;
+  }
+  event.preventDefault(); start = point(event); pointer = event.pointerId; canvas.setPointerCapture(pointer);
+});
+canvas.addEventListener('pointermove',event => {
+  if (!start || pointer !== event.pointerId) return;
+  const rect = shape(drawn(point(event))); rect.setAttribute('class','ghost'); byId('preview').replaceChildren(rect);
+});
+canvas.addEventListener('pointerup',event => {
+  if (!start || pointer !== event.pointerId) return;
+  const bbox = drawn(point(event));
+  if (validBox(bbox)) {
+    const id = Math.max(0,...draft.coco.annotations.map(a => a.id)) + 1;
+    draft.coco.annotations.push({id,image_id:1,category_id:Number(byId('new-class').value),bbox,area:bbox[2]*bbox[3],iscrowd:0});
+    selected = id; status('새 박스를 추가했습니다. 클래스와 경계를 확인하세요.');
+  } else status('너비와 높이가 있는 영역을 드래그하세요.');
+  endDraw(); redraw();
+});
+canvas.addEventListener('pointercancel',endDraw);
+byId('apply').addEventListener('click',() => {
+  const item = current(); if (!item) return;
+  const values = inputs.map(id => byId(id).value.trim());
+  const bbox = values.map(Number);
+  if (values.some(v => v === '') || !validBox(bbox)) { status('이미지 안에 들어가는 유효한 X·Y·너비·높이를 입력하세요.'); return; }
+  item.bbox = bbox; item.area = bbox[2]*bbox[3]; item.category_id = Number(byId('class').value);
+  delete item.source_reference_id; redraw(); status('박스를 수정했습니다. 저장 전까지 브라우저에만 남아 있습니다.');
+});
+byId('delete').addEventListener('click',() => {
+  draft.coco.annotations = draft.coco.annotations.filter(a => a.id !== selected); selected = null; redraw();
+  status('선택한 박스를 삭제했습니다.');
+});
+byId('save').addEventListener('click',() => {
+  if (start) { status('현재 드래그를 먼저 마쳐 주세요.'); return; }
+  if (pendingEdits()) {
+    status('입력한 좌표·클래스의 수정 적용 버튼을 먼저 눌러 주세요.'); return;
+  }
+  if (draft.coco.annotations.some(a => !validBox(a.bbox) || ![1,2].includes(a.category_id))) { status('유효하지 않은 박스가 있어 저장하지 않았습니다.'); return; }
+  // HTML은 승인 상태를 만들거나 이전 승인을 재사용하지 않는다.
+  draft.status = 'draft'; draft.approval = {status:'draft',reviewed_by:'',reviewed_at:'',content_sha256:''};
+  const blob = new Blob([JSON.stringify(draft,null,2)+'\n'],{type:'application/json'});
+  const url = URL.createObjectURL(blob); const link = document.createElement('a');
+  link.href = url; link.download = `${draft.candidate_id}.labels.draft.json`; document.body.append(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url),1000); status('미승인 초안을 저장했습니다. 원본과 전체 박스를 확인한 사람만 별도 승인 명령을 실행하세요.');
+});
+byId('heading').textContent = draft.title + ' · 정답 박스 검수';
+byId('identity').textContent = `${image.width} × ${image.height} 픽셀 · 원본 SHA-256 ${image.file_sha256}`;
+canvas.setAttribute('viewBox',`0 0 ${image.width} ${image.height}`);
+byId('source').setAttribute('href',payload.image); byId('source').setAttribute('width',String(image.width)); byId('source').setAttribute('height',String(image.height));
+byId('zoom').addEventListener('change',scale); window.addEventListener('resize',scale);
+document.addEventListener('keydown',event => { if (event.key === 'Escape') { drawing = false; byId('draw').setAttribute('aria-pressed','false'); canvas.style.cursor = 'default'; endDraw(); } });
+redraw(); scale();
+</script>
+</html>

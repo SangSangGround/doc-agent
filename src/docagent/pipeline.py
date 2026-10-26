@@ -637,7 +637,8 @@ def _resolve_ocr(ocr: Any | None, warnings: list[str], cfg: DocAgentConfig) -> A
     if cfg.ocr_kind == "tesseract":
         return TesseractOcr(
             lang=cfg.ocr_lang, page_size_mm=cfg.page_size_mm,
-            config="--psm 11" if cfg.ocr_mode == "regions" else "",
+            config=cfg.tesseract_config(),
+            **({"preprocess": cfg.ocr_preprocess} if cfg.ocr_preprocess != "none" else {}),
         )
     warnings.append(NO_OCR_WARNING)
     _LOG.info("OCR 엔진이 주입되지 않아 빈 StubOcr 로 진행합니다.")
@@ -689,6 +690,7 @@ class VisionAnalysis:
     detections: tuple[Detection, ...]
     words: tuple[OcrWord, ...]
     downgraded_field_ids: tuple[str, ...] = ()
+    ocr_evidence: dict[str, Any] | None = None
 
 
 def analyze_document(
@@ -826,6 +828,8 @@ def analyze_document(
         structure=structure, normalized=normalized, config=cfg,
         stages=tuple(stages), detections=detections, words=words,
         downgraded_field_ids=downgraded,
+        ocr_evidence=(reader.last_result.to_dict() if cfg.ocr_preprocess != "none"
+                      and getattr(reader, "last_result", None) is not None else None),
     )
 
 

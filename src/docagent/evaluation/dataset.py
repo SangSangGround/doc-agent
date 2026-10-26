@@ -1,10 +1,13 @@
 """COCO·YOLO 정답, 원본/촬영본 관계, 저장된 예측 결과를 읽는다."""
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import re
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -51,7 +54,51 @@ def object_box(item: dict, width: int, height: int) -> ObjectBox:
     return ObjectBox(ALIASES[item['class']],box(item['bbox'],width,height),float(c))
 
 
-def read_truth(spec: dict | None, root: Path, width: int, height: int) -> list[ObjectBox] | None:
+def _check_label_review(payload: dict, spec: dict, width: int, height: int,
+                        source_file_sha256: str | None) -> None:
+    """우리 도구의 승인 표식이 있으면 내용 변경·다른 원본 연결을 거절한다.
+
+    일반 COCO에는 승인 표식을 요구하지 않는다. 파일 이름 변경은 허용하되,
+    read_manifest에서 실제 입력 파일의 바이트 지문을 전달받으면 이를 대조한다.
+    """
+    if payload.get('kind') == 'docagent_coco_draft':
+        raise ValueError('미승인 라벨 초안을 평가 정답으로 사용할 수 없습니다.')
+    info = payload.get('info')
+    if not isinstance(info, dict) or 'docagent_label_review' not in info:
+        return
+    review = info['docagent_label_review']
+    if (not isinstance(review, dict) or type(review.get('schema_version')) is not int
+            or review['schema_version'] != 1 or review.get('status') != 'approved'
+            or review.get('coordinate_system') != 'image_xywh_px'
+            or review.get('source_kind') not in ('roboflow', 'official_pdf')
+            or any(not isinstance(review.get(k), str) or not review[k].strip()
+                   for k in ('candidate_id', 'reviewed_by', 'reviewed_at'))
+            or any(not isinstance(review.get(k), str) or not re.fullmatch(r'[0-9a-f]{64}', review[k])
+                   for k in ('content_sha256', 'source_file_sha256'))):
+        raise ValueError('라벨 검수 승인 기록이 유효하지 않습니다.')
+    reviewed_at = datetime.fromisoformat(review['reviewed_at'])
+    if reviewed_at.tzinfo is None or reviewed_at.utcoffset() is None:
+        raise ValueError('라벨 검수 시각에는 시간대가 필요합니다.')
+    core = {key: value for key, value in payload.items() if key != 'info'}
+    canonical = json.dumps(core, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
+    if hashlib.sha256(canonical.encode('utf-8')).hexdigest() != review['content_sha256']:
+        raise ValueError('승인 후 COCO 정답 내용이 변경되었습니다.')
+    images = payload['images']
+    if not isinstance(images, list) or len(images) != 1:
+        raise ValueError('검수 승인은 원본 이미지 한 장에만 적용됩니다.')
+    image = images[0]
+    if (not isinstance(image, dict) or type(image.get('id')) is not int or image['id'] != spec['image_id']
+            or any(type(image.get(k)) is not int or image[k] <= 0 for k in ('width', 'height'))
+            or [image['width'], image['height']] != [width, height]
+            or image.get('file_sha256') != review['source_file_sha256']
+            or (source_file_sha256 is not None and source_file_sha256 != review['source_file_sha256'])
+            or type(review.get('background_only')) is not bool
+            or review['background_only'] != (not payload['annotations'])):
+        raise ValueError('라벨 승인과 평가 원본 이미지의 지문·크기가 다릅니다.')
+
+
+def read_truth(spec: dict | None, root: Path, width: int, height: int, *,
+               source_file_sha256: str | None = None) -> list[ObjectBox] | None:
     if spec is None: return None
     if spec['format']=='yolo':
         # 기존 YOLO 리더는 내부 클래스 순서를 사용한다. 외부 순서를 반드시 명시해 재매핑한다.
@@ -70,6 +117,7 @@ def read_truth(spec: dict | None, root: Path, width: int, height: int) -> list[O
         return result
     if spec['format']=='coco':
         payload=load_json(root/spec['path'])
+        _check_label_review(payload,spec,width,height,source_file_sha256)
         images=payload['images']; categories=payload['categories']; annotations=payload['annotations']
         for records in (images,categories,annotations):
             ids=[r['id'] for r in records]
@@ -156,11 +204,13 @@ def read_manifest(path: Path) -> tuple[dict, list[Sample]]:
         for key in ('form_id','source_id'):
             if s.get(key) is not None and (not isinstance(s[key],str) or not s[key].strip()):
                 raise ValueError('자료 그룹 ID가 잘못되었습니다.')
-        image=cv2.imdecode(np.frombuffer((root/s['image']).read_bytes(),np.uint8),cv2.IMREAD_COLOR)
+        image_bytes=(root/s['image']).read_bytes()
+        image=cv2.imdecode(np.frombuffer(image_bytes,np.uint8),cv2.IMREAD_COLOR)
         if image is None: raise ValueError('이미지를 읽을 수 없습니다.')
         height,width=image.shape[:2]
         if [width,height]!=s['image_size']: raise ValueError('명세와 이미지 크기가 다릅니다.')
-        truth=read_truth(s.get('labels'),root,width,height)
+        truth=read_truth(s.get('labels'),root,width,height,
+                         source_file_sha256=hashlib.sha256(image_bytes).hexdigest())
         preds=read_predictions(root/s['predictions'],image) if s.get('predictions') else None
         samples.append(Sample(f'sample_{index:04}',width,height,s['variant'],s['split'],s.get('form_id'),s.get('source_id'),
                               membership,image_digest(image),truth,preds,s.get('guidance_cases',[]),s.get('mask')))

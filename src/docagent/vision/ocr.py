@@ -40,6 +40,7 @@ __all__ = [
     "Paragraph",
     "StubOcr",
     "TesseractOcr",
+    "OcrReadResult",
     "sort_reading_order",
     "group_words_to_lines",
     "lines_to_paragraphs",
@@ -256,6 +257,29 @@ def lines_to_paragraphs(
 # --------------------------------------------------------------------------
 
 
+@dataclass(frozen=True)
+class OcrReadResult:
+    """원본·처리본 OCR 증거. 신뢰도나 문구를 보정하지 않는다.
+
+    ``words`` 는 요청한 전처리 방식의 필터링 전 결과다. 실제 ``read`` 반환값에
+    min_confidence 필터가 적용되어도 이 증거에는 저신뢰 단어를 함께 보관한다.
+    원문이 포함되므로 외부 전송용 산출물에 자동 첨부하지 않는다.
+    """
+
+    baseline_words: tuple[OcrWord, ...]
+    words: tuple[OcrWord, ...]
+    preprocess: str
+
+    def to_dict(self) -> dict[str, Any]:
+        """로컬 진단용 dict. 페이지 mm 좌표와 엔진 신뢰도를 모두 유지한다."""
+        return {
+            "preprocess": self.preprocess,
+            "selected_variant": "original" if self.preprocess == "none" else self.preprocess,
+            "baseline_words": [word.to_dict() for word in self.baseline_words],
+            "words": [word.to_dict() for word in self.words],
+        }
+
+
 def _validate_page_size(page_size_mm: tuple[float, float]) -> tuple[float, float]:
     """페이지 크기 인자를 검증해 ``(가로_mm, 세로_mm)`` 로 정규화한다.
 
@@ -302,6 +326,8 @@ class TesseractOcr:
         픽셀 → mm 환산에 쓰인다. 기본 A4.
     :param min_confidence: 이 값 미만의 단어는 버린다(0.0~1.0).
     :param config: Tesseract 추가 설정 문자열(예: ``"--psm 6"``).
+    :param preprocess: ``none``(기본) 또는 ``form_lines``. 선 제거는 원본 OCR도
+        실행해 ``last_result`` 에 보관한다. 신뢰도가 높은 결과를 골라 쓰지 않는다.
     :raises ValueError: 인자가 허용 범위를 벗어난 경우.
     """
 
@@ -312,6 +338,7 @@ class TesseractOcr:
         page_size_mm: tuple[float, float] = A4_PAGE_SIZE_MM,
         min_confidence: float = 0.0,
         config: str = "",
+        preprocess: str = "none",
     ) -> None:
         if not lang:
             raise ValueError("TesseractOcr.lang 은 빈 문자열일 수 없습니다.")
@@ -323,6 +350,10 @@ class TesseractOcr:
         self.page_size_mm = _validate_page_size(page_size_mm)
         self.min_confidence = float(min_confidence)
         self.config = config
+        if preprocess not in {"none", "form_lines"}:
+            raise ValueError("TesseractOcr.preprocess 는 none 또는 form_lines 여야 합니다.")
+        self.preprocess = preprocess
+        self.last_result: OcrReadResult | None = None
 
     @staticmethod
     def _import_pytesseract() -> Any:
@@ -351,6 +382,32 @@ class TesseractOcr:
         :raises docagent.errors.AdapterUnavailable: ``pytesseract`` 또는 Tesseract
             실행 파일이 없는 경우.
         """
+        result = self.read_with_evidence(image)
+        return [word for word in result.words if word.confidence >= self.min_confidence]
+
+    def read_with_evidence(self, image: ImageArray) -> OcrReadResult:
+        """원본과 선택한 처리 방식의 OCR을 함께 반환한다(필터링 전).
+
+        같은 크기의 입력을 사용하므로 두 결과 모두 동일 페이지 mm 좌표다.
+        텍스트·신뢰도가 좋아 보이는 쪽으로 자동 선택하거나 합치지 않는다.
+        실패했을 때 이전 페이지의 증거가 재사용되지 않도록 먼저 초기화한다.
+        """
+        self.last_result = None
+        _image_shape(image)
+        baseline = tuple(self._read_once(image))
+        if self.preprocess == "form_lines":
+            from docagent.vision.ocr_preprocessing import remove_form_lines
+
+            processed = remove_form_lines(image, page_size_mm=self.page_size_mm)
+            selected = tuple(self._read_once(processed))
+        else:
+            selected = baseline
+        result = OcrReadResult(baseline, selected, self.preprocess)
+        self.last_result = result
+        return result
+
+    def _read_once(self, image: ImageArray) -> list[OcrWord]:
+        """크기 변환·신뢰도 필터링 없이 한 번 실행하고 엔진 결과를 보존한다."""
         height_px, width_px = _image_shape(image)
         pytesseract = self._import_pytesseract()
 
@@ -388,8 +445,6 @@ class TesseractOcr:
             except (TypeError, ValueError):
                 raw_conf = -1.0
             confidence = 0.0 if raw_conf < 0 else min(1.0, raw_conf / 100.0)
-            if confidence < self.min_confidence:
-                continue
             words.append(
                 OcrWord(
                     text=text,
@@ -431,11 +486,14 @@ class TesseractOcr:
         """
         from docagent.vision.regions import detection_regions
 
+        self.last_result = None
         _image_shape(image)
         regions = detection_regions(
             detections, image.shape, page_size_mm=self.page_size_mm
         )
         words: list[OcrWord] = []
+        baseline_evidence: list[OcrWord] = []
+        selected_evidence: list[OcrWord] = []
         for region in regions:
             box = region.box_px
             crop = image[box.y:box.y + box.h, box.x:box.x + box.w]
@@ -444,8 +502,17 @@ class TesseractOcr:
                 page_size_mm=(region.box_mm.w_mm, region.box_mm.h_mm),
                 min_confidence=self.min_confidence,
                 config=self.config,
+                preprocess=self.preprocess,
             )
             words.extend(region.restore(engine.read(crop)))
+            if engine.last_result is not None:
+                baseline_evidence.extend(region.restore(engine.last_result.baseline_words))
+                selected_evidence.extend(region.restore(engine.last_result.words))
+        self.last_result = OcrReadResult(
+            tuple(sort_reading_order(baseline_evidence)),
+            tuple(sort_reading_order(selected_evidence)),
+            self.preprocess,
+        )
         return sort_reading_order(words)
 
 
