@@ -68,7 +68,8 @@ def execute(*, catalog: RuleCatalog, context: dict[str, Any], report: dict[str, 
             # OCR 준비 실패가 외부 추론 요청보다 먼저 발생하도록 한다.
             stage = "ocr_preflight"
             reader = (ocr_factory or TesseractOcr)(lang=cfg.ocr_lang, page_size_mm=cfg.page_size_mm,
-                                                  config="--psm 11" if cfg.ocr_mode == "regions" else "")
+                                                  config=cfg.tesseract_config(),
+                                                  **({"preprocess": cfg.ocr_preprocess} if cfg.ocr_preprocess != "none" else {}))
             reader.check_available()
             events.append(dict(stage=stage, status="passed"))
             stage = "analysis"
@@ -105,6 +106,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--capture-mode", choices=("photo", "scan"), default="photo")
     parser.add_argument("--detector", choices=("heuristic", "roboflow"), default="heuristic")
     parser.add_argument("--ocr-mode", choices=("page", "regions"), default="regions")
+    parser.add_argument("--ocr-preprocess", choices=("none", "form_lines"), default="none")
+    parser.add_argument("--ocr-psm", type=int, choices=(3, 6, 11),
+                        help="Tesseract 분할 모드. 미지정 시 regions=11, page=기본값")
     parser.add_argument("--dpi", type=int, default=300)
     privacy = parser.add_mutually_exclusive_group()
     privacy.add_argument("--mask-plan", type=Path)
@@ -123,7 +127,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             report=json.loads(args.analysis.read_text(encoding="utf-8")) if args.analysis else None,
             image=cv2.imdecode(np.frombuffer(args.image.read_bytes(), np.uint8), cv2.IMREAD_COLOR) if args.image else None,
             capture_mode=args.capture_mode, config=DocAgentConfig(dpi=args.dpi, detector_prefer=args.detector,
-                                                                 ocr_mode=args.ocr_mode),
+                                                                 ocr_mode=args.ocr_mode, ocr_preprocess=args.ocr_preprocess,
+                                                                 ocr_psm=args.ocr_psm),
             plan=MaskPlan.load(args.mask_plan) if args.mask_plan else None,
             allow_unmasked_blank=args.allow_unmasked_blank, demo=args.demo,
         )
