@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import math
 from typing import Any
+from docagent.contracts import BoxMm, OcrWord
 from docagent.guidance.rules import Observation
+from docagent.vision.ocr import group_words_to_lines
 
 
 def _box(data: dict) -> tuple[float,float,float,float]:
@@ -43,7 +45,9 @@ def observation_from_analysis(report: dict[str,Any], context: dict[str,Any], fie
     x0=max(0,box[0]-45);y0=max(0,box[1]-15)
     crop=(x0,y0,min(210,box[0]+box[2]+45)-x0,min(297,box[1]+box[3]+8)-y0)
     words=[w for w in report['ocr_words'] if _overlap(_box(w['box_mm']),crop)]
-    words.sort(key=lambda w:(w['box_mm']['y_mm'],w['box_mm']['x_mm']))
+    # 같은 행의 단어는 작은 y 오차보다 x 순서를 우선한다. 원본/신뢰도는 그대로 보존한다.
+    lines=group_words_to_lines([OcrWord(text=w['text'],box_mm=BoxMm(**w['box_mm']),
+                                      confidence=w['confidence']) for w in words])
     kind='checkbox' if f['type']=='choice' else f['type']
     detections=[d for d in report['detections'] if d['type']==kind and _overlap(_box(d['box_mm']),box)]
     normalized=[s for s in report['stages'] if s['stage']=='normalize']
@@ -55,7 +59,7 @@ def observation_from_analysis(report: dict[str,Any], context: dict[str,Any], fie
     return Observation(
         document_id=context['document_id'], document_version=context['document_version'],
         page=context['page'], field_type=kind,
-        surrounding_text=' '.join(w['text'] for w in words),
+        surrounding_text='\n'.join(line.text for line in lines),
         document_confidence=_minimum([context['confidence']]+[s['confidence'] for s in normalized]) if normalized else 0,
         detection_confidence=_minimum([f['confidence']]+[d['confidence'] for d in detections]) if detections else 0,
         ocr_confidence=_minimum(w['confidence'] for w in words),

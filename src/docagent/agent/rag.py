@@ -484,7 +484,10 @@ class LocalTfidfRetriever:
         vector = self._query_vector(query)
         if not np.any(vector):
             return []
-        scores = self._matrix @ vector
+        # 양쪽이 이미 정규화된 유한 벡터이므로 단순 행별 내적이면 충분하다.
+        # 일부 macOS BLAS/NumPy 조합은 정상 입력의 matmul에서도 부동소수점
+        # 상태 경고를 발생시킨다. BLAS를 쓰지 않는 같은 내적으로 계산한다.
+        scores = np.einsum("ij,j->i", self._matrix, vector, optimize=False)
         # 동점일 때 색인 순서가 앞선 청크가 이기도록 (-score, index) 로 정렬한다.
         order = sorted(range(len(scores)), key=lambda i: (-float(scores[i]), i))
         results: list[RetrievedChunk] = []

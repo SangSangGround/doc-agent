@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from docagent.agent.rag import (
@@ -180,6 +182,23 @@ class TestLocalTfidfRetriever:
         scores = [chunk.score for chunk in results]
         assert scores == sorted(scores, reverse=True)
         assert all(0.0 < score <= 1.0 for score in scores)
+
+    def test_finite_cosine_search_without_blas_warnings(
+        self, retriever: LocalTfidfRetriever
+    ) -> None:
+        """유한한 TF-IDF 내적은 경고 없이 수학적 행별 내적과 같은 결과다."""
+        query = "개인정보 수집 이용 동의"
+        vector = retriever._query_vector(query)
+        expected = [
+            math.fsum(float(a) * float(b) for a, b in zip(row, vector))
+            for row in retriever._matrix
+        ]
+        with np.errstate(divide="raise", over="raise", invalid="raise"):
+            results = retriever.search(query, k=len(retriever))
+        ordered = sorted(range(len(expected)), key=lambda index: (-expected[index], index))
+        ordered = [index for index in ordered if expected[index] > 0]
+        assert [item.chunk_id for item in results] == [retriever.chunks[i].chunk_id for i in ordered]
+        assert [item.score for item in results] == [round(expected[i], 6) for i in ordered]
 
     def test_search_respects_k(self, retriever: LocalTfidfRetriever) -> None:
         """반환 개수는 k 이하다."""

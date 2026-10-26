@@ -59,6 +59,19 @@ def test_cli_bridge(tmp_path,capsys):
     assert 'unrelated-private-text' not in str(output)
 
 
+def test_matching_phrase_keeps_row_order_when_ocr_word_tops_are_jittered():
+    r=report()
+    r['ocr_words']=[
+        dict(text='사유',box_mm=dict(x_mm=78,y_mm=100,w_mm=8,h_mm=4),confidence=.95),
+        dict(text='전입',box_mm=dict(x_mm=66,y_mm=100.4,w_mm=8,h_mm=4),confidence=.96),
+        dict(text='직업',box_mm=dict(x_mm=66,y_mm=106,w_mm=8,h_mm=4),confidence=.94),
+    ]
+    o=observation_from_analysis(r,context(),'choice_01')
+    assert o.surrounding_text=='전입 사유\n직업'
+    assert o.ocr_confidence==.94
+    assert r['ocr_words'][0]['text']=='사유'  # 증거 입력을 정렬·수정하지 않는다.
+
+
 @pytest.mark.parametrize('value',[None,[],"private-invalid-input"])
 def test_invalid_report_schema_is_rejected_without_echo(value):
     with pytest.raises(ValueError) as error:
