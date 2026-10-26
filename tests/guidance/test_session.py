@@ -10,7 +10,7 @@ from docagent import run
 from docagent.config import DocAgentConfig
 from docagent.detector.roboflow_detector import RoboflowDetector
 from docagent.errors import PiiEgressBlocked
-from docagent.guidance.rules import RuleCatalog
+from docagent.guidance.rules import RuleCatalog, content_digest
 from docagent.guidance.session import GuidanceSession, context_digest, digest
 from docagent.vision.quality import CaptureQuality
 from tests.guidance.test_analysis import report, context
@@ -45,6 +45,24 @@ def test_session_exact_instruction_and_navigation():
         assert session.command(command)['instruction'] == original
     assert speaker.spoken == [original] * 3
     assert session.current()['position'] == 1
+
+
+def test_production_session_reads_complete_source_including_conditions():
+    data = report()
+    raw_catalog = json.loads(__import__('pathlib').Path('examples/guidance/catalog.demo.json').read_text(encoding='utf-8'))
+    raw_catalog['purpose'] = 'production'
+    original = '  설문 참여\n□ 동의함 □ 거부함\n\n※ 동의하지 않아도 불이익은 없습니다.\n서명 또는 인  '
+    entry = raw_catalog['fields'][0]
+    entry.update(reading_mode='verbatim', source_text=original, instruction=original,
+                 source={'reference': 'synthetic-page-only', 'sha256': 'a' * 64})
+    entry['approval']['content_sha256'] = content_digest(entry)
+    speaker = Speaker()
+    session = GuidanceSession(RuleCatalog(raw_catalog), data, reviewed_context(data), backend=speaker)
+    assert session.ready
+    assert session.current()['source_text'] == original
+    for command in ('r', 'n', 'p'):
+        assert session.command(command)['instruction'] == original
+    assert speaker.spoken == [original] * 3
 
 
 @pytest.mark.parametrize('change', [lambda r: r.update(needs_review=True),

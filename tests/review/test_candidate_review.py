@@ -35,7 +35,8 @@ def inputs(tmp_path):
     (analyses/'sample'/'analysis.json').write_text(json.dumps(report),encoding='utf-8')
     entry=dict(document_id='fictional',document_version='v1',page=1,field_id='consent',
                field_type='checkbox',surrounding_text='가상 동의함',keywords=['동의함'],
-               forbidden_keywords=[],instruction='가상 항목입니다.',approval=draft_approval())
+               forbidden_keywords=[],instruction='가상 항목입니다.',reading_mode='verbatim',source_text='가상 항목입니다.',
+               source=dict(reference='synthetic-fixture-only',sha256='a'*64),approval=draft_approval())
     c=dict(id='sample',title='가상 문서',document_id='fictional',document_version='v1',page=1,
            image='form.png',file_sha256=hashlib.sha256(data).hexdigest(),
            catalog=dict(schema_version=1,purpose='production',fields=[entry]),
@@ -99,6 +100,7 @@ def test_reference_scaling_is_display_only_and_markup_is_escaped(inputs):
     c=m['candidates'][0]
     c['title']='</title><script>alert(1)</script>'
     c['catalog']['fields'][0]['instruction']='<img src=https://example.com onerror=alert(1)>'
+    c['catalog']['fields'][0]['source_text']=c['catalog']['fields'][0]['instruction']
     assert cr._rectangles(c,140,198)[0]['bbox']==[40,80,8,8]
     cr.prepare(m,source,analyses,out)
     page=(out/'sample/reference.html').read_text(encoding='utf-8')
@@ -159,6 +161,20 @@ def test_official_pdf_does_not_invent_roboflow_split_or_training_exclusion(input
     assert samples[0].truth is None
     assert read_json(out/'sample/analysis.json')==report
     assert read_json(out/'sample/context.draft.json')['approval']['status']=='draft'
+
+
+def test_pack_preserves_full_page_original_and_escapes_text(inputs):
+    m,source,analyses,out,_=inputs
+    c=official_inputs(m)
+    original='조건과 선택지 전체\n</pre><script>원문</script>\n마지막 유의사항'
+    c['catalog']['pages']=[dict(document_id='fictional',document_version='v1',page=1,page_count=1,
+            reading_mode='verbatim',source_text=original,source=dict(reference='fixture',sha256='a'*64),
+            approval=draft_approval())]
+    cr.prepare(m,source,analyses,out)
+    assert read_json(out/'catalog.draft.json')['pages'][0]['source_text']==original
+    page=(out/'sample/reference.html').read_text()
+    assert '마지막 유의사항' in page and '</pre><script>원문' not in page
+    assert RuleCatalog.load(out/'catalog.draft.json').read_document('fictional','v1').status=='unapproved'
 
 
 def test_official_training_exclusion_requires_and_preserves_scoped_evidence(inputs):

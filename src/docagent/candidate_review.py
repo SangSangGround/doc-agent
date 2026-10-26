@@ -136,12 +136,16 @@ def _reference_html(image: np.ndarray, candidate: dict, rectangles: list[dict], 
     fields = []
     for entry in candidate['catalog']['fields']:
         crop = next((c for c in crops if c['field_id'] == entry['field_id']), None)
-        fields.append('<section><h2>' + html.escape(entry['field_id']) + '</h2><b>문서 원문</b><p>'
-                      + html.escape(entry['surrounding_text']) + '</p><b>안내 초안 · 미승인</b><p>'
-                      + html.escape(entry['instruction']) + '</p><b>필수 키워드</b><p>'
+        source = entry.get('source_text')
+        fields.append('<section><h2>' + html.escape(entry['field_id']) + '</h2><b>검색용 주변 문구</b><p>'
+                      + html.escape(entry['surrounding_text']) + '</p><b>낭독 원문 초안 · 미승인</b><pre>'
+                      + html.escape(source if source is not None else '원문 전사 전입니다. 기존 설명 초안을 낭독하지 않습니다.')
+                      + '</pre><b>필수 키워드</b><p>'
                       + html.escape(' / '.join(entry['keywords'])) + '</p><b>주변 영역 OCR 진단</b><pre>'
                       + html.escape(json.dumps(crop, ensure_ascii=False, indent=2) if crop else '미실행')
                       + '</pre></section>')
+    pages = ''.join('<section><h2>페이지 원문 전체 · 미승인</h2><p>원본과 대조해 누락·읽기 순서를 검토하세요.</p><pre>'
+                    + html.escape(p['source_text']) + '</pre></section>' for p in candidate['catalog'].get('pages', []))
     return _page(candidate['title'], '<h1>' + html.escape(candidate['title']) + '</h1>'
                  '<p class="notice">후보 검수 전용 · 서비스 지원 확정/사람 승인 아님. 빨간 박스는 출처 명세의 '
                  '참조 좌표를 로컬 원본 해상도에 비례 표시한 검토 초안입니다. 이미지 동일성·라벨 기준·정렬을 검토하기 '
@@ -150,7 +154,7 @@ def _reference_html(image: np.ndarray, candidate: dict, rectangles: list[dict], 
                  '<a href="catalog.draft.json">안내 초안 JSON</a> · <a href="../index.html">목록</a></p>'
                  f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" '
                  f'role="img" aria-label="원본과 참조 라벨"><image width="{width}" height="{height}" '
-                 f'href="data:image/png;base64,{data}"/>{"".join(shapes)}</svg>' + ''.join(fields))
+                 f'href="data:image/png;base64,{data}"/>{"".join(shapes)}</svg>' + pages + ''.join(fields))
 
 
 def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path, *, crop_reader=None) -> dict:
@@ -187,6 +191,9 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
         identity = (candidate['document_id'], candidate['document_version'], candidate['page'])
         if (catalog.purpose != 'production' or not entries
                 or any(e['approval']['status'] != 'draft' for e in entries)
+                or any(p['approval']['status'] != 'draft'
+                       or (p['document_id'],p['document_version'],p['page']) != identity
+                       for p in catalog_data.get('pages', []))
                 or any((e['document_id'],e['document_version'],e['page']) != identity for e in entries)):
             raise ValueError('후보에는 같은 문서·버전·페이지의 미승인 초안만 넣으세요.')
         h,w = image.shape[:2]
@@ -226,10 +233,13 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
         review_html = render_review(normalized.image,plan=plan,report=report)
         reference_html = _reference_html(image,candidate,rectangles,crops)
         prepared.append((candidate,source,image,normalized,report,plan,context,crops,summary,review_html,reference_html))
+    combined = dict(schema_version=1,purpose='production',
+                    fields=[copy.deepcopy(e) for c,*_ in prepared for e in c['catalog']['fields']],
+                    pages=[copy.deepcopy(p) for c,*_ in prepared for p in c['catalog'].get('pages', [])])
+    RuleCatalog(combined)
     output.mkdir(parents=True,exist_ok=False)
     summaries = []
     samples = []
-    all_entries = []
     for c,source,image,normalized,report,plan,context,crops,summary,review_html,reference_html in prepared:
         folder = output/c['id']
         for name,payload in [('analysis.json',report),('catalog.draft.json',c['catalog']),
@@ -243,14 +253,13 @@ def prepare(manifest: dict, source_root: Path, analysis_root: Path, output: Path
             preview = mask_boxes(normalized.image,plan['boxes'],padding_px=plan['padding_px'])
             (folder/'masked.preview.png').write_bytes(cv2.imencode('.png',preview)[1].tobytes())
         summaries.append(summary)
-        all_entries.extend(copy.deepcopy(c['catalog']['fields']))
         samples.append(dict(id=c['id'],image=str(source),image_size=[image.shape[1],image.shape[0]],
                             variant='original',split={'valid':'val'}.get(summary['dataset_split'],summary['dataset_split']),
                             form_id=c['document_id'],source_id=c['id'],
                             training_membership=summary['training_membership'],
                             training_audit=summary['training_audit'],
                             labels=None,predictions=f"{c['id']}/analysis.json"))
-    write_new(output/'catalog.draft.json',dict(schema_version=1,purpose='production',fields=all_entries))
+    write_new(output/'catalog.draft.json',combined)
     write_new(output/'evaluation.manifest.json',dict(schema_version=1,dataset_version=manifest['dataset_version'],
               model_version=manifest['analysis_kind'],prediction_version='local-candidate-baseline-1',
               samples=samples,catalog='catalog.draft.json'))
