@@ -6,6 +6,8 @@ import binascii
 import io
 import json
 import secrets
+import ssl
+import ipaddress
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -157,8 +159,16 @@ class HomeApplication:
         return self.state()
 
 
-def make_server(app: HomeApplication, port: int = 8765) -> ThreadingHTTPServer:
-    """원격 노출·교차 출처 요청 없이 루프백에서만 제공한다."""
+def make_server(app: HomeApplication, port: int = 8765, *, mobile_host: str | None = None,
+                tls_context: ssl.SSLContext | None = None) -> ThreadingHTTPServer:
+    """기본은 루프백 웹, 모바일 모드는 지정한 사설 주소의 인증된 HTTPS API만 제공한다."""
+    if mobile_host is not None:
+        address = ipaddress.IPv4Address(mobile_host)
+        private_ranges = ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "127.0.0.0/8")
+        if (not any(address in ipaddress.ip_network(network) for network in private_ranges)
+                or tls_context is None):
+            raise ValueError("모바일 서버는 사설 IPv4 주소와 TLS 인증서가 필요합니다.")
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_: Any) -> None:
             pass  # 원문·선택·접속 쿼리를 로그로 남기지 않는다.
@@ -178,24 +188,26 @@ def make_server(app: HomeApplication, port: int = 8765) -> ThreadingHTTPServer:
             self.send_body(status,json.dumps(data,ensure_ascii=False,allow_nan=False).encode(),"application/json; charset=utf-8")
 
         def same_host(self) -> bool:
-            expected = {f"127.0.0.1:{self.server.server_port}",f"localhost:{self.server.server_port}"}
+            expected = ({f"{mobile_host}:{self.server.server_port}"} if mobile_host else
+                        {f"127.0.0.1:{self.server.server_port}",f"localhost:{self.server.server_port}"})
             return self.headers.get("Host") in expected
 
         def authorized(self) -> bool:
             origin = self.headers.get("Origin")
             allowed = {f"http://127.0.0.1:{self.server.server_port}",f"http://localhost:{self.server.server_port}"}
             token = self.headers.get("X-Session-Token", "")
-            return (self.same_host() and (origin is None or origin in allowed)
+            origin_allowed = origin is None if mobile_host else (origin is None or origin in allowed)
+            return (self.same_host() and origin_allowed
                     and isinstance(token, str) and token.isascii()
                     and secrets.compare_digest(token, app.token))
 
         def do_GET(self) -> None:
             if not self.same_host():
                 self.reply(403,{"error":"로컬 주소로 접속하세요."}); return
-            if self.path == "/":
+            if self.path == "/" and not mobile_host:
                 body=(ASSETS/"index.html").read_text(encoding="utf-8").replace("__SESSION_TOKEN__",app.token)
                 self.send_body(200,body.encode(),"text/html; charset=utf-8")
-            elif self.path in ("/app.js","/style.css"):
+            elif self.path in ("/app.js","/style.css") and not mobile_host:
                 mime = "application/javascript" if self.path.endswith("js") else "text/css"
                 self.send_body(200,(ASSETS/self.path[1:]).read_bytes(),mime+"; charset=utf-8")
             elif self.path == "/api/state" and self.authorized():
@@ -227,4 +239,11 @@ def make_server(app: HomeApplication, port: int = 8765) -> ThreadingHTTPServer:
             except Exception:
                 self.reply(503,{"error":"처리하지 못했습니다. 로컬 설치 상태를 확인하고 다시 시도해주세요."})
 
-    return ThreadingHTTPServer(("127.0.0.1",port),Handler)
+    server = ThreadingHTTPServer((mobile_host or "127.0.0.1",port),Handler)
+    if mobile_host:
+        try:
+            server.socket = tls_context.wrap_socket(server.socket, server_side=True)
+        except Exception:
+            server.server_close()
+            raise
+    return server

@@ -63,3 +63,16 @@ sessions/
 
 # 탐지 결과 이미지
 outputs/
+
+# iOS 로컬 빌드·서명·개발 연결 정보
+.build/
+.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.mobileprovision
+*.p12
+server-key.pem
+server-cert.pem
+pairing.json
+!ios/DocAgentApp/Assets.xcassets/**/*.png

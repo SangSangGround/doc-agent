@@ -90,6 +90,13 @@ def main(argv=None) -> int:
     serve.add_argument("--demo", action="store_true")
     serve.add_argument("--port", type=int, default=8765)
     serve.add_argument("--session", type=Path, help="선택 ID와 읽기 설정을 저장할 로컬 JSON 경로")
+    mobile = sub.add_parser("serve-mobile", help="같은 Wi-Fi의 아이폰 앱용 HTTPS 서버 실행")
+    mobile.add_argument("--template", type=Path, required=True)
+    mobile.add_argument("--host", required=True, help="PC의 사설 IPv4 주소")
+    mobile.add_argument("--port", type=int, default=8766)
+    mobile.add_argument("--connection-dir", type=Path, required=True)
+    mobile.add_argument("--demo", action="store_true")
+    mobile.add_argument("--session", type=Path)
     evaluate = sub.add_parser("evaluate", help="정답셋에서 체크 대조 지표 계산")
     evaluate.add_argument("--manifest", type=Path, required=True)
     evaluate.add_argument("--demo", action="store_true")
@@ -126,6 +133,10 @@ def main(argv=None) -> int:
                 pass
             finally:
                 server.server_close()
+        elif args.command == "serve-mobile":
+            from docagent.home.mobile import serve_mobile
+            serve_mobile(args.template, host=args.host, port=args.port,
+                         directory=args.connection_dir, demo=args.demo, session=args.session)
         elif args.command == "draft-template":
             draft_template(args)
         elif args.command == "approve-template":
