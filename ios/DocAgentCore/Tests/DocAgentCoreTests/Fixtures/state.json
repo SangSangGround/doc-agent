@@ -1,0 +1,130 @@
+{
+  "session": {
+    "document_id": "synthetic-home-consent",
+    "document_version": "1",
+    "title": "문서 읽기·체크 확인 연습 동의서",
+    "purpose": "demo",
+    "current_index": 0,
+    "current_group": {
+      "id": "consent_1",
+      "source_text": "1. 읽기 연습\n연습용 문서의 내용을 음성으로 듣는 것에 동의합니다.\n동의함 또는 동의하지 않음 중 한 가지에 표시하세요.\n□ 동의함  □ 동의하지 않음",
+      "min_selected": 1,
+      "max_selected": 1,
+      "options": [
+        {
+          "id": "agree",
+          "label": "동의함",
+          "box_mm": [
+            25,
+            119,
+            6,
+            6
+          ]
+        },
+        {
+          "id": "disagree",
+          "label": "동의하지 않음",
+          "box_mm": [
+            100,
+            119,
+            6,
+            6
+          ]
+        }
+      ],
+      "selected_option_ids": null,
+      "pending_option_ids": null,
+      "confirmed": false,
+      "verification": {
+        "status": "uncertain",
+        "message": "표시 여부를 정확하게 확인하기 어렵습니다. 다시 촬영하거나 확인해주세요.",
+        "marked_option_ids": []
+      }
+    },
+    "groups": [
+      {
+        "id": "consent_1",
+        "source_text": "1. 읽기 연습\n연습용 문서의 내용을 음성으로 듣는 것에 동의합니다.\n동의함 또는 동의하지 않음 중 한 가지에 표시하세요.\n□ 동의함  □ 동의하지 않음",
+        "min_selected": 1,
+        "max_selected": 1,
+        "options": [
+          {
+            "id": "agree",
+            "label": "동의함",
+            "box_mm": [
+              25,
+              119,
+              6,
+              6
+            ]
+          },
+          {
+            "id": "disagree",
+            "label": "동의하지 않음",
+            "box_mm": [
+              100,
+              119,
+              6,
+              6
+            ]
+          }
+        ],
+        "selected_option_ids": null,
+        "pending_option_ids": null,
+        "confirmed": false,
+        "verification": {
+          "status": "uncertain",
+          "message": "표시 여부를 정확하게 확인하기 어렵습니다. 다시 촬영하거나 확인해주세요.",
+          "marked_option_ids": []
+        }
+      },
+      {
+        "id": "consent_2",
+        "source_text": "2. 결과 확인 연습\n선택한 내용과 연습지의 체크 표시를 비교하는 것에 동의합니다.\n동의함 또는 동의하지 않음 중 한 가지에 표시하세요.\n□ 동의함  □ 동의하지 않음",
+        "min_selected": 1,
+        "max_selected": 1,
+        "options": [
+          {
+            "id": "agree",
+            "label": "동의함",
+            "box_mm": [
+              25,
+              194,
+              6,
+              6
+            ]
+          },
+          {
+            "id": "disagree",
+            "label": "동의하지 않음",
+            "box_mm": [
+              100,
+              194,
+              6,
+              6
+            ]
+          }
+        ],
+        "selected_option_ids": null,
+        "pending_option_ids": null,
+        "confirmed": false,
+        "verification": {
+          "status": "uncertain",
+          "message": "표시 여부를 정확하게 확인하기 어렵습니다. 다시 촬영하거나 확인해주세요.",
+          "marked_option_ids": []
+        }
+      }
+    ],
+    "complete": false,
+    "preferences": {
+      "speech_rate": 1.0
+    }
+  },
+  "document_ready": false,
+  "has_capture": false,
+  "purpose": "demo",
+  "can_verify": false,
+  "title": "문서 읽기·체크 확인 연습 동의서",
+  "external_transfer_enabled": false,
+  "session_saved": false
+}

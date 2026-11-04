@@ -1,0 +1,32 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+962CE17194DD308939C0D4EE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraView.swift"; sourceTree = "<group>"; };
+1382218060DB0EB82972987A = { isa = PBXBuildFile; fileRef = 962CE17194DD308939C0D4EE; };
+08692A645FA1431AA8A19454 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DocAgentApp.swift"; sourceTree = "<group>"; };
+0F2ABD416C94D0F7465D1221 = { isa = PBXBuildFile; fileRef = 08692A645FA1431AA8A19454; };
+87EC8ECE4FCC548928E67657 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeModel.swift"; sourceTree = "<group>"; };
+431C03E6E38B5D95EF8305E7 = { isa = PBXBuildFile; fileRef = 87EC8ECE4FCC548928E67657; };
+7B594B6DB375E1BF3F23CDD6 = { isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
+28AAD1477D5182D66D4B03B3 = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+F533077732FDE75F7831EE1B = { isa = PBXBuildFile; fileRef = 28AAD1477D5182D66D4B03B3; };
+26B2A637F7DC4079D5AB78A5 = { isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+58305B5EEAAB1C31EA692967 = { isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5; };
+38A007151ABE87CC01A5B6E9 = { isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocAgent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+3C3B0F03DC089F93B8457928 = { isa = PBXGroup; children = (962CE17194DD308939C0D4EE,08692A645FA1431AA8A19454,87EC8ECE4FCC548928E67657,7B594B6DB375E1BF3F23CDD6,28AAD1477D5182D66D4B03B3,26B2A637F7DC4079D5AB78A5); path = DocAgentApp; sourceTree = "<group>"; };
+FBDC4F23F93125BBEEAE800C = { isa = PBXGroup; children = (38A007151ABE87CC01A5B6E9); name = Products; sourceTree = "<group>"; };
+B28B7AF69320201D1CF206EB = { isa = PBXGroup; children = (3C3B0F03DC089F93B8457928,FBDC4F23F93125BBEEAE800C); sourceTree = "<group>"; };
+B747EAD6A8D7189EE159E1E4 = { isa = XCLocalSwiftPackageReference; relativePath = DocAgentCore; };
+8D6A224FA1D1DD751157EB0C = { isa = XCSwiftPackageProductDependency; package = B747EAD6A8D7189EE159E1E4; productName = DocAgentCore; };
+D9F82689E8F760ECED47CA3E = { isa = PBXBuildFile; productRef = 8D6A224FA1D1DD751157EB0C; };
+7561BFB015D8F536760CB671 = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (D9F82689E8F760ECED47CA3E); runOnlyForDeploymentPostprocessing = 0; };
+BCE16DD0260827ECF338C787 = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (1382218060DB0EB82972987A,0F2ABD416C94D0F7465D1221,431C03E6E38B5D95EF8305E7); runOnlyForDeploymentPostprocessing = 0; };
+0189424A5A60FED329FA868E = { isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (F533077732FDE75F7831EE1B,58305B5EEAAB1C31EA692967); runOnlyForDeploymentPostprocessing = 0; };
+ED8772ADEC3A6C25161BC957 = { isa = XCBuildConfiguration; buildSettings = {SWIFT_VERSION = "5.0"; IPHONEOS_DEPLOYMENT_TARGET = "17.0"; SDKROOT = "iphoneos"; CLANG_ENABLE_MODULES = "YES"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";}; name = Debug; };
+00F209874A1F7309F6DCEAA7 = { isa = XCBuildConfiguration; buildSettings = {SWIFT_VERSION = "5.0"; IPHONEOS_DEPLOYMENT_TARGET = "17.0"; SDKROOT = "iphoneos"; CLANG_ENABLE_MODULES = "YES";}; name = Release; };
+96316AF13F45443E4E9C4BA0 = { isa = XCConfigurationList; buildConfigurations = (ED8772ADEC3A6C25161BC957,00F209874A1F7309F6DCEAA7); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+4D8F54E7CBAF670D9F6C230D = { isa = XCBuildConfiguration; buildSettings = {SWIFT_VERSION = "5.0"; IPHONEOS_DEPLOYMENT_TARGET = "17.0"; SDKROOT = "iphoneos"; CLANG_ENABLE_MODULES = "YES"; PRODUCT_BUNDLE_IDENTIFIER = "org.sangsangground.DocAgent"; PRODUCT_NAME = "DocAgent"; INFOPLIST_FILE = "DocAgentApp/Info.plist"; CODE_SIGN_STYLE = "Automatic"; TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = "NO"; SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = "NO"; ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon"; SWIFT_EMIT_LOC_STRINGS = "YES"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks"; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";}; name = Debug; };
+1A6EFC2CD0AF63DD14BE0438 = { isa = XCBuildConfiguration; buildSettings = {SWIFT_VERSION = "5.0"; IPHONEOS_DEPLOYMENT_TARGET = "17.0"; SDKROOT = "iphoneos"; CLANG_ENABLE_MODULES = "YES"; PRODUCT_BUNDLE_IDENTIFIER = "org.sangsangground.DocAgent"; PRODUCT_NAME = "DocAgent"; INFOPLIST_FILE = "DocAgentApp/Info.plist"; CODE_SIGN_STYLE = "Automatic"; TARGETED_DEVICE_FAMILY = "1"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = "NO"; SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = "NO"; ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon"; SWIFT_EMIT_LOC_STRINGS = "YES"; LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";}; name = Release; };
+EAD1C478648BB5F4F725A516 = { isa = XCConfigurationList; buildConfigurations = (4D8F54E7CBAF670D9F6C230D,1A6EFC2CD0AF63DD14BE0438); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+0E8A3AD980EC179856012B7E = { isa = PBXNativeTarget; buildConfigurationList = EAD1C478648BB5F4F725A516; buildPhases = (BCE16DD0260827ECF338C787,7561BFB015D8F536760CB671,0189424A5A60FED329FA868E); buildRules = (); dependencies = (); name = DocAgent; packageProductDependencies = (8D6A224FA1D1DD751157EB0C); productName = DocAgent; productReference = 38A007151ABE87CC01A5B6E9; productType = "com.apple.product-type.application"; };
+98F54143AB4E86B28C3AFEE0 = { isa = PBXProject; attributes = { BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 1600; TargetAttributes = { 0E8A3AD980EC179856012B7E = { CreatedOnToolsVersion = 16.0; }; }; }; buildConfigurationList = 96316AF13F45443E4E9C4BA0; compatibilityVersion = "Xcode 14.0"; developmentRegion = ko; hasScannedForEncodings = 0; knownRegions = (ko,en,Base); mainGroup = B28B7AF69320201D1CF206EB; packageReferences = (B747EAD6A8D7189EE159E1E4); productRefGroup = FBDC4F23F93125BBEEAE800C; projectDirPath = ""; projectRoot = ""; targets = (0E8A3AD980EC179856012B7E); };
+}; rootObject = 98F54143AB4E86B28C3AFEE0; }
