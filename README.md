@@ -56,6 +56,19 @@ python -m docagent.evaluate outputs/workflow-demo/manifest.json --output-dir out
 
 ## 실제 문서 작업 흐름
 
+### 집에서 읽기·체크 결과 대조 (외부 AI 없이)
+
+별도 로컬 화면에서 카메라 촬영 안내, 검토된 원문 읽기, 선택 재확인, 체크 결과 대조를 실행할 수 있다. 실제 지원 동의서는 선정 전이며 가상 양식은 명시적인 데모 모드에서 사용한다.
+
+```sh
+PYTHONPATH=src python -m docagent.home demo --output outputs/home-demo
+PYTHONPATH=src python -m docagent.home serve --template outputs/home-demo/template.json --demo
+```
+
+`http://127.0.0.1:8765`에 접속한다. [홈 문서 도우미 실행·양식 등록·평가 안내](docs/home-document-assistant.md)를 참고한다. 자동 마스킹 결과는 미승인 후보이며, 실제 문서 정확도와 사용자 검증은 별도다.
+
+### 기존 분석·검수 경로
+
 1. `docagent.review mask`: 로컬 검수 화면에서 개인정보 영역 지정
 2. `docagent.review mask-approve`: 사람이 영역 확인 후 승인 기록 저장
 3. `docagent.analyze`: 촬영 품질 검사·검토된 이미지 전송·로컬 OCR 분석
