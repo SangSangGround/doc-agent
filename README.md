@@ -16,6 +16,7 @@
 | 로컬 TTS | macOS `say`, 재생·정지·반복. Windows/Linux 음성 어댑터는 미구현 |
 | 이미지 마스킹 | 사람이 검토한 이미지별 박스 적용. 자동 개인정보 영역 탐지는 아님 |
 | 로컬 검수 화면 | 탐지/OCR 오버레이, 마스킹 박스 편집·미리보기·초안 저장 |
+| iPhone 앱 | SwiftUI 화면·PC HTTPS 연결 구현, Xcode 전체 빌드·실기기 검증 대기 |
 | 평가 도구 | COCO/YOLO 정답 연결, 탐지·안내·마스킹 평가, JSON/Markdown 보고서 |
 | 정답 박스 검수 | 원본 위 박스 편집, 미승인 초안 저장, 사람 검수 후 COCO 연결 |
 | 환경 점검·CI | 설치/언어/음성/키 설정 여부 점검, 외부 API 없는 회귀 테스트 구성 |
@@ -66,6 +67,10 @@ PYTHONPATH=src python -m docagent.home serve --template outputs/home-demo/templa
 ```
 
 `http://127.0.0.1:8765`에 접속한다. [홈 문서 도우미 실행·양식 등록·평가 안내](docs/home-document-assistant.md)를 참고한다. 자동 마스킹 결과는 미승인 후보이며, 실제 문서 정확도와 사용자 검증은 별도다.
+
+### iPhone 앱과 개발용 PC 연결
+
+`ios/DocAgent.xcodeproj`에 iPhone 13 이상·iOS 17 이상용 SwiftUI 앱이 있다. 촬영·원문 듣기·선택 확인·체크 결과를 앱에서 조작하고, 같은 Wi-Fi의 Python 서버가 사진을 처리한다. `docagent.home serve-mobile`로 HTTPS 서버와 연결 정보를 준비한다. [아이폰 설치·연결·시연 안내](ios/README.md)에 명령과 검증 한계를 정리했다.
 
 ### 기존 분석·검수 경로
 
