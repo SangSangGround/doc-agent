@@ -45,4 +45,4 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.setuptools.package-data]
-docagent = ["review_assets/*.html"]
+docagent = ["review_assets/*.html", "home/assets/*.html", "home/assets/*.css", "home/assets/*.js"]

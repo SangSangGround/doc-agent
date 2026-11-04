@@ -53,3 +53,7 @@ jobs:
         run: python -m docagent.run --analysis outputs/ci-demo/analysis.json --document-context outputs/ci-demo/context.json --catalog outputs/ci-demo/catalog.json --demo
       - name: 합성 자료 평가
         run: python -m docagent.evaluate outputs/ci-demo/manifest.json --output-dir outputs/ci-evaluation --demo
+      - name: 홈 문서 도우미 합성 동의서 생성
+        run: python -m docagent.home demo --output outputs/ci-home
+      - name: 홈 문서 도우미 체크 대조 평가
+        run: python -m docagent.home evaluate --manifest outputs/ci-home/evaluation.json --output outputs/ci-home/results.json --demo
