@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1500" viewBox="0 0 2400 1500" role="img" aria-labelledby="title description">
+<title id="title">노트북 문서 도우미 아키텍처</title>
+<desc id="description">노트북 한 대에서 브라우저로 문서를 맞추고 자동 촬영한다. 로컬 Python 서버가 사진 품질을 검사하고 양식을 확인한 뒤 금액과 날짜를 읽는다. 질문에는 현재 문서의 원문을 근거로 답하며, 반사로 가린 항목은 재촬영을 안내한다. 등록된 체크칸과 서명란의 위치를 안내하고, 작성 후 재촬영해 체크 결과를 대조한다.</desc>
+<rect width="2400" height="1500" fill="#FFFFFF"/>
+<g font-family="'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif">
+<text x="100" y="79" font-size="25" font-weight="700" fill="#0968CF" text-anchor="start">DOC AGENT  /  SOFTWARE ARCHITECTURE</text>
+<rect x="2043" y="48" width="257" height="47" rx="10" fill="#EAF3FE"/>
+<text x="2171.5" y="80" font-size="23" font-weight="650" fill="#0968CF" text-anchor="middle">1주 시연 설계안</text>
+<text x="100" y="164" font-size="62" font-weight="750" fill="#172231" text-anchor="start">노트북 문서 도우미 아키텍처</text>
+<text x="100" y="222" font-size="29" font-weight="400" fill="#526174" text-anchor="start">비프음으로 문서 위치를 맞추고, 읽을 수 있는 내용을 원문 근거와 함께 안내합니다.</text>
+<rect x="80" y="270" width="2240" height="776" rx="21" fill="#F8FAFD" stroke="#D3DFEB" stroke-width="2"/>
+<text x="111" y="326" font-size="30" font-weight="700" fill="#172231" text-anchor="start">시연 노트북</text>
+<text x="2289" y="324" font-size="23" font-weight="400" fill="#526174" text-anchor="end">등록 양식 1종  ·  단일 사용자</text>
+<rect x="110" y="365" width="485" height="649" rx="14" fill="#FFFFFF" stroke="#D3DFEB" stroke-width="2"/>
+<rect x="140" y="399" width="40" height="27" rx="5" fill="none" stroke="#0968CF" stroke-width="3"/>
+<polyline points="160,427 160,436" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="149,436 171,436" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="200" y="431" font-size="34" font-weight="700" fill="#172231" text-anchor="start">노트북 브라우저</text>
+<text x="136" y="469" font-size="25" font-weight="400" fill="#526174" text-anchor="start">웹캠 · 마이크 · 스피커</text>
+<rect x="136" y="496" width="433" height="145" rx="14" fill="#F2F5F8"/>
+<text x="160" y="540" font-size="31" font-weight="700" fill="#172231" text-anchor="start">촬영 안내·자동 촬영</text>
+<text x="160" y="581" font-size="25" font-weight="400" fill="#526174" text-anchor="start">비프음·음성으로 위치 안내</text>
+<text x="160" y="615" font-size="25" font-weight="400" fill="#526174" text-anchor="start">안정된 상태에서 자동 촬영</text>
+<rect x="136" y="657" width="433" height="145" rx="14" fill="#F2F5F8"/>
+<text x="160" y="701" font-size="31" font-weight="700" fill="#172231" text-anchor="start">음성 질문·원문 듣기</text>
+<text x="160" y="742" font-size="25" font-weight="400" fill="#526174" text-anchor="start">마이크 또는 키보드로 질문</text>
+<text x="160" y="776" font-size="25" font-weight="400" fill="#526174" text-anchor="start">답변과 근거 문장 낭독</text>
+<rect x="136" y="818" width="433" height="145" rx="14" fill="#F2F5F8"/>
+<text x="160" y="862" font-size="31" font-weight="700" fill="#172231" text-anchor="start">작성 위치·결과 확인</text>
+<text x="160" y="903" font-size="25" font-weight="400" fill="#526174" text-anchor="start">체크칸·서명란 위치 듣기</text>
+<text x="160" y="937" font-size="25" font-weight="400" fill="#526174" text-anchor="start">체크한 뒤 다시 촬영</text>
+<rect x="800" y="365" width="855" height="649" rx="14" fill="#FFFFFF" stroke="#0968CF" stroke-width="2"/>
+<rect x="830" y="399" width="42" height="15" rx="4" fill="none" stroke="#0968CF" stroke-width="3"/>
+<polyline points="838,406 842,406" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="830" y="421" width="42" height="15" rx="4" fill="none" stroke="#0968CF" stroke-width="3"/>
+<polyline points="838,428 842,428" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="893" y="431" font-size="34" font-weight="700" fill="#172231" text-anchor="start">로컬 Python 서버</text>
+<rect x="827" y="463" width="801" height="119" rx="14" fill="#F2F5F8"/>
+<text x="851" y="505" font-size="31" font-weight="700" fill="#172231" text-anchor="start">촬영 준비 판정</text>
+<text x="1604" y="503" font-size="23" font-weight="400" fill="#0968CF" text-anchor="end">OpenCV</text>
+<text x="851" y="550" font-size="26" font-weight="400" fill="#526174" text-anchor="start">미리보기에서 네 모서리·여백·흔들림 확인</text>
+<rect x="827" y="594" width="801" height="119" rx="14" fill="#EAF3FE"/>
+<text x="851" y="636" font-size="31" font-weight="700" fill="#172231" text-anchor="start">촬영본 검사·OCR</text>
+<text x="1604" y="634" font-size="23" font-weight="400" fill="#0968CF" text-anchor="end">OpenCV · Tesseract</text>
+<text x="851" y="672" font-size="25" font-weight="400" fill="#526174" text-anchor="start">잘림·흐림 검사 → 원근 보정·양식 확인</text>
+<text x="851" y="701" font-size="24" font-weight="400" fill="#526174" text-anchor="start">반사로 가린 칸 표시 · 금액과 날짜 판독</text>
+<rect x="827" y="725" width="801" height="119" rx="14" fill="#EAF3FE"/>
+<text x="851" y="767" font-size="31" font-weight="700" fill="#172231" text-anchor="start">원문 기반 질의응답</text>
+<text x="1604" y="765" font-size="23" font-weight="400" fill="#0968CF" text-anchor="end">LLM</text>
+<text x="851" y="803" font-size="25" font-weight="400" fill="#526174" text-anchor="start">현재 문서에서 근거 문장 조회 · 답변 확인</text>
+<text x="851" y="832" font-size="24" font-weight="400" fill="#526174" text-anchor="start">읽기 어려운 항목은 재촬영 요청</text>
+<rect x="827" y="856" width="801" height="119" rx="14" fill="#F2F5F8"/>
+<text x="851" y="898" font-size="31" font-weight="700" fill="#172231" text-anchor="start">작성 위치·체크 대조</text>
+<text x="1604" y="896" font-size="23" font-weight="400" fill="#0968CF" text-anchor="end">OpenCV</text>
+<text x="851" y="943" font-size="26" font-weight="400" fill="#526174" text-anchor="start">등록된 칸 위치 안내 · 선택과 실제 체크 표시 비교</text>
+<rect x="1835" y="365" width="455" height="649" rx="14" fill="#FFFFFF" stroke="#D3DFEB" stroke-width="2"/>
+<rect x="1864" y="396" width="31" height="40" rx="4" fill="none" stroke="#0968CF" stroke-width="3"/>
+<polyline points="1871,407 1888,407" fill="none" stroke="#0968CF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1871,416 1888,416" fill="none" stroke="#0968CF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<polyline points="1871,425 1888,425" fill="none" stroke="#0968CF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1916" y="431" font-size="34" font-weight="700" fill="#172231" text-anchor="start">문서 데이터</text>
+<rect x="1860" y="463" width="405" height="238" rx="14" fill="#F2F5F8"/>
+<text x="1883" y="512" font-size="31" font-weight="700" fill="#172231" text-anchor="start">등록 양식</text>
+<text x="1883" y="559" font-size="25" font-weight="400" fill="#526174" text-anchor="start">검토한 원문 · 기준 이미지</text>
+<text x="1883" y="599" font-size="25" font-weight="400" fill="#526174" text-anchor="start">체크칸·서명란 좌표</text>
+<polyline points="1883,628 2242,628" fill="none" stroke="#D3DFEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1883" y="667" font-size="23" font-weight="400" fill="#0968CF" text-anchor="start">로컬 파일</text>
+<rect x="1860" y="721" width="405" height="254" rx="14" fill="#F2F5F8"/>
+<text x="1883" y="770" font-size="31" font-weight="700" fill="#172231" text-anchor="start">현재 문서 세션</text>
+<text x="1883" y="817" font-size="25" font-weight="400" fill="#526174" text-anchor="start">촬영 ID · 읽어낸 값</text>
+<text x="1883" y="857" font-size="25" font-weight="400" fill="#526174" text-anchor="start">항목별 판독 상태 · 질문 맥락</text>
+<polyline points="1883,886 2242,886" fill="none" stroke="#D3DFEB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1883" y="925" font-size="23" font-weight="400" fill="#0968CF" text-anchor="start">메모리 · 새 촬영 때 갱신</text>
+<text x="697" y="526" font-size="25" font-weight="700" fill="#0968CF" text-anchor="middle">localhost</text>
+<text x="697" y="558" font-size="21" font-weight="600" fill="#0968CF" text-anchor="middle">HTTP / JSON</text>
+<polyline points="608,590 779,590" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="787,590 772,597 772,583" fill="#0968CF"/>
+<text x="697" y="628" font-size="23" font-weight="400" fill="#526174" text-anchor="middle">프레임 · 사진</text>
+<text x="697" y="659" font-size="23" font-weight="400" fill="#526174" text-anchor="middle">질문 · 선택</text>
+<polyline points="787,772 616,772" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="608,772 623,765 623,779" fill="#0968CF"/>
+<text x="697" y="810" font-size="23" font-weight="400" fill="#526174" text-anchor="middle">촬영 안내</text>
+<text x="697" y="841" font-size="23" font-weight="400" fill="#526174" text-anchor="middle">답변 · 대조 결과</text>
+<text x="1745" y="550" font-size="23" font-weight="400" fill="#0968CF" text-anchor="middle">원문·좌표</text>
+<polyline points="1822,575 1676,575" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1668,575 1683,568 1683,582" fill="#0968CF"/>
+<text x="1745" y="794" font-size="23" font-weight="400" fill="#0968CF" text-anchor="middle">갱신·조회</text>
+<polyline points="1668,819 1814,819" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1822,819 1807,826 1807,812" fill="#0968CF"/>
+<polyline points="1822,846 1676,846" fill="none" stroke="#0968CF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1668,846 1683,839 1683,853" fill="#0968CF"/>
+<rect x="100" y="1075" width="2200" height="82" rx="14" fill="#E6F1FF"/>
+<text x="1200" y="1129" font-size="33" font-weight="700" fill="#0968CF" text-anchor="middle">문서 맞추기  →  자동 촬영  →  품질 확인  →  듣기·질문  →  체크 대조</text>
+<rect x="100" y="1197" width="1060" height="190" rx="14" fill="#F2F5F8" stroke="#D3DFEB" stroke-width="2"/>
+<text x="128" y="1251" font-size="32" font-weight="700" fill="#172231" text-anchor="start">금액 칸에 반사가 생기면</text>
+<text x="128" y="1301" font-size="27" font-weight="600" fill="#0968CF" text-anchor="start">금액 답변 보류 → 재촬영 → 새 사진의 금액 안내</text>
+<text x="128" y="1344" font-size="25" font-weight="400" fill="#526174" text-anchor="start">읽을 수 있는 다른 항목은 원문과 함께 안내</text>
+<rect x="1190" y="1197" width="1110" height="190" rx="14" fill="#F2F5F8" stroke="#D3DFEB" stroke-width="2"/>
+<text x="1218" y="1251" font-size="32" font-weight="700" fill="#172231" text-anchor="start">평가 기록</text>
+<text x="1218" y="1301" font-size="26" font-weight="400" fill="#526174" text-anchor="start">부적합 사진 통과율 · 핵심 정보 정확도 · 근거 없는 답변</text>
+<text x="1218" y="1344" font-size="25" font-weight="400" fill="#526174" text-anchor="start">과제 완료 시간 · 재촬영 횟수</text>
+<text x="100" y="1441" font-size="23" font-weight="400" fill="#526174" text-anchor="start">외부 LLM을 사용하는 경우 가상 문서의 질문과 필요한 근거 문장만 전달</text>
+</g>
+</svg>

@@ -26,6 +26,7 @@ yolo = ["ultralytics>=8.0", "torch>=2.0"]
 llm = ["anthropic>=0.34"]
 serial = ["pyserial>=3.5"]
 ocr = ["pytesseract>=0.3.10"]
+speech = ["faster-whisper>=1.1,<2"]
 roboflow = ["inference-sdk>=1.7", "python-dotenv>=1.0"]
 dev = ["pytest>=7.4"]
 
@@ -45,4 +46,4 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.setuptools.package-data]
-docagent = ["review_assets/*.html", "home/assets/*.html", "home/assets/*.css", "home/assets/*.js"]
+docagent = ["review_assets/*.html", "home/assets/*.html", "home/assets/*.css", "home/assets/*.js", "home/native/*.swift"]

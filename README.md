@@ -57,16 +57,15 @@ python -m docagent.evaluate outputs/workflow-demo/manifest.json --output-dir out
 
 ## 실제 문서 작업 흐름
 
-### 집에서 읽기·체크 결과 대조 (외부 AI 없이)
+### 노트북 생활 문서 OCR·음성 질의응답
 
-별도 로컬 화면에서 카메라 촬영 안내, 검토된 원문 읽기, 선택 재확인, 체크 결과 대조를 실행할 수 있다. 실제 지원 동의서는 선정 전이며 가상 양식은 명시적인 데모 모드에서 사용한다.
+등록 양식 없이 안내문·가정통신문 등 촬영한 문서의 글자를 읽는다. macOS는 Apple Vision으로 문서 경계와 글자를 인식하고 다른 OS는 OpenCV·Tesseract를 사용한다. 카메라에 문서가 안정적으로 들어오면 자동 촬영하고, 성공 후 원문 듣기·문서 질문·체크 상태 듣기를 제공한다. 비프음은 문서 위치를 안내하고 음성 안내 중에는 작아진다. 질문에는 로컬 Ollama `qwen3.5:4b`, 마이크에는 로컬 Whisper small을 사용한다.
 
 ```sh
-PYTHONPATH=src python -m docagent.home demo --output outputs/home-demo
-PYTHONPATH=src python -m docagent.home serve --template outputs/home-demo/template.json --demo
+PYTHONPATH=src ./venv/bin/python -m docagent.home serve
 ```
 
-`http://127.0.0.1:8765`에 접속한다. [홈 문서 도우미 실행·양식 등록·평가 안내](docs/home-document-assistant.md)를 참고한다. 자동 마스킹 결과는 미승인 후보이며, 실제 문서 정확도와 사용자 검증은 별도다.
+[로컬 앱](http://127.0.0.1:8765) · [설치·사용·검증 범위](docs/home-document-assistant.md). 일반 문서 모드는 `--template`을 붙이지 않는다. 모델 없이 OCR부터 확인하려면 `--llm off --no-speech`를 추가한다. 인식문과 체크 상태에는 오류가 있을 수 있으며, 불확실한 글자는 함께 안내한다. 기존 등록 양식 모드는 명시적으로 `--template ... --demo`를 지정할 때 사용한다.
 
 ### iPhone 앱과 개발용 PC 연결
 

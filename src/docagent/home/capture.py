@@ -8,7 +8,8 @@ from typing import Any
 import cv2
 import numpy as np
 
-from docagent.vision.quality import QualityPolicy, assess_capture
+from docagent.vision.quality import CaptureQuality, QualityPolicy, assess_capture
+from docagent.home.framing import document_boundary
 
 
 class CaptureCoach:
@@ -20,9 +21,9 @@ class CaptureCoach:
     """
 
     def __init__(self, *, mode: str = "photo", stable_frames: int = 3,
-                 stable_seconds: float = .6, announcement_interval: float = 3.,
-                 repeat_interval: float = 8., motion_threshold: float = 4.,
-                 policy: QualityPolicy | None = None):
+                 stable_seconds: float = .6, announcement_interval: float = 12.,
+                 repeat_interval: float = 24., motion_threshold: float = 4.,
+                 policy: QualityPolicy | None = None, boundary_detector=None):
         if mode not in {"photo", "scan"}:
             raise ValueError("촬영 모드는 photo 또는 scan 이어야 합니다.")
         if type(stable_frames) is not int or stable_frames < 2:
@@ -32,6 +33,7 @@ class CaptureCoach:
                 raise ValueError("촬영 안내 설정은 유한한 양수여야 합니다.")
         self.mode = mode
         self.policy = policy
+        self.boundary_detector = boundary_detector or document_boundary
         self.stable_frames = stable_frames
         self.stable_seconds = stable_seconds
         self.announcement_interval = announcement_interval
@@ -49,6 +51,8 @@ class CaptureCoach:
         self._last_announcement_key: str | None = None
         self._candidate_key: str | None = None
         self._candidate_frames = 0
+        self._candidate_since = None
+        self._last_quad = None
 
     def update(self, image: Any, *, timestamp: float | None = None) -> dict[str, Any]:
         """한 프레임을 검사한다. 시간 역행은 이전 상태를 변경하지 않고 거절한다."""
@@ -58,12 +62,25 @@ class CaptureCoach:
             raise ValueError("프레임 시간은 단조 증가하는 유한한 수여야 합니다.")
         previous_time = self._last_time
         self._last_time = now
-        quality = assess_capture(image, mode=self.mode, policy=self.policy)
+        boundary = None
+        if self.mode == "photo" and isinstance(image, np.ndarray) and image.dtype == np.uint8 and image.ndim in (2, 3) and min(image.shape[:2]) >= 8:
+            boundary = self.boundary_detector(image)
+            reason = "edge_cutoff" if boundary["status"] == "clipped" else "boundary_unknown"
+            quality = CaptureQuality("pass" if boundary["status"] == "framed" else "review",
+                () if boundary["status"] == "framed" else (reason,),
+                {"area_ratio": boundary["area_ratio"]}, "photo")
+        else:
+            quality = assess_capture(image, mode=self.mode, policy=self.policy)
         motion = 0.0
         if quality.can_continue:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
             thumb = cv2.resize(gray, (64, 64), interpolation=cv2.INTER_AREA)
-            if self._last_frame is not None:
+            if boundary:
+                quad = np.asarray(boundary["quad"], dtype=float) / np.array([image.shape[1], image.shape[0]])
+                if self._last_quad is not None:
+                    motion = float(np.mean(np.linalg.norm(quad - self._last_quad, axis=1)) * 200)
+                self._last_quad = quad
+            elif self._last_frame is not None:
                 motion = float(np.mean(cv2.absdiff(thumb, self._last_frame)))
             # 긴 중단 후의 두 프레임을 연속 관측으로 취급하지 않는다.
             interrupted = previous_time is not None and now - previous_time > max(2., self.stable_seconds * 3)
@@ -77,6 +94,7 @@ class CaptureCoach:
             self._stable_since = None
             self._good_frames = 0
             self._last_frame = None
+            self._last_quad = None
         ready = (quality.can_continue and self._good_frames >= self.stable_frames
                  and self._stable_since is not None and now - self._stable_since >= self.stable_seconds)
         status = "ready" if ready else "stabilizing" if quality.can_continue else quality.status
@@ -85,19 +103,20 @@ class CaptureCoach:
         elif quality.can_continue:
             instruction = "문서가 보입니다. 카메라를 잠시 고정해주세요."
         else:
-            instruction = quality.instruction
+            instruction = boundary["instruction"] if boundary else quality.instruction
         key = status + ":" + (quality.reasons[0] if quality.reasons else "")
         if key == self._candidate_key:
             self._candidate_frames += 1
         else:
             self._candidate_key, self._candidate_frames = key, 1
+            self._candidate_since = now
         first = self._last_announcement_time is None
         elapsed = float("inf") if first else now - self._last_announcement_time
         changed = key != self._last_announcement_key
-        announce = first or (
-            self._candidate_frames >= 2 and elapsed >= self.announcement_interval
-            and (changed or elapsed >= self.repeat_interval)
-        )
+        # 잠깐 지나가는 상태는 비프음만 바꾼다. 같은 오류가 1.5초 유지되어야 말한다.
+        announce = (self._candidate_frames >= 2 and now - self._candidate_since >= 1.5
+                    and elapsed >= self.announcement_interval
+                    and (changed or elapsed >= self.repeat_interval))
         if announce:
             self._last_announcement_key = key
             self._last_announcement_time = now
@@ -106,4 +125,11 @@ class CaptureCoach:
             "should_announce": announce, "ready_to_capture": bool(ready),
             "stable_frames": self._good_frames, "motion_score": round(motion, 3),
             "quality": quality.to_dict(),
+            "boundary": boundary,
+            "beep_state": "ready" if ready else "stabilizing" if quality.can_continue else "adjusting",
+            "stability_progress": round(min(
+                self._good_frames / self.stable_frames,
+                (now - self._stable_since) / self.stable_seconds if self._stable_since is not None else 0.,
+                1.,
+            ), 3),
         }

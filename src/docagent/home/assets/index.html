@@ -1,15 +1,66 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="session-token" content="__SESSION_TOKEN__"><title>문서 읽기와 체크 확인</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
-<body><a class="skip" href="#main">본문으로 이동</a><header><p class="eyebrow">DOC AGENT · 로컬 문서 도우미</p><h1>문서 읽기와 체크 확인</h1><p id="title"></p><p id="mode"></p></header>
-<main id="main"><div id="notice" role="status" aria-live="polite" aria-atomic="true">문서를 준비하고 있습니다.</div>
-<section aria-labelledby="capture-title"><h2 id="capture-title">1. 문서 촬영</h2><p>종이 전체와 네 모서리가 보이게 놓아주세요. 촬영 상태를 음성으로 안내합니다.</p>
-<div class="controls"><button id="camera">카메라 켜기</button><button id="camera-stop" disabled>카메라 끄기</button><button id="take" disabled>현재 화면 촬영</button></div><video id="video" autoplay muted playsinline aria-label="문서 촬영 화면"></video><canvas id="canvas" hidden></canvas>
-<label for="file">문서 사진 불러오기</label><input id="file" type="file" accept="image/png,image/jpeg"><label class="check"><input id="scan" type="checkbox">여백 없이 페이지 전체를 담은 스캔 이미지입니다</label>
-<details><summary>지원 양식 보기</summary><p>사진과 이 양식을 비교합니다. 다른 양식은 먼저 등록·검토해야 합니다.</p><img id="reference" alt="이 세션에서 지원하는 빈 양식"></details></section>
-<section aria-labelledby="read-title"><h2 id="read-title">2. 원문 듣기와 선택 확인</h2><p>검토된 원문을 그대로 읽습니다. 선택 결과는 확인 버튼을 누른 뒤 저장됩니다.</p>
-<div class="controls"><button id="read-page">전체 원문 읽기</button><button id="read-group">현재 항목 읽기</button><button id="stop">읽기 정지</button></div><label for="rate">읽기 속도</label><select id="rate"><option value="0.8">0.8배</option><option value="1" selected>1배</option><option value="1.5">1.5배</option><option value="2">2배</option></select><p id="voice-status"></p>
-<div class="controls"><button id="previous">이전 항목</button><button id="next">다음 항목</button></div><p id="position"></p><pre id="source" tabindex="0" aria-label="현재 항목 원문"></pre><fieldset id="choices"><legend>표시할 선택지</legend></fieldset>
-<div class="controls"><button id="propose">선택 내용 재확인</button><button id="confirm" disabled>이 선택으로 확정</button><button id="cancel">선택 변경 취소</button></div><p id="selection" role="status" aria-live="polite"></p></section>
-<section aria-labelledby="verify-title"><h2 id="verify-title">3. 체크 결과 확인</h2><p>선택한 항목에 표시한 뒤 위에서 다시 촬영하거나 작성한 사진을 불러오세요. 작성 위치로 손을 유도하는 기능은 제공하지 않습니다.</p><button id="verify">촬영한 체크 결과 대조</button><div id="results" aria-live="polite"></div></section>
-<section aria-labelledby="privacy-title"><h2 id="privacy-title">개인정보 가림 후보</h2><p>이 화면의 문서 사진은 이 컴퓨터에서 처리합니다. 이름·주소 등 일부 정보는 자동 탐지에서 빠질 수 있어, 후보가 모든 개인정보를 가렸다는 뜻은 아닙니다.</p><button id="privacy">로컬 마스킹 후보 확인</button><p id="privacy-status" role="status" aria-live="polite"></p><img id="masked" alt="자동 탐지한 개인정보 후보를 가린 검토용 이미지" hidden></section>
-<button id="clear">촬영 이미지 지우기</button><p class="footnote">원본 이미지를 앱의 저장 파일에 보관하지 않습니다. 로컬 OCR 실행 중 임시 파일이 사용될 수 있습니다. 세션 저장을 설정한 경우 선택 ID와 진행 상태만 로컬 파일에 저장됩니다. 음성 입력 대신 버튼과 키보드로 조작하며, 기기에 설치된 음성 또는 화면 읽기 기능을 사용합니다.</p></main></body></html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="session-token" content="__SESSION_TOKEN__">
+  <title>생활 문서 도우미</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/audio.js" defer></script><script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 이동</a>
+<header><p class="eyebrow">DOC AGENT</p><h1>생활 문서 도우미</h1><p>문서를 촬영하면 내용을 듣고 질문할 수 있습니다.</p><p id="title" hidden></p><p id="mode" hidden></p></header>
+<main id="main">
+  <div id="notice" role="status" aria-live="polite" aria-atomic="true">문서를 준비하고 있습니다.</div>
+  <div class="toolbar"><button id="stop" class="secondary">음성 멈추기 · Esc</button><button id="replay" class="secondary">현재 안내 다시 듣기</button></div>
+  <section id="capture-panel" aria-labelledby="capture-title">
+    <p class="eyebrow">1 · 촬영하기</p><h2 id="capture-title" tabindex="-1">문서를 준비해 주세요</h2>
+    <p>카메라를 켜고 문서를 보여 주세요. 네 모서리가 들어와 잠시 멈추면 자동으로 촬영합니다.</p>
+    <div class="controls"><button id="camera" class="primary">카메라 켜고 시작하기</button><button id="camera-stop" class="secondary" disabled>카메라 끄기</button></div>
+    <p id="auto-status" class="auto-status">자동 촬영 켜짐</p>
+    <div class="camera-view"><video id="video" autoplay muted playsinline aria-label="문서 촬영 화면"></video></div><canvas id="canvas" hidden></canvas>
+    <label for="stability">문서 위치와 안정 상태</label><progress id="stability" max="1" value="0"></progress>
+    <p id="camera-status">카메라를 켜면 소리로 안내합니다.</p>
+    <button id="take" class="secondary" disabled>기다리지 않고 지금 촬영</button>
+    <p class="hint">자동 촬영이 기다려지면 지금 촬영할 수 있어요. 촬영한 사진에서 읽을 수 있는 글자를 확인합니다.</p>
+    <details><summary>사진 파일로 시작하기</summary><label for="file">문서 사진 불러오기</label><input id="file" type="file" accept="image/png,image/jpeg"><label class="check"><input id="scan" type="checkbox">페이지 전체를 담은 스캔 이미지</label><img id="reference" alt="등록 양식 모드의 기준 이미지" hidden></details>
+  </section>
+  <div id="document-panel" hidden>
+    <section aria-labelledby="document-title">
+      <p class="eyebrow">2 · 내용 확인하기</p><h2 id="document-title" tabindex="-1">문서를 읽었어요</h2>
+      <p id="document-summary" class="preserve"></p>
+      <div class="task-buttons"><button id="open-read">인식한 원문 듣기</button><button id="open-question">문서에 질문하기</button><button id="open-checks">체크 상태 듣기</button></div>
+      <button id="guide" class="secondary" disabled>문서 안내 다시 듣기</button>
+      <button id="new-capture" class="secondary">다른 문서 촬영하기</button>
+    </section>
+    <section id="read-panel" aria-labelledby="read-title" hidden>
+      <h2 id="read-title" tabindex="-1">사진에서 인식한 원문</h2>
+      <p>글자 인식에는 오류나 누락이 있을 수 있습니다. 불확실한 줄은 함께 알려드립니다.</p>
+      <div class="controls"><button id="read-page">전체 듣기</button><button id="read-group">현재 줄 듣기</button></div>
+      <div class="controls"><button id="previous" class="secondary">이전 줄</button><button id="next" class="secondary">다음 줄</button></div>
+      <p id="position"></p><pre id="source" tabindex="0" aria-label="인식한 원문"></pre>
+      <div id="legacy-selection" hidden><fieldset id="choices"><legend>표시할 선택지</legend></fieldset><div class="controls"><button id="propose">선택 내용 재확인</button><button id="confirm" disabled>이 선택으로 확정</button><button id="cancel">선택 변경 취소</button></div><p id="selection" role="status" aria-live="polite"></p></div>
+    </section>
+    <section id="question-panel" aria-labelledby="question-title" hidden>
+      <h2 id="question-title" tabindex="-1">문서에 질문하기</h2><p id="model-status"></p>
+      <div class="controls"><button id="record" disabled>마이크로 질문 말하기</button><button id="record-stop" disabled>녹음 마치기</button></div>
+      <p id="recording-status" role="status" aria-live="polite"></p><label for="question">궁금한 내용</label><textarea id="question" rows="3" maxlength="500" placeholder="이 안내문에서 준비하라고 한 것은 무엇인가요?" disabled></textarea>
+      <div class="controls"><button id="ask" disabled>질문하기</button></div><p id="answer" class="preserve"></p><details><summary>답변의 근거 보기</summary><div id="question-sources" class="preserve"></div></details>
+    </section>
+    <section id="checks-panel" aria-labelledby="verify-title" hidden>
+      <h2 id="verify-title" tabindex="-1">사진의 체크 상태</h2><p>사진에서 찾은 체크칸 후보와 표시 상태를 읽어드립니다.</p><button id="verify">체크 상태 다시 듣기</button><div id="results" class="preserve"></div>
+    </section>
+    <details class="diagnostics"><summary>인식한 전체 글자와 개인정보 가림</summary><pre id="ocr-text"></pre><p>가림 후보에는 빠진 정보가 있을 수 있습니다.</p><button id="privacy">로컬 마스킹 후보 확인</button><p id="privacy-status" role="status" aria-live="polite"></p><img id="masked" alt="개인정보 가림 후보 미리보기" hidden></details>
+    <div class="controls"><button id="clear" class="secondary">현재 문서 지우기</button></div>
+  </div>
+  <details class="settings"><summary>카메라·소리 설정</summary>
+    <label for="camera-device">사용할 카메라</label><select id="camera-device"><option value="">기본 카메라</option></select>
+    <div class="capture-settings"><label class="check"><input id="auto-capture" type="checkbox" checked>자동 촬영</label><label class="check"><input id="beep-enabled" type="checkbox" checked>비프음</label><label class="check"><input id="voice-enabled" type="checkbox" checked>음성 안내</label></div>
+    <button id="test-beep" class="secondary">비프음 들어보기</button><p id="audio-status" role="status"></p>
+    <p class="hint">느린 비프음은 위치 조정, 빠른 비프음은 촬영 준비를 뜻합니다. 음성 안내 중에는 비프음만 작아집니다. 화면 읽기 프로그램을 사용하면 음성 안내를 끌 수 있습니다.</p>
+    <label for="rate">읽기 속도</label><select id="rate"><option value="0.8">0.8배</option><option value="1" selected>1배</option><option value="1.5">1.5배</option><option value="2">2배</option></select><p id="voice-status"></p>
+  </details>
+  <p class="footnote">문서·질문·음성은 이 노트북에서 처리합니다. 촬영한 문서는 등록 없이 읽을 수 있습니다.</p>
+</main>
+</body>
+</html>

@@ -94,6 +94,34 @@ def validate_manifest(data: dict[str, Any], *, demo: bool = False) -> None:
                     raise ValueError("체크박스 좌표가 서로 겹칩니다.")
             boxes.append(box)
     approval = data.get("approval")
+    signatures = data.get("signatures", [])
+    if not isinstance(signatures, list):
+        raise ValueError("서명란 목록을 확인하세요.")
+    signature_ids: set[str] = set()
+    for signature in signatures:
+        if (not isinstance(signature, dict) or not _text(signature.get("id"))
+                or signature["id"] in signature_ids
+                or signature.get("role") not in ("applicant", "representative", "staff", "unknown")):
+            raise ValueError("서명란 식별자와 작성 주체를 확인하세요.")
+        signature_ids.add(signature["id"])
+        source_text = signature.get("source_text")
+        if not _text(source_text) or source_text not in pages[0]["source_text"]:
+            raise ValueError("서명란 근거는 페이지 원문에 있는 문장이어야 합니다.")
+        role_words = {"applicant": ("신청인", "신청자"),
+                      "representative": ("대리인", "법정대리인"),
+                      "staff": ("담당자", "직원"), "unknown": ("",)}
+        if ("서명" not in source_text
+                or not any(word in source_text for word in role_words[signature["role"]])):
+            raise ValueError("서명과 작성 주체를 뒷받침하는 원문이 필요합니다.")
+        box = signature.get("box_mm")
+        if (not isinstance(box, list) or len(box) != 4 or any(not _number(x) for x in box)
+                or box[0] < 0 or box[1] < 0 or box[2] <= 0 or box[3] <= 0
+                or box[0] + box[2] > size[0] or box[1] + box[3] > size[1]):
+            raise ValueError("서명란 좌표가 문서 범위를 벗어났습니다.")
+        related = signature.get("before_signing_group_ids", [])
+        if (not isinstance(related, list) or any(not isinstance(item, str) or item not in ids for item in related)
+                or len(set(related)) != len(related)):
+            raise ValueError("서명 전에 읽을 항목이 실제 원문 항목과 연결되어야 합니다.")
     if not isinstance(approval, dict) or approval.get("status") not in ("draft", "approved"):
         raise ValueError("문서 검토 상태가 필요합니다.")
     if data["purpose"] == "production" and approval["status"] != "approved":

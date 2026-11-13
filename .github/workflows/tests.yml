@@ -47,6 +47,10 @@ jobs:
           assert info['available'], 'Korean font required for synthetic detection tests'"
       - name: 전체 회귀 테스트
         run: python -m pytest -q
+      - name: 카메라·마이크 화면 상태 회귀
+        run: node tests/home/browser_state_check.cjs
+      - name: 비프음·음성 안내 회귀
+        run: node tests/home/audio_check.cjs
       - name: 합성 검수 및 평가 자료 생성
         run: python -m docagent.testing.workflow --output-dir outputs/ci-demo
       - name: 승인 안내 오프라인 실행

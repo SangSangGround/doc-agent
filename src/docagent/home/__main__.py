@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import shutil
 import sys
@@ -48,6 +49,8 @@ def draft_template(args: argparse.Namespace) -> None:
         "groups": json.loads(args.groups.read_text(encoding="utf-8")),
         "approval": {"status": "draft"},
     }
+    if args.signatures:
+        data["signatures"] = json.loads(args.signatures.read_text(encoding="utf-8"))
     # 구조 확인용 복사본만 데모로 검증하고 실제 양식은 미승인 상태로 저장한다.
     validate_manifest({**data, "purpose": "demo"}, demo=True)
     args.output.mkdir(parents=True, exist_ok=True)
@@ -81,15 +84,24 @@ def approve_template(path: Path, reviewer: str) -> None:
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="외부 모델·API 키 없이 실행하는 문서 읽기와 체크 대조")
+    parser = argparse.ArgumentParser(description="노트북 촬영·서명 안내·로컬 문서 질의응답")
     sub = parser.add_subparsers(dest="command", required=True)
     demo = sub.add_parser("demo", help="가상 동의서와 평가용 이미지 생성")
     demo.add_argument("--output", type=Path, required=True)
     serve = sub.add_parser("serve", help="127.0.0.1에서 카메라·읽기·체크 UI 실행")
-    serve.add_argument("--template", type=Path, required=True)
+    serve.add_argument("--template", type=Path, help="기존 등록 양식 모드. 생략하면 일반 문서 OCR 모드")
     serve.add_argument("--demo", action="store_true")
     serve.add_argument("--port", type=int, default=8765)
     serve.add_argument("--session", type=Path, help="선택 ID와 읽기 설정을 저장할 로컬 JSON 경로")
+    serve.add_argument("--llm", choices=("ollama", "off"), default="ollama",
+                       help="후속 질문에 사용할 로컬 모델. 기본값은 ollama")
+    serve.add_argument("--model", default="qwen3.5:4b", help="설치된 Ollama 로컬 모델 이름")
+    serve.add_argument("--ocr-engine", choices=("auto", "apple", "tesseract"), default="auto",
+                       help="기본 auto: macOS는 Apple Vision, 나머지는 Tesseract")
+    serve.add_argument("--no-ocr", action="store_true", help="촬영본 OCR 진단을 생략")
+    serve.add_argument("--speech-model", type=Path, default=Path("outputs/models/whisper-small"),
+                       help="설치된 faster-whisper 모델 폴더")
+    serve.add_argument("--no-speech", action="store_true", help="마이크 질문을 끄기")
     mobile = sub.add_parser("serve-mobile", help="같은 Wi-Fi의 아이폰 앱용 HTTPS 서버 실행")
     mobile.add_argument("--template", type=Path, required=True)
     mobile.add_argument("--host", required=True, help="PC의 사설 IPv4 주소")
@@ -104,6 +116,7 @@ def main(argv=None) -> int:
     draft = sub.add_parser("draft-template", help="실제 동의서 등록을 위한 미승인 묶음 생성")
     for key in ("reference", "text", "groups", "output"):
         draft.add_argument("--" + key, type=Path, required=True)
+    draft.add_argument("--signatures", type=Path, help="검토할 서명란 좌표와 관련 원문 항목 JSON")
     for key in ("document-id", "title", "source"):
         draft.add_argument("--" + key, required=True)
     draft.add_argument("--version", default="1")
@@ -121,10 +134,27 @@ def main(argv=None) -> int:
             print(json.dumps(report["metrics"], ensure_ascii=False, indent=2))
         elif args.command == "serve":
             from docagent.home.server import HomeApplication, make_server
+            from docagent.home.questions import OllamaQuestions
+            from docagent.home.speech import LocalSpeech
             if not 0 <= args.port <= 65535:
                 raise ValueError("포트 범위를 확인하세요.")
-            template = load_template(args.template, demo=args.demo)
-            app = HomeApplication(template, session_path=args.session)
+            questions = OllamaQuestions(args.model) if args.llm == "ollama" else None
+            speech = None if args.no_speech else LocalSpeech(args.speech_model)
+            if args.template:
+                template = load_template(args.template, demo=args.demo)
+                app = HomeApplication(template, session_path=args.session,
+                                      questions=questions, read_ocr=not args.no_ocr,
+                                      require_content_match=True, speech=speech)
+            else:
+                from docagent.home.reader import ReaderApplication
+                if args.no_ocr or args.session:
+                    raise ValueError("일반 문서 모드는 OCR이 필요하며 촬영 내용은 세션 파일에 저장하지 않습니다.")
+                ocr = None
+                if args.ocr_engine == "apple" or (args.ocr_engine == "auto" and platform.system() == "Darwin"):
+                    from docagent.home.macos_ocr import MacVision
+                    ocr = MacVision()
+                app = ReaderApplication(questions=questions, speech=speech, ocr=ocr)
+                print("문자 인식: " + ("Apple Vision (로컬)" if ocr else "Tesseract (로컬)"), flush=True)
             server = make_server(app, args.port)
             print(f"문서 도우미: http://127.0.0.1:{server.server_port}  종료: Ctrl+C", flush=True)
             try:
@@ -142,7 +172,7 @@ def main(argv=None) -> int:
         elif args.command == "approve-template":
             approve_template(args.template, args.reviewer)
         return 0
-    except (OSError, ValueError, TypeError, KeyError) as exc:
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError) as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
         return 2
 

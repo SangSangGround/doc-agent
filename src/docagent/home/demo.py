@@ -61,16 +61,22 @@ def create_demo(directory: str | Path) -> Path:
         groups.append(dict(id=f"consent_{i+1}", source_text=source, min_selected=1, max_selected=1, options=options))
         line("표시를 바꾸려면 새로운 연습지를 사용하세요.", 18, top+46)
         line("작성 위치를 직접 찾는 기능은 이 시연 범위에 포함되지 않습니다.", 18, top+55)
-    line("확인 순서: 원문 읽기 → 선택 재확인 → 표시 → 재촬영 → 결과 확인", 18, 244)
-    line("결과는 관측된 표시를 기준으로 하며 사용자의 의사를 대신 결정하지 않습니다.", 18, 254)
-    line("합성 문서 테스트 결과를 실제 사용자 성능으로 해석하지 마세요.", 18, 264)
+    line("서명 전에 두 항목의 원문과 선택 내용을 확인하세요.", 18, 239)
+    signature_source = "신청인 (서명)"
+    line(signature_source, 90, 253, 27)
+    draw.line((125*scale, 260*scale, 190*scale, 260*scale), fill="black", width=3)
+    line("가상 신청서입니다. 실제 서명 대신 연습용 표시를 사용하세요.", 18, 273)
     reference_path = directory / "reference.png"
     page.save(reference_path)
     manifest = dict(schema_version=1, purpose="demo", document_id="synthetic-home-consent",
                     document_version="1", title=title, page_size_mm=[210,297], reference_image="reference.png",
                     reference_sha256=hashlib.sha256(reference_path.read_bytes()).hexdigest(),
                     source={"reference":"synthetic://home-consent-v1"}, pages=[dict(page=1, source_text="\n".join(lines))],
-                    groups=groups, approval={"status":"draft"})
+                    groups=groups, signatures=[{
+                        "id": "applicant_signature", "role": "applicant",
+                        "source_text": signature_source, "box_mm": [125, 247, 65, 13],
+                        "before_signing_group_ids": [group["id"] for group in groups],
+                    }], approval={"status":"draft"})
     path = directory / "template.json"
     path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
     blank = cv2.cvtColor(np.array(page), cv2.COLOR_RGB2BGR)

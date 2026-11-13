@@ -19,13 +19,15 @@ def test_ready_requires_distinct_stable_frames_and_elapsed_time():
     image = document()
     first = coach.update(image, timestamp=0.)
     assert first['status'] == 'stabilizing'
-    assert first['should_announce']
+    assert first['beep_state'] == 'stabilizing' and first['stability_progress'] == 0
+    assert not first['should_announce']
     for _ in range(5):
         assert not coach.update(image, timestamp=0.)['ready_to_capture']
     assert not coach.update(image, timestamp=.3)['ready_to_capture']
     ready = coach.update(image, timestamp=.7)
     assert ready['ready_to_capture']
     assert ready['status'] == 'ready'
+    assert ready['beep_state'] == 'ready' and ready['stability_progress'] == 1
     json.dumps(ready, allow_nan=False)
 
 
@@ -39,6 +41,7 @@ def test_failures_revoke_ready_immediately_and_require_stability_again():
     rejected = coach.update(blurred, timestamp=.8)
     assert not rejected['ready_to_capture']
     assert rejected['status'] == 'retake'
+    assert rejected['beep_state'] == 'adjusting' and rejected['stability_progress'] == 0
     assert 'blurred' in rejected['quality']['reasons']
     assert not coach.update(image, timestamp=.9)['ready_to_capture']
 
@@ -46,13 +49,15 @@ def test_failures_revoke_ready_immediately_and_require_stability_again():
 def test_voice_cooldown_hysteresis_and_repeat_interval():
     coach = CaptureCoach(mode='scan')
     dark = np.zeros((1000, 800), np.uint8)
-    assert coach.update(dark, timestamp=0.)['should_announce']
-    for stamp in (.1, 1., 3., 7.9):
+    assert not coach.update(dark, timestamp=0.)['should_announce']
+    assert not coach.update(dark, timestamp=.2)['should_announce']
+    assert coach.update(dark, timestamp=1.6)['should_announce']
+    for stamp in (2., 8., 13., 25.):
         assert not coach.update(dark, timestamp=stamp)['should_announce']
-    assert coach.update(dark, timestamp=8.)['should_announce']
-    # 다른 오류 한 프레임만으로 발화가 바뀌지 않는다.
-    assert not coach.update(document(), timestamp=11.)['should_announce']
-    assert coach.update(document(), timestamp=11.1)['should_announce']
+    assert coach.update(dark, timestamp=25.6)['should_announce']
+    # 상태가 잠깐 바뀌거나 음성 간격 안에 바뀌면 발화를 추가하지 않는다.
+    assert not coach.update(document(), timestamp=26.)['should_announce']
+    assert not coach.update(document(), timestamp=26.1)['should_announce']
 
 
 def test_motion_and_camera_pause_reset_stability():

@@ -1,6 +1,28 @@
-# Doc Agent — iPhone 앱 아키텍처
+# Doc Agent — 노트북 시연과 기존 iPhone 경로
 
-2026년 11월 4일 `feature/home-document-assistant`의 코드 기준이다. **아이폰은 촬영·화면·음성 안내를 담당하고, 같은 Wi-Fi의 개발용 PC가 기존 Python 기능으로 문서를 분석한다.**
+## 현재 노트북 시연 경로 (2026-11-13, 일반 OCR 모드)
+
+`python -m docagent.home serve`는 등록 양식 없이 촬영한 생활 문서를 읽는다. [설치·사용 안내](home-document-assistant.md)를 따른다. 기존 아키텍처 이미지의 등록 양식 대조는 이전 구현이며 아래 표가 현재 노트북 흐름이다.
+
+| 구성 | 맡는 일 |
+|---|---|
+| 브라우저 카메라 | 960px 안내 프레임 → 문서가 안정되면 최대 4000px 촬영. 촬영 후에만 원문·질문·체크 상태 기능 노출 |
+| macOS Vision `home/macos_ocr.py` · `home/capture.py` | 문서 영역 검출, 잘림, 꼭짓점 움직임 검사. 다른 OS는 OpenCV. A4 비율·미리보기 선명도로 촬영을 차단하지 않음 |
+| Web Audio · 설치된 한국어 TTS | 시작 확인음, 상태별 비프음, 음성 중 감쇠. 안내 간격과 안정 시간을 적용 |
+| `home/reader.py` · Apple Vision OCR | 촬영 원본의 한국어·영어 인식, 문서 밖 텍스트 제외, 불확실한 글자 표시, 서명 문구 위치·체크칸 후보 판독. 다른 OS는 Tesseract |
+| 로컬 검색 · Ollama Qwen 3.5 4B | 현재 OCR 줄과 질문 맥락에서 근거 검색·선택. 서버가 선택된 OCR 구절만 읽고 근거가 없으면 찾지 못했다고 안내 |
+| 브라우저 마이크 · faster-whisper small | 최대 30초 녹음 → 한국어 인식 → 사용자 확인 → 질문 |
+| 로컬 메모리 | 현재 사진·OCR·최근 질문. 새 촬영이나 지우기로 초기화하며 기본 파일 저장 없음 |
+
+촬영 전에는 경계와 안정성, 촬영 후에는 OCR을 처리한다. 정밀 문자 인식을 매 프레임 실행하지 않는다. 촬영 가능은 문서의 글자를 정확히 읽었다는 뜻이 아니다. 경계를 찾지 못하면 수동 촬영도 가능하며, 이 경우 전체 문서 포함 여부를 확인하지 못했다고 안내한다. OCR이 비거나 신뢰 가능한 글자 비율이 낮으면 재촬영을 안내한다. 한 줄만 잘 읽혔다고 전체 문서를 성공 처리하지 않는다. macOS의 OCR 입력은 원근 보정으로 작은 글자를 손상시키지 않도록 촬영 원본을 유지한다.
+
+읽기 근거는 등록된 원문이 아니라 실제 촬영본의 OCR이다. 긴 문서는 로컬에서 관련 줄을 골라 제한된 문맥에 넣으며, 답이 없을 때 전체 문서에 정보가 없다고 단정하지 않는다. 별도 벡터 DB·Jev·외부 OCR API를 사용하지 않는다. 체크 상태는 사진에서 추정한 결과이고 사용자가 정한 선택과의 대조는 이번 기본 흐름에서 제외했다. 서명 위치는 OCR 문구의 대략적인 위치이며 펜 유도 기능은 아니다.
+
+`--template`을 지정하는 기존 양식 모드와 `serve-mobile`은 별도로 유지한다. 아래 iPhone 설명은 이 기존 경로에 해당한다.
+
+## 기존 iPhone 아키텍처 (2026-11-04)
+
+아래 그림과 iPhone 설명은 2026년 11월 4일 `feature/home-document-assistant`의 코드 기준이다. **아이폰은 촬영·화면·음성 안내를 담당하고, 같은 Wi-Fi의 개발용 PC가 기존 Python 기능으로 문서를 분석한다.** `serve-mobile`은 기존 모바일 실행 경로로, 위 노트북 경로의 Ollama·마이크 질문·촬영본 OCR 원문 대조 조건은 연결되어 있지 않다.
 
 ![iPhone 앱과 PC 서버 아키텍처](architecture/software-architecture.png)
 
@@ -53,7 +75,7 @@
 
 **Xcode가 없어 iOS 앱 전체 빌드·시뮬레이터·실제 아이폰 촬영과 VoiceOver 검증은 아직 하지 못했다.** 현재 양식은 합성 동의서 데모이며 실제 지원 동의서 선정, 원문·좌표 검토, 촬영 데이터 정확도 평가와 사용자 검증이 남아 있다.
 
-Jev, 생성형 LLM, 벡터 RAG, 음성 명령 인식, 하드웨어 제어는 현재 앱에 연결되어 있지 않다. 이 구조는 한 사용자의 개발 시연용이며 여러 사용자의 세션을 분리하는 배포 서버는 아니다.
+이 기존 iPhone 경로에는 Jev·LLM 질문·벡터 RAG·마이크 질문·하드웨어 제어가 연결되어 있지 않다. 새 노트북 경로에는 위에서 설명한 로컬 Ollama와 Whisper가 연결된다. 두 경로 모두 한 사용자의 개발 시연용이며 여러 사용자의 세션을 분리하는 배포 서버는 아니다.
 
 ## 코드에서 찾아볼 위치
 
@@ -66,6 +88,11 @@ Jev, 생성형 LLM, 벡터 RAG, 음성 명령 인식, 하드웨어 제어는 현
 | PC HTTPS 실행·연결 정보 | [`home/mobile.py`](../src/docagent/home/mobile.py) |
 | 요청 처리·기능 연결 | [`home/server.py`](../src/docagent/home/server.py) |
 | 촬영 품질 안내 | [`home/capture.py`](../src/docagent/home/capture.py) |
+| 노트북 카메라·마이크·화면 | [`home/assets/app.js`](../src/docagent/home/assets/app.js) |
+| 비프음·로컬 음성 제어 | [`home/assets/audio.js`](../src/docagent/home/assets/audio.js) |
+| 촬영본 OCR·등록 원문 대조 | [`home/content_check.py`](../src/docagent/home/content_check.py) |
+| 서명란·원문 근거 구성 | [`home/document.py`](../src/docagent/home/document.py) |
+| 로컬 질문·음성 인식 | [`home/questions.py`](../src/docagent/home/questions.py), [`home/speech.py`](../src/docagent/home/speech.py) |
 | 양식 정렬·체크 판독 | [`vision/checkbox_review.py`](../src/docagent/vision/checkbox_review.py) |
 | 양식·원문·선택 관리 | [`home/templates.py`](../src/docagent/home/templates.py), [`home/session.py`](../src/docagent/home/session.py) |
 | 마스킹 후보 | [`home/privacy.py`](../src/docagent/home/privacy.py) |
