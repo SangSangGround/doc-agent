@@ -5,6 +5,8 @@ const audio = new window.GuidanceAudio();
 let state = null, stream = null, timer = null, frameBusy = false, actionBusy = false;
 let voice = null, cameraGeneration = 0, frameEpoch = 0, cameraStarting = false;
 let captureInvalidated = false;
+let focusStep = "searching", lastFrameAt = 0, focusStartedAt = 0, sharpFrames = 0;
+let lastQuad = null, focusQuad = null;
 let microphone = null, recorder = null, recordingTimer = null, microphoneGeneration = 0;
 let microphoneStarting = false;
 let microphoneFinishing = false;
@@ -28,7 +30,8 @@ function updateControls() {
   const busy = actionBusy || !state || !!microphone || microphoneFinishing;
   $("camera").disabled = busy || !!stream || cameraStarting;
   $("camera-stop").disabled = !stream && !cameraStarting;
-  $("take").disabled = busy || !stream;
+  $("focus").disabled = busy || !stream || focusStep !== "framed";
+  $("take").disabled = busy || !stream || focusStep !== "ready";
   for(const id of ["file","scan","rate","previous","next","cancel","clear","new-capture","open-read","open-question","open-checks"]) $(id).disabled = busy;
   for(const id of ["read-page","read-group","propose"]) $(id).disabled = busy || !state?.document_ready;
   $("privacy").disabled = busy || !state?.has_capture;
@@ -148,10 +151,40 @@ function snapshot(maxSide = 960, jpegQuality = .92) {
 }
 function stopCamera() {
   cameraGeneration++; clearInterval(timer); timer=null; cameraStarting=false;
+  focusStep = "searching"; lastFrameAt = 0; lastQuad = focusQuad = null;
   stream?.getTracks().forEach(track=>track.stop()); stream=null;
   $("video").srcObject=null; $("video").classList.remove("active");
   audio.stop();
   $("stability").value = 0;
+  updateControls();
+}
+function updateFocus(result, sampledAt) {
+  const previous = focusStep;
+  const moved = focusQuad && result.boundary?.quad?.some(([x, y], index) =>
+    Math.hypot((x - focusQuad[index][0]) / $("canvas").width,
+               (y - focusQuad[index][1]) / $("canvas").height) > .045);
+  const gap = sampledAt - lastFrameAt > 1200;
+  lastFrameAt = sampledAt;
+  lastQuad = result.boundary?.quad;
+  if (!result.ready_to_capture || Date.now() - sampledAt > 1200) {
+    focusStep = "searching";
+  } else if (focusStep === "searching" || moved || gap) {
+    focusStep = "framed";
+  } else if (focusStep === "focusing" || focusStep === "ready") {
+    if (sampledAt >= focusStartedAt + 400 && result.focus_clear) sharpFrames++;
+    else sharpFrames = 0;
+    if (sharpFrames >= 2) focusStep = "ready";
+    else focusStep = sampledAt - focusStartedAt > 5500 ? "framed" : "focusing";
+  }
+  if (focusStep === "framed" || focusStep === "searching") focusQuad = null;
+  const prompts = {framed:"문서가 들어왔어요. 초점 맞추기를 눌러 주세요.",
+    focusing:"글자가 선명한지 확인하고 있어요. 문서를 그대로 유지해 주세요.",
+    ready:"준비됐어요. 촬영 버튼을 눌러 주세요."};
+  const message = prompts[focusStep] || result.instruction;
+  $("camera-status").textContent = message;
+  if ((focusStep === "ready" && previous !== "ready") ||
+      (previous === "focusing" && focusStep === "framed") ||
+      (result.should_announce && !audio.speaking && focusStep !== "ready")) notice(message);
   updateControls();
 }
 async function refreshCameras() {
@@ -209,26 +242,24 @@ $("camera").onclick=()=>{
       if(generation!==cameraGeneration) return;
       await refreshCameras();
       if(generation!==cameraGeneration) return;
-      notice($("auto-capture").checked ? "문서 네 모서리를 보여 주세요. 자동 촬영이 켜져 있습니다." : "문서 네 모서리를 보여 주세요. 준비되면 지금 촬영을 눌러 주세요.");
-      $("camera-status").textContent = "문서를 찾고 있습니다. 안정되면 자동으로 촬영합니다.";
+      notice("문서 네 모서리를 보여 주세요. 비프음이 빨라지면 초점 맞추기를 눌러 주세요.");
+      $("camera-status").textContent = "문서를 찾고 있어요.";
       timer=setInterval(async()=>{
         if(frameBusy || actionBusy || !stream) return;
         frameBusy=true; const epoch=frameEpoch;
         try {
+          const sampledAt = Date.now();
           const image = snapshot();
           const result=await api("frame",{image});
           if(generation!==cameraGeneration || epoch!==frameEpoch || actionBusy || !stream) return;
           audio.update(result.beep_state);
           $("stability").value = result.stability_progress || 0;
-          $("camera-status").textContent = ($("auto-capture").checked ? "자동 촬영 켜짐 · " : "수동 촬영 · ") + result.instruction;
-          if (result.ready_to_capture && $("auto-capture").checked) {
-            // 안내 프레임보다 큰 원본 해상도로 촬영한다. 서버가 이 촬영본의
-            // 경계·정합·원문을 다시 검사하므로 직후 움직임도 통과 근거로 쓰지 않는다.
-            await captureFrame(snapshot(4000, .96));
-          } else if (result.should_announce && !audio.speaking) {
-            notice(result.instruction);
+          updateFocus(result, sampledAt);
+        } catch(error) {
+          if(generation===cameraGeneration && epoch===frameEpoch && !actionBusy) {
+            focusStep = "searching"; updateControls(); notice(error.message,false);
           }
-        } catch(error) {if(generation===cameraGeneration && epoch===frameEpoch && !actionBusy) notice(error.message,false);}
+        }
         finally {frameBusy=false;}
       },150);
     } catch(error) {
@@ -240,8 +271,33 @@ $("camera").onclick=()=>{
   });
 };
 $("camera-stop").onclick=()=>{stopCamera();audio.stopSpeech();notice("카메라를 껐습니다.");};
+function currentFrameAllows(step) {
+  if (actionBusy || !stream || focusStep !== step) return false;
+  if (Date.now() - lastFrameAt <= 1200) return true;
+  focusStep = "searching";
+  updateControls();
+  notice("최근 카메라 화면을 기다리고 있어요. 문서 위치를 다시 확인해 주세요.");
+  return false;
+}
+$("focus").onclick=()=>{
+  if (!currentFrameAllows("framed")) return;
+  return operation(async()=>{
+    const generation = cameraGeneration;
+    const track = stream.getVideoTracks?.()[0];
+    const modes = track?.getCapabilities?.().focusMode || [];
+    const mode = ["single-shot","continuous"].find(item => modes.includes(item));
+    if (mode) {
+      try { await track.applyConstraints({advanced:[{focusMode:mode}]}); }
+      catch (_) { /* Continue with sharpness verification on fixed-focus cameras. */ }
+    }
+    if (generation !== cameraGeneration || !stream) return;
+    sharpFrames = 0; focusStartedAt = Date.now(); focusQuad = lastQuad;
+    focusStep = "focusing";
+    notice("글자가 선명한지 확인하고 있어요. 잠시 그대로 유지해 주세요.");
+  });
+};
 $("take").onclick=()=>{
-  if(actionBusy || !stream) return;
+  if (!currentFrameAllows("ready")) return;
   try { return captureFrame(snapshot(4000, .96)); }
   catch (error) { notice(error.message); }
 };
@@ -404,10 +460,6 @@ $("open-question").onclick=()=>{showPanel("question");notice("마이크로 질�
 $("open-checks").onclick=()=>{showPanel("checks");return $("verify").onclick();};
 $("new-capture").onclick=()=>$("camera").onclick();
 $("replay").onclick=()=>speak($("notice").textContent);
-$("auto-capture").onchange=()=>{
-  $("auto-status").textContent = $("auto-capture").checked ? "자동 촬영 켜짐" : "자동 촬영 꺼짐 · 지금 촬영 버튼을 이용하세요";
-  notice($("auto-status").textContent);
-};
 $("test-beep").onclick=async()=>{
   audio.stopSpeech();
   $("beep-enabled").checked=true;audio.setEnabled(true);

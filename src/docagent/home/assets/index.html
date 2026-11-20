@@ -15,14 +15,12 @@
   <div class="toolbar"><button id="stop" class="secondary">음성 멈추기 · Esc</button><button id="replay" class="secondary">현재 안내 다시 듣기</button></div>
   <section id="capture-panel" aria-labelledby="capture-title">
     <p class="eyebrow">1 · 촬영하기</p><h2 id="capture-title" tabindex="-1">문서를 준비해 주세요</h2>
-    <p>카메라를 켜고 문서를 보여 주세요. 네 모서리가 들어와 잠시 멈추면 자동으로 촬영합니다.</p>
+    <p>문서 네 모서리를 카메라에 보여 주세요. 비프음이 빨라지면 초점을 맞추고, 준비 안내가 들리면 직접 촬영하세요.</p>
     <div class="controls"><button id="camera" class="primary">카메라 켜고 시작하기</button><button id="camera-stop" class="secondary" disabled>카메라 끄기</button></div>
-    <p id="auto-status" class="auto-status">자동 촬영 켜짐</p>
     <div class="camera-view"><video id="video" autoplay muted playsinline aria-label="문서 촬영 화면"></video></div><canvas id="canvas" hidden></canvas>
     <label for="stability">문서 위치와 안정 상태</label><progress id="stability" max="1" value="0"></progress>
     <p id="camera-status">카메라를 켜면 소리로 안내합니다.</p>
-    <button id="take" class="secondary" disabled>기다리지 않고 지금 촬영</button>
-    <p class="hint">자동 촬영이 기다려지면 지금 촬영할 수 있어요. 촬영한 사진에서 읽을 수 있는 글자를 확인합니다.</p>
+    <div class="controls"><button id="focus" disabled>초점 맞추기</button><button id="take" disabled>촬영</button></div>
     <details><summary>사진 파일로 시작하기</summary><label for="file">문서 사진 불러오기</label><input id="file" type="file" accept="image/png,image/jpeg"><label class="check"><input id="scan" type="checkbox">페이지 전체를 담은 스캔 이미지</label><img id="reference" alt="등록 양식 모드의 기준 이미지" hidden></details>
   </section>
   <div id="document-panel" hidden>
@@ -55,9 +53,9 @@
   </div>
   <details class="settings"><summary>카메라·소리 설정</summary>
     <label for="camera-device">사용할 카메라</label><select id="camera-device"><option value="">기본 카메라</option></select>
-    <div class="capture-settings"><label class="check"><input id="auto-capture" type="checkbox" checked>자동 촬영</label><label class="check"><input id="beep-enabled" type="checkbox" checked>비프음</label><label class="check"><input id="voice-enabled" type="checkbox" checked>음성 안내</label></div>
+    <div class="capture-settings"><label class="check"><input id="beep-enabled" type="checkbox" checked>비프음</label><label class="check"><input id="voice-enabled" type="checkbox" checked>음성 안내</label></div>
     <button id="test-beep" class="secondary">비프음 들어보기</button><p id="audio-status" role="status"></p>
-    <p class="hint">느린 비프음은 위치 조정, 빠른 비프음은 촬영 준비를 뜻합니다. 음성 안내 중에는 비프음만 작아집니다. 화면 읽기 프로그램을 사용하면 음성 안내를 끌 수 있습니다.</p>
+    <p class="hint">느린 비프음은 위치 조정, 빠른 비프음은 문서가 들어왔다는 뜻입니다. 음성 안내 중에는 비프음이 작아집니다.</p>
     <label for="rate">읽기 속도</label><select id="rate"><option value="0.8">0.8배</option><option value="1" selected>1배</option><option value="1.5">1.5배</option><option value="2">2배</option></select><p id="voice-status"></p>
   </details>
   <p class="footnote">문서·질문·음성은 이 노트북에서 처리합니다. 촬영한 문서는 등록 없이 읽을 수 있습니다.</p>

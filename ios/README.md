@@ -1,88 +1,42 @@
 # iPhone 문서 도우미
 
-SwiftUI 네이티브 앱과 개발용 PC의 Python 분석 서버를 연결한다. 지원 범위는 **iPhone 13 이상, iOS 17 이상**이다. 13 mini·Pro·Pro Max를 포함하고 iPhone SE·iPad·iPhone 12 및 이전 기종은 앱 진입 시 지원 대상이 아니라고 안내한다. 시뮬레이터는 개발 검증용으로 허용한다.
+문서의 네 모서리 확인, 초점 조정, 수동 촬영, 한국어·영어 OCR, 사진 대조와 원문 낭독을 iPhone 안에서 실행한다. 시연 대상은 iPhone 13 이상이며, 화면 버튼은 iOS 17부터, 물리 볼륨 버튼은 iOS 17.2부터 사용할 수 있다.
 
-카메라·사진 선택, 원문 낭독, 선택 제안/확정, 작성 후 체크 결과 대조, 마스킹 후보 미리보기를 앱에서 제공한다. 문서 분석은 기존 Python 코드를 재사용하며 Jev나 클라우드 AI를 호출하지 않는다.
+## USB로 설치하고 실행하기
 
-## 지금 확인된 범위
+1. Mac에 Xcode와 연결할 iPhone에 맞는 iOS 플랫폼 지원을 설치한다.
+   새로 받은 저장소에서는 프로젝트 루트에서 `python3 ios/prepare_review_model.py`를 한 번 실행한다. 공개 Qwen 모델 파일 두 개(합계 약 738MB)를 내려받고 SHA-256을 확인한다. Xcode는 첫 빌드 때 공개 llama.cpp 바이너리를 준비한다. 이 Mac에 모델이 준비돼 있으면 바로 다음 단계로 진행한다.
+2. 데이터 전송이 가능한 USB 케이블로 iPhone을 연결하고 잠금을 해제한다. 처음 연결할 때 기기 신뢰와 개발자 모드 안내를 따른다.
+3. Xcode에서 `ios/DocAgent.xcodeproj`를 연다. `DocAgent` 타깃의 **Signing & Capabilities → Team**에서 본인 팀을 선택한다. 처음이라면 Xcode 설정에서 Apple 계정에 로그인한다. Bundle Identifier가 이미 사용 중이면 고유한 값으로 바꾼다.
+4. 상단의 실행 대상을 연결한 iPhone으로 고르고 **Run(⌘R)**을 누른다. 앱에서 **카메라로 촬영**을 누르고 카메라 사용을 허용한다. 설치가 끝나면 아이폰 홈 화면에서 앱을 열어 사용할 수 있다.
 
-2026-11-04 기준:
+[Apple 실기기 실행 안내](https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices)
 
-- Python 전체 회귀 테스트 1,836개 통과. 모바일 HTTPS·토큰·Origin·공개 주소 제한 검사 포함.
-- Swift 공통 통신 모듈과 연결 확인 실행 파일의 macOS 빌드 성공.
-- Swift 연결 설정·지원 기종·Python JSON 응답 계약 검사 16건 확인.
-- 실제 로컬 HTTPS 서버와 Swift 클라이언트의 연결·인증서 확인·응답 해석 성공.
-- 동일한 HTTPS 연결로 합성 원문 읽기·선택 확정·재촬영·일치·중복·흐림·초기화 흐름 통과.
-- 잘못된 인증서 지문과 토큰의 연결 차단 확인.
-- 앱 Swift 소스 구문 검사, Xcode 프로젝트·Info.plist 형식 검사 완료.
+## 문서 한 장 읽기
 
-**이 PC에는 Xcode 전체 앱, iOS SDK, XCTest가 없어 iPhone 앱 타깃 전체 빌드·시뮬레이터·실기기 검증은 아직 하지 못했다.** Swift 구문 검사나 공통 모듈의 macOS 빌드는 iOS 앱 빌드 성공을 의미하지 않는다. XCTest와 iPhone Simulator 빌드를 실행하는 GitHub Actions를 추가했지만 아직 원격 실행하지 않았다.
+1. 홈의 **촬영 소리 미리 듣기**에서 느린 박자부터 긴 확인음까지 들어볼 수 있다. **카메라로 촬영**을 누르고 휴대폰을 세로로 들어 충전 단자가 몸 쪽을 향하게 한다.
+   종이를 찾는 동안은 낮은 탐색음이 난다. “왼쪽으로”가 들리면 종이는 그대로 두고 휴대폰을 왼쪽으로 옮긴다. 같은 방향으로 움직여 잘린 종이가 더 들어올수록 박자가 빨라지고 음이 높아진다. 멈추면 그 박자를 유지하고, 다시 벗어나면 느려진다. 촬영 화면의 위치 막대와 음성 안내로도 변화를 확인할 수 있다.
+2. 왼쪽 끝이 잘렸다면 “종이 왼쪽이 잘렸어요. 휴대폰을 왼쪽으로 옮겨 주세요.”라고 안내한다. 네 모서리가 잠시 안정적으로 보이면 **긴 삐 소리**가 한 번 난다. **볼륨 위** 또는 화면의 **초점 맞추기**를 누른다. 앱이 글자나 종이 테두리에 초점을 맞춘다. 미리보기에서 원하는 위치를 직접 누를 수도 있다.
+3. 렌즈와 선명도가 안정되면 준비 안내와 진동이 온다. **볼륨 아래** 또는 화면의 **촬영**을 누른다. 문서가 크게 움직이거나 화면 밖으로 나가면 다시 초점을 맞춘다.
+4. Vision이 촬영한 고해상도 사진을 읽으면 **전체 원문 듣기**나 개별 줄을 바로 선택할 수 있다. 이어서 기기 안의 Qwen3.5-0.8B가 사진 속 해당 부분과 OCR 줄을 대조한다. 낮은 신뢰도의 줄은 다른 해상도의 Vision 판독과 모델 판단이 모두 일치해야 ‘인식 불확실’ 표시를 해제한다. 글자와 숫자는 최초 OCR 원문 그대로 읽는다. **사진 불러오기**도 같은 방식으로 처리한다.
+5. 글자가 검출되지 않고 사진과 모델 모두 빈 종이로 판단하면, 반대쪽 면을 확인하라고 안내한다. 너무 밝거나 어두운 사진에는 조명과 재촬영 안내가 나온다.
 
-## 1. PC 서버 실행
+사진과 판독 결과는 메모리에 두고 **문서 지우기** 또는 앱의 백그라운드 전환 때 지운다. iPhone의 사진 대조는 앱에 포함된 llama.cpp와 Qwen으로 실행한다. 노트북 웹 버전의 문서 질문은 Mac에서 Ollama와 Qwen3.5-4B를 사용한다.
 
-저장소 루트에서 기존 가상환경을 사용한다.
+## 직업훈련 생계비 대부 동의서에 질문하기
 
-```sh
-source venv/bin/activate
-export PYTHONPATH=src
-python -m docagent.home demo --output outputs/iphone-demo
-```
+시연용 2024년 신청서 묶음에서 **5쪽 ‘개인정보의 수집·이용·제공 동의서’** 한 장을 촬영하거나 사진으로 불러온다. 앱은 그 면에서 인식한 글자로 답한다. 기관명과 보유 기간, 동의 거부에 따른 불이익은 촬영한 판본을 따른다. [고용노동부 고시 제2023-99호와 서식](https://www.moel.go.kr/info/lawinfo/instruction/view.do?bbs_seq=20231202307)
 
-데모를 이미 생성했다면 마지막 명령은 생략한다. 아이폰과 PC를 같은 Wi-Fi에 연결하고 PC의 IPv4 주소를 확인한다. macOS Wi-Fi 기본 인터페이스에서는 `ipconfig getifaddr en0`으로 확인할 수 있다. 아래 `192.168.0.10`은 PC의 실제 주소로 바꾼다.
+1. 결과 화면에서 **문서에 질문하기 → 말로 질문하기**를 누르고 “내 정보는 누구에게 제공돼?”라고 묻는다. 한국어 음성 인식과 마이크 사용을 허용하면 잠시 말을 멈추거나 버튼을 다시 눌러 전송할 수 있다. 기기의 한국어 오프라인 음성 인식을 쓸 수 없으면 **질문 입력**이나 **예시 질문**을 이용한다.
+2. “공단은 얼마나 오래 보관해?” 다음에 “그럼 제공받은 곳은?”이라고 물어 두 보유 기간을 각각 듣는다. 불확실한 OCR 줄은 답변에서도 표시한다. 사진 대조 중 질문을 보내면 대조를 멈추고 그때까지 확인한 원문으로 답한다.
+3. “대출 상담을 사칭한 실제 사례가 있어?”라고 물으면 저장된 금융 사건 중 관련 사례와 출처를 찾는다. **출처 듣기**로 법원과 사건번호를 확인할 수 있다. “고유식별정보가 무슨 뜻이야?”로 용어를 물은 뒤 “아까 대출 상담 사례 다시 들려줘”로 앞선 답을 다시 들을 수 있다. [대법원 2016도11138](https://www.law.go.kr/LSW/precInfoP.do?precSeq=183967)
+4. “그럼 내 동의서에서 거부하면 어떻게 돼?”라고 물어 촬영한 문서로 돌아온다. 필요한 문구나 사례가 없으면 확인하지 못했다고 안내한다.
 
-```sh
-python -m docagent.home serve-mobile \
-  --host 192.168.0.10 --port 8766 \
-  --template outputs/iphone-demo/template.json --demo \
-  --connection-dir outputs/iphone-connection
-```
-
-- OpenSSL로 서버용 개발 인증서와 개인키를 만들고 HTTPS로 실행한다. OpenSSL이 PATH에 있어야 한다.
-- `outputs/iphone-connection/pairing.json`에 서버 주소·인증서 SHA-256 지문·접속 토큰이 저장된다.
-- **서버를 다시 켤 때마다 토큰이 바뀐다.** 앱에는 새 연결 정보를 다시 입력한다.
-- 인증서 유효기간은 30일이다. PC IP가 달라지거나 인증서가 만료되면 새로운 `--connection-dir` 폴더로 실행하고 새 연결 정보를 사용한다.
-- `0.0.0.0`이나 공개 IP로 실행하지 않는다. 아이폰에는 `127.0.0.1`을 입력하면 안 된다. 그것은 아이폰 자신을 가리킨다.
-- 선택 상태 이어하기가 필요할 때만 `--session outputs/iphone-connection/session.json`을 추가한다.
-- macOS 방화벽이 물으면 사용자가 Python의 로컬 연결 허용 여부를 확인한다. 공유기의 기기 간 통신 차단/게스트 Wi-Fi에서는 연결되지 않을 수 있다.
-
-연결 파일과 개인키는 저장소에 커밋하지 않는다. `pairing.json`을 가진 기기는 같은 네트워크에서 현재 세션에 접근할 수 있다. 이 서버는 **한 사용자의 개발 시연용**이며 여러 사람의 세션을 분리하는 서비스가 아니다.
-
-## 2. Xcode에서 아이폰에 설치
-
-1. Mac에 Xcode를 설치하고 한 번 실행해 필요한 iOS 플랫폼 구성요소를 설치한다.
-2. `ios/DocAgent.xcodeproj`를 연다. 외부 Swift 패키지나 XcodeGen 설치는 필요 없다.
-3. `DocAgent` 타깃 → `Signing & Capabilities` → 개인 Apple Account의 Team을 선택한다. Bundle Identifier 충돌이 나면 본인만의 값으로 바꾼다.
-4. iPhone 13 이상을 연결하고 기기 신뢰·Developer Mode 안내를 따른다.
-5. 실행 대상을 연결한 아이폰으로 정하고 Run을 누른다. 앱의 카메라와 로컬 네트워크 권한을 허용한다.
-
-Apple의 [실제 기기에서 앱 실행 안내](https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices)와 [서명 설정 안내](https://help.apple.com/xcode/mac/current/en.lproj/dev60b6fbbc7.html)를 따른다. 이 작업에서 Apple 계정 로그인·서명·앱 설치는 수행하지 않았다.
-
-## 3. 앱 연결과 시연
-
-1. PC의 `pairing.json`을 개인 아이폰으로 옮겨 앱에서 **연결 정보 파일 불러오기**로 선택하거나, 파일 내용을 연결 입력란에 붙여넣는다.
-2. 화면의 PC 주소를 확인하고 사진을 PC로 보내 분석한다는 항목을 켠 뒤 연결한다.
-3. 합성 `reference.png`를 사진으로 불러온다. 생성 이미지는 **페이지 전체 스캔**을 켠다. 실제 카메라 촬영은 자동으로 사진 모드다.
-4. 전체 원문/현재 항목을 듣고 각 항목에서 ‘동의하지 않음’ → **선택 내용 재확인 → 이 선택으로 확정**을 누른다.
-5. `correct.png`를 불러오고 체크 결과를 대조한다. `duplicate.png`, `missing.png`, `opposite.png`, `blurred.png`로 예외 상황을 확인한다.
-6. 실제 촬영은 데모 양식을 인쇄해 사용한다. 카메라 프레임을 약 1.2초 간격으로 보내 촬영 상태를 안내하며, 버튼을 누르면 화면 프레임을 분석한다. 기기 사진 앱에 자동 저장하지 않는다.
-
-개인정보가 있는 실제 문서보다 합성 연습지로 먼저 촬영 조건·VoiceOver·읽기 속도·누락 및 중복 처리를 확인한다. 실제 동의서 선정과 정답 라벨링은 별도 작업이다.
-
-## 4. 연결·개인정보 처리 방식
-
-- 앱은 사설 IPv4의 HTTPS 연결만 허용한다. 서버 실행 시 생성한 토큰으로 API를 인증한다.
-- 앱이 `pairing.json`의 인증서 지문과 실제 서버 인증서를 비교한다. 지정한 인증서에 한해 신뢰를 구성하고 **호스트·유효기간 검사를 유지**한다. 시스템 인증서 저장소를 변경하거나 전체 TLS 검증을 끄지 않는다.
-- 인증 정보·문서 사진을 다른 서버에 보내는 HTTP 리다이렉트를 허용하지 않는다. URLSession은 영구 쿠키/캐시를 사용하지 않는다.
-- 모바일 서버에는 웹 페이지에서 세션 토큰을 가져오는 경로가 없다. 브라우저 Origin 요청도 받지 않는다. 기존 PC 로컬 웹 실행은 그대로 유지한다.
-- 카메라 프레임과 선택한 문서 사진은 **아이폰 밖의 지정한 PC로 전송된다.** 마스킹은 PC에서 수행하므로, ‘마스킹한 뒤에만 PC로 보낸다’고 설명하면 안 된다.
-- 사진을 새로 받거나 선택이 바뀌면 이전 완료 판정을 폐기한다. 네트워크 오류·앱 백그라운드 전환 시 앱의 결과와 연결을 초기화한다. 다시 연결하면 PC의 이전 사진도 초기화한다.
-- 앱의 ‘촬영 이미지 지우기’와 정상 연결 종료는 PC의 보유 촬영본을 초기화한다. 강제 종료·네트워크 단절 시 PC 메모리의 사진은 서버 종료·다음 초기화까지 남을 수 있다. PC는 원본을 저장 파일로 쓰지 않지만 OCR의 OS 임시 파일은 사용될 수 있다.
-- 자동 마스킹 후보는 모든 개인정보가 가려졌다는 판정이 아니다.
-- `PrivacyInfo.xcprivacy`에는 사진·문서 선택 데이터의 앱 기능용 PC 전달을 반영했다. App Store 배포 전에는 실제 보관·운영 방식에 맞춰 개인정보 안내와 배포 설정을 다시 확인한다. 현재는 내부 시연 범위다.
+원문 검색과 사례 검색, Qwen의 답변 선택, 음성 인식은 기기 안에서 처리한다. 앱은 답을 읽기 전에 촬영한 원문, 다른 사건의 사례, 용어 설명 중 어디에서 왔는지 말한다. 공식 원문 링크는 사용자가 열 때만 웹으로 연결한다. 대화는 현재 문서에만 연결되며 사진을 새로 읽거나 지울 때 함께 지운다.
 
 ## 개발 검증
 
-Xcode가 설치된 Mac:
+Xcode가 설치된 Mac에서 공통 모듈 테스트와 앱 빌드를 실행할 수 있다.
 
 ```sh
 swift test --package-path ios/DocAgentCore
@@ -91,26 +45,6 @@ xcodebuild -project ios/DocAgent.xcodeproj -scheme DocAgent \
   -derivedDataPath outputs/ios-build CODE_SIGNING_ALLOWED=NO build
 ```
 
-공통 통신만 확인:
+실제 카메라와 VoiceOver는 iPhone에서 확인한다. 문서를 몇 초간 가만히 들고 있어도 직접 촬영하기 전에는 읽기 화면으로 넘어가지 않아야 한다. 준비 안내 후 한 모서리를 화면 밖으로 옮기면 촬영 버튼이 비활성화되어야 한다. USB를 분리한 뒤 비행기 모드에서 인쇄한 한글 문서를 찍고 원문을 들어보면 기기 내 처리 흐름을 확인할 수 있다.
 
-```sh
-swift run --package-path ios/DocAgentCore docagent-connection-check \
-  --check-contracts ios/DocAgentCore/Tests/DocAgentCoreTests/Fixtures/state.json
-swift run --package-path ios/DocAgentCore docagent-connection-check \
-  outputs/iphone-connection/pairing.json
-swift run --package-path ios/DocAgentCore docagent-connection-check \
-  --check-workflow outputs/iphone-connection/pairing.json outputs/iphone-demo
-```
-
-마지막 명령은 지정한 서버가 합성 홈 데모임을 확인한 뒤 그 세션에서 테스트 선택·촬영을 수행하고 초기화한다. 실제 양식에는 실행하지 않는다.
-
-## 코드 위치
-
-- `DocAgentApp/DocAgentApp.swift`: SwiftUI 화면·사진 선택·연결 정보 불러오기
-- `DocAgentApp/CameraView.swift`: 후면 카메라 미리보기·프레임 전달
-- `DocAgentApp/HomeModel.swift`: 사용자 작업 순서·요청 중복 방지·원문 TTS·오류 후 초기화
-- `DocAgentCore/Sources/DocAgentCore/`: 서버 응답 모델·인증서 확인·API·지원 기종 판정
-- `../src/docagent/home/mobile.py`: PC용 HTTPS 실행과 연결 파일 생성
-- `generate_project.py`: 소스 파일을 추가했을 때 Xcode 프로젝트 재생성
-
-기종 식별자 매핑은 [DeviceKit의 기종 매핑](https://github.com/devicekit/DeviceKit/blob/master/Source/Device.generated.swift)을 참고했다. DeviceKit 라이브러리 의존성은 추가하지 않았다. iOS 로컬 네트워크 권한은 [Apple 문서](https://developer.apple.com/documentation/bundleresources/information-property-list/nslocalnetworkusagedescription), 개인정보 항목 이름은 [Apple의 데이터 유형 정의](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacycollecteddatatypes/nsprivacycollecteddatatype)를 참고한다.
+공개 예시 동의서 5쪽 이미지를 준비했다면 `DOCAGENT_CONSENT_PHOTO` 환경 변수에 이미지 경로를 지정하고 위 테스트를 실행한다. Vision OCR부터 기관 조회, 외부 사례, 문서로 돌아와 거부 조건을 읽는 과정까지 확인한다.

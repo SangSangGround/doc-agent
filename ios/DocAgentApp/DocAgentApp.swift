@@ -2,7 +2,6 @@ import SwiftUI
 import PhotosUI
 import DocAgentCore
 import Darwin
-import UniformTypeIdentifiers
 
 @main
 @MainActor
@@ -13,7 +12,10 @@ struct DocAgentApp: App {
         WindowGroup {
             HomeView(model: model)
                 .onChange(of: scenePhase) { _, phase in
-                    if phase == .background { model.suspend() }
+                    if phase == .background {
+                        model.cameraPresented = false
+                        model.clear()
+                    }
                 }
         }
     }
@@ -23,12 +25,19 @@ struct DocAgentApp: App {
 struct HomeView: View {
     @ObservedObject var model: HomeModel
     @State private var photo: PhotosPickerItem?
-    @State private var importingConnection = false
+    @State private var settings = false
+    @State private var audition: Task<Void, Never>?
+    @State private var soundError: String?
+    @StateObject private var sampleSound = CaptureSound()
+    @AccessibilityFocusState private var resultFocused: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.scenePhase) private var scenePhase
     private var supported: Bool {
         #if targetEnvironment(simulator)
         return true
         #else
-        var info = utsname(); uname(&info)
+        var info = utsname()
+        uname(&info)
         let identifier = withUnsafePointer(to: &info.machine) {
             $0.withMemoryRebound(to: CChar.self, capacity: 1) { String(cString: $0) }
         }
@@ -37,133 +46,221 @@ struct HomeView: View {
     }
     var body: some View {
         NavigationStack {
-            Form {
-                if !supported {
-                    Section { Text("이 앱은 iPhone 13 이상 기종을 지원합니다. iPhone SE와 iPad는 지원 대상에 포함하지 않습니다.") }
-                } else {
-                    Section {
-                        Text(model.notice).textSelection(.enabled).accessibilityIdentifier("status-message")
-                        if model.busy { ProgressView("처리 중") }
-                    }
-                    if !model.connected && !model.busy { connection }
-                    if let state = model.state {
-                        Section("현재 문서") {
-                            Text(state.title).font(.headline)
-                            if state.purpose == "demo" { Text("합성 문서 연습 모드 · 실제 동의서가 아닙니다").foregroundStyle(.secondary) }
-                        }
-                        Section("1. 문서 촬영") {
-                            Text("사진과 촬영 안내용 프레임을 연결한 PC로 전송해 분석합니다.").font(.footnote)
-                            Button("카메라로 촬영", systemImage: "camera") { model.beginCamera() }
-                            PhotosPicker(selection: $photo, matching: .images, photoLibrary: .shared()) {
-                                Label("사진 불러오기", systemImage: "photo")
-                            }
-                            Toggle("불러올 사진이 페이지 전체 스캔입니다", isOn: $model.scanImage)
-                                .accessibilityHint("직접 촬영한 사진에서는 끄세요.")
-                        }.disabled(model.busy)
-                        Section("2. 원문 듣기와 선택") {
-                            Toggle("자동 음성 안내", isOn: $model.automaticSpeech)
-                            Button("전체 원문 읽기") { model.command(.read, body: ["scope": "page"]) }.disabled(!state.documentReady)
-                            Button("현재 항목 읽기") { model.command(.read, body: ["scope": "current"]) }.disabled(!state.documentReady)
-                            Picker("읽기 속도", selection: Binding(get: { state.session.preferences.speechRate }, set: {
-                                model.command(.preferences, body: ["speech_rate": $0], message: "읽기 속도를 변경했습니다.")
-                            })) {
-                                Text("0.8배").tag(0.8); Text("1배").tag(1.0); Text("1.5배").tag(1.5); Text("2배").tag(2.0)
-                            }
-                            Text("\(state.session.currentIndex + 1) / \(state.session.groups.count) 항목").font(.headline)
-                            if state.documentReady {
-                                Text(state.session.currentGroup.sourceText).textSelection(.enabled)
-                                choices(state.session.currentGroup)
-                            } else { Text("촬영한 문서가 지원 양식인지 확인한 뒤 원문을 제공합니다.") }
-                            HStack {
-                                Button("이전 항목") { model.command(.move, body: ["direction":"previous"], message: "이전 항목으로 이동했습니다.") }
-                                Spacer()
-                                Button("다음 항목") { model.command(.move, body: ["direction":"next"], message: "다음 항목으로 이동했습니다.") }
-                            }.buttonStyle(.bordered)
-                        }.disabled(model.busy)
-                        Section("3. 체크 결과 확인") {
-                            Text("선택을 확정하고 종이에 표시한 뒤 새 사진을 촬영해 주세요.")
-                            Button("촬영한 체크 결과 대조") { model.command(.verify) }.disabled(!state.canVerify || model.busy || model.draftChanged)
-                            if model.draftChanged { Text("선택 내용을 재확인한 뒤 확정해 주세요.") }
-                            else { ForEach(Array(state.session.groups.enumerated()), id: \.element.id) { index, group in
-                                Text("\(index + 1)번째 항목: \(group.verification.message)")
-                            }
-                            if state.session.complete { Label("모든 선택 항목의 표시가 일치합니다.", systemImage: "checkmark.circle") } }
-                        }
-                        Section("개인정보 가림 후보") {
-                            Button("PC에서 마스킹 후보 확인") { model.privacy() }.disabled(!state.hasCapture || model.busy)
-                            Text("자동 후보는 완전한 마스킹 승인이 아닙니다. 사진은 이미 연결한 PC에서 처리됩니다.").font(.footnote)
-                            if !model.privacyNotice.isEmpty { Text(model.privacyNotice) }
-                            if let image = model.maskedImage {
-                                Image(uiImage: image).resizable().scaledToFit().accessibilityLabel("개인정보 후보를 가린 검토용 이미지")
-                            }
-                            Button("촬영 이미지 지우기", role: .destructive) { model.clearImage() }.disabled(model.busy)
-                        }
-                        Section("PC 연결") {
-                            Text(model.endpoint).font(.footnote)
-                            Button("연결 종료") { model.disconnect() }.disabled(model.busy)
-                        }
-                    }
+            VStack(spacing: 0) {
+                header
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        if !supported {
+                            Text("이 앱의 지원 기종은 iPhone 13 이상입니다.").padding().documentCard()
+                        } else if model.phase == .idle { home }
+                        else { result }
+                    }.padding(.horizontal, 20).padding(.top, 25).padding(.bottom, 32)
+                    .frame(maxWidth: 580)
+                    .frame(maxWidth: .infinity)
                 }
+                .id(model.phase == .idle)
             }
-            .navigationTitle("문서 도우미")
-            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("읽기 정지") { model.stopSpeech() } } }
-            .sheet(isPresented: $model.cameraPresented) {
-                CameraSheet(model: model)
-            }
-            .fileImporter(isPresented: $importingConnection, allowedContentTypes: [.json]) { result in
-                do {
-                    let url = try result.get()
-                    let scoped = url.startAccessingSecurityScopedResource()
-                    defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                    let data = try Data(contentsOf: url)
-                    guard data.count < 8192, let text = String(data: data, encoding: .utf8) else { throw ConnectionError.invalidPairing }
-                    _ = try ConnectionSettings.parse(text)
-                    model.connectionText = text
-                    model.notice = "연결 정보를 불러왔습니다. 전송할 PC를 확인하고 연결해 주세요."
-                } catch { model.notice = "연결 정보 파일을 읽지 못했습니다. PC가 만든 pairing.json을 선택해 주세요." }
+            .background(DocumentStyle.canvas).foregroundStyle(DocumentStyle.ink)
+            .toolbar(.hidden, for: .navigationBar)
+            .fullScreenCover(isPresented: $model.cameraPresented) { CameraSheet(model: model) }
+            .sheet(isPresented: $settings) { soundSettings }
+            .sheet(isPresented: $model.questionsPresented, onDismiss: { model.cancelQuestion() }) {
+                ConsentQuestionView(model: model)
             }
             .onChange(of: photo) { _, item in
-                guard let item, !model.busy else { return }
-                model.importPhoto(item, scan: model.scanImage)
+                guard let item else { return }
+                stopDemo()
+                model.importPhoto(item)
                 photo = nil
             }
-        }.tint(.blue)
-    }
-    private var connection: some View {
-        Section("PC 연결") {
-            Text("같은 Wi-Fi의 PC에서 만든 pairing.json 내용을 붙여넣으세요. 연결 정보는 앱에 영구 저장하지 않습니다.")
-            Button("연결 정보 파일 불러오기", systemImage: "doc") { importingConnection = true }
-            TextEditor(text: $model.connectionText).frame(minHeight: 130)
-                .autocorrectionDisabled().textInputAutocapitalization(.never)
-                .accessibilityLabel("PC 연결 정보")
-            if let settings = try? ConnectionSettings.parse(model.connectionText) {
-                Text("전송 대상: " + settings.serverUrl.absoluteString).font(.footnote)
+            .onChange(of: model.phase) { _, phase in
+                if phase == .finished && !model.questionsPresented && !model.synthesizer.isSpeaking { resultFocused = true }
             }
-            Toggle("촬영 사진을 이 PC로 보내 분석합니다", isOn: $model.transferAccepted)
-            Button("PC와 연결") { model.connect() }
-                .disabled(!model.transferAccepted || model.connectionText.isEmpty)
+            .onChange(of: scenePhase) { _, value in if value != .active { stopDemo() } }
+            .onDisappear { stopDemo() }
+            .onReceive(NotificationCenter.default.publisher(for: UIAccessibility.announcementDidFinishNotification)) {
+                model.announcementFinished($0)
+            }
+        }.tint(DocumentStyle.accent)
+    }
+
+    private var header: some View {
+        HStack(spacing: 9) {
+            Image(systemName: "doc.on.doc.fill").symbolRenderingMode(.palette)
+                .foregroundStyle(DocumentStyle.accent, Color(red: 0.79, green: 0.66, blue: 0.94))
+                .font(.title2).accessibilityHidden(true)
+            Text("문서 도우미").font(.title3.bold())
+            Spacer()
+            Button {
+                stopDemo()
+                settings = true
+            } label: {
+                Image(systemName: "slider.horizontal.3").font(.body.weight(.semibold))
+                    .frame(width: 46, height: 46).background(DocumentStyle.canvas, in: Circle())
+            }.accessibilityLabel("소리 설정")
+        }
+        .padding(.horizontal, 20).padding(.vertical, 7)
+        .background(DocumentStyle.card.ignoresSafeArea(edges: .top))
+        .overlay(alignment: .bottom) { Rectangle().fill(DocumentStyle.border).frame(height: 1).accessibilityHidden(true) }
+    }
+
+    @ViewBuilder private var home: some View {
+        Text("문서 읽기").font(.largeTitle.bold()).accessibilityAddTraits(.isHeader)
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(spacing: 6) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("종이 문서를\n소리로 읽어요").font(.title2.bold()).fixedSize(horizontal: false, vertical: true)
+                    Text("종이 위에 휴대폰을 들어 주세요.")
+                        .font(.subheadline).foregroundStyle(DocumentStyle.muted).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                if !typeSize.isAccessibilitySize { DocumentIllustration() }
+            }
+            Button { startCamera() } label: {
+                HStack { Image(systemName: "camera.fill"); Text("카메라로 촬영"); Spacer(); Image(systemName: "arrow.right") }
+            }.buttonStyle(DocumentButtonStyle()).accessibilityLabel("카메라로 촬영")
+        }
+        .padding(20).frame(maxWidth: .infinity, alignment: .leading).background(DocumentStyle.wash, in: RoundedRectangle(cornerRadius: 24))
+        VStack(spacing: 12) {
+            photoPicker
+            Button { playDemo() } label: {
+                DocumentRow(title: audition == nil ? "촬영 소리 미리 듣기" : "미리 듣기 멈추기",
+                            detail: "박자가 빨라지면 구도가 좋아지고 있어요.", symbol: "waveform",
+                            tint: DocumentStyle.clay, fill: DocumentStyle.peach, accessory: audition == nil ? "play.fill" : "stop.fill")
+            }.buttonStyle(.plain)
+        }
+        if let soundError { Text(soundError).font(.subheadline).foregroundStyle(DocumentStyle.muted) }
+        if #available(iOS 17.2, *) {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("촬영할 때 쓰는 버튼").font(.headline).accessibilityAddTraits(.isHeader)
+                if typeSize.isAccessibilitySize { VStack(alignment: .leading, spacing: 12) { volumeKeys } }
+                else { HStack(spacing: 14) { volumeKeys } }
+            }.padding(16).frame(maxWidth: .infinity, alignment: .leading).documentCard()
         }
     }
-    @ViewBuilder
-    private func choices(_ group: DocumentGroup) -> some View {
-        let selected = model.draftSelection
-        ForEach(group.options) { option in
-            Button { model.choose(option) } label: {
+
+    @ViewBuilder private var volumeKeys: some View {
+        ForEach([true, false], id: \.self) { up in
+            HStack(spacing: 8) {
+                Image(systemName: up ? "plus" : "minus").font(.subheadline.bold()).foregroundStyle(DocumentStyle.accent)
+                    .frame(width: 28, height: 32).background(DocumentStyle.lavender, in: RoundedRectangle(cornerRadius: 8))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(up ? "볼륨 위" : "볼륨 아래").font(.caption).foregroundStyle(DocumentStyle.muted)
+                    Text(up ? "초점 맞추기" : "촬영하기").font(.subheadline.bold())
+                }.fixedSize(horizontal: false, vertical: true)
+            }.frame(maxWidth: .infinity, alignment: .leading).accessibilityElement(children: .combine)
+        }
+    }
+    private var photoPicker: some View {
+        PhotosPicker(selection: $photo, matching: .images) {
+            DocumentRow(title: "사진 불러오기", detail: "사진 보관함에서 문서를 선택해요.", symbol: "photo.on.rectangle.angled",
+                        tint: DocumentStyle.pine, fill: DocumentStyle.mint)
+        }.buttonStyle(.plain).simultaneousGesture(TapGesture().onEnded { stopDemo() })
+    }
+
+    @ViewBuilder private var result: some View {
+        Text("문서 읽기 결과").font(.largeTitle.bold()).accessibilityAddTraits(.isHeader)
+        VStack(alignment: .leading, spacing: 14) {
+            Label(model.busy ? (model.phase == .recognizing ? "글자 읽는 중" : "사진과 대조 중") :
+                    model.lines.isEmpty ? "다시 확인해 주세요" : "문서 원문",
+                  systemImage: model.busy ? "text.magnifyingglass" : model.lines.isEmpty ? "doc.viewfinder" : "text.alignleft")
+                .font(.headline).foregroundStyle(DocumentStyle.accent)
+            Text(model.notice).font(.body.weight(.medium)).accessibilityFocused($resultFocused)
+            if !model.lines.isEmpty {
+                Button {
+                    model.readLines(model.lines)
+                } label: { Label("전체 원문 듣기", systemImage: "speaker.wave.2.fill") }
+                    .buttonStyle(DocumentButtonStyle())
+                Button { model.openQuestions() } label: {
+                    Label("문서에 질문하기", systemImage: "bubble.left.and.bubble.right.fill")
+                }.buttonStyle(DocumentButtonStyle(prominent: false))
+                    .accessibilityHint("읽은 문서 또는 관련 개인정보 사례를 말로 물어봅니다.")
+                Button("읽기 멈추기") { model.stopSpeech() }
+                    .frame(minHeight: 44).frame(maxWidth: .infinity)
+            }
+            if model.busy {
                 HStack {
-                    Image(systemName: selected.contains(option.id) ? "checkmark.circle.fill" : "circle")
-                    Text(option.label); Spacer()
-                }.frame(minHeight: 44).contentShape(Rectangle())
+                    ProgressView().accessibilityHidden(true)
+                    Spacer()
+                    Button("확인 취소") { model.cancelReview() }.frame(minHeight: 44)
+                }
             }
-            .accessibilityLabel(option.label)
-            .accessibilityValue(selected.contains(option.id) ? "선택됨" : "선택 안 됨")
         }
-        Button("선택 내용 재확인") { model.proposeSelection() }
-        if group.pendingOptionIds != nil && !model.draftChanged {
-            Text("선택 내용: " + group.options.filter { selected.contains($0.id) }.map(\.label).joined(separator: ", "))
-            Button("이 선택으로 확정") {
-                model.command(.confirm, body: ["group_id": group.id], message: "선택을 확정했습니다. 작성 후 새로 촬영해 주세요.")
-            }.buttonStyle(.borderedProminent)
-            Button("선택 변경 취소") { model.command(.cancel, body: ["group_id": group.id], message: "변경 중인 선택을 취소했습니다.") }
-        } else if group.confirmed && !model.draftChanged { Text("선택을 확정했습니다.").font(.footnote) }
+        .padding(20).frame(maxWidth: .infinity, alignment: .leading).background(DocumentStyle.wash, in: RoundedRectangle(cornerRadius: 24))
+        if !model.lines.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("한 줄씩 듣기").font(.headline).padding(.bottom, 10).accessibilityAddTraits(.isHeader)
+                ForEach(model.lines) { line in
+                    Divider()
+                    Button {
+                        model.readLines([line])
+                    } label: {
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                if line.uncertain { Text("인식 불확실").font(.caption.bold()).foregroundStyle(DocumentStyle.clay) }
+                                Text(line.text).font(.body).multilineTextAlignment(.leading)
+                            }
+                            Spacer()
+                            Image(systemName: "play.circle").foregroundStyle(DocumentStyle.accent).accessibilityHidden(true)
+                        }.frame(minHeight: 44).padding(.vertical, 5).contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityLabel(line.spoken)
+                }
+            }.padding(16).documentCard()
+        }
+        if !model.busy {
+            Button { startCamera() } label: { Label("다시 촬영", systemImage: "camera") }.buttonStyle(DocumentButtonStyle(prominent: false))
+            photoPicker
+            Button(model.lines.isEmpty ? "홈으로 돌아가기" : "문서 지우고 홈으로") { model.clear() }.frame(minHeight: 44).frame(maxWidth: .infinity)
+                .accessibilityHint("현재 문서를 지우고 촬영 홈으로 돌아갑니다.")
+        }
+    }
+
+    private var soundSettings: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    Toggle("음성 안내", isOn: $model.automaticSpeech).font(.headline).frame(minHeight: 44)
+                    Divider()
+                    Picker("읽기 속도", selection: $model.readingRate) {
+                        ForEach([0.8, 1.0, 1.5], id: \.self) { Text("\($0, specifier: "%.1f")배").tag($0) }
+                    }.pickerStyle(.menu).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                }.padding(20).documentCard().padding(20)
+            }
+            .background(DocumentStyle.canvas).foregroundStyle(DocumentStyle.ink)
+            .navigationTitle("소리 설정").navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("완료") { settings = false } } }
+        }.presentationDetents([.medium, .large]).presentationDragIndicator(.visible).tint(DocumentStyle.accent)
+    }
+
+    private func startCamera() { stopDemo(); model.beginCamera() }
+
+    private func stopDemo() {
+        audition?.cancel()
+        audition = nil
+        sampleSound.stop()
+    }
+
+    private func playDemo() {
+        if audition != nil { stopDemo(); return }
+        soundError = nil
+        do { try sampleSound.start() } catch {
+            soundError = "소리를 재생하지 못했어요. 오디오 출력을 확인해 주세요."
+            model.speak(soundError ?? "")
+            return
+        }
+        audition = Task { @MainActor in
+            do {
+                for fit in [0.1, 0.1, 0.45, 0.45, 0.8, 0.8, 0.98] {
+                    try Task.checkCancellation()
+                    let level = Int((fit * Double(CameraCue.guidePitches.count - 1)).rounded())
+                    sampleSound.play(.guiding(level), quietly: model.guidanceSpeaking)
+                    try await Task.sleep(for: .seconds(CameraCue.period(fit: fit)))
+                }
+                sampleSound.play(.entered, quietly: model.guidanceSpeaking)
+                try await Task.sleep(for: .milliseconds(400))
+                stopDemo()
+            } catch { /* stopDemo already stopped this audition. */ }
+        }
     }
 }

@@ -72,16 +72,27 @@ class CaptureCoach:
         else:
             quality = assess_capture(image, mode=self.mode, policy=self.policy)
         motion = 0.0
+        focus_clear = False
         if quality.can_continue:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
             thumb = cv2.resize(gray, (64, 64), interpolation=cv2.INTER_AREA)
             if boundary:
-                quad = np.asarray(boundary["quad"], dtype=float) / np.array([image.shape[1], image.shape[0]])
+                points = np.asarray(boundary["quad"], dtype=np.float32)
+                # Exclude the edge of the sheet and any sharp objects on the desk.
+                center = points.mean(axis=0)
+                interior = np.rint(center + .85 * (points - center)).astype(np.int32)
+                mask = np.zeros(gray.shape, dtype=np.uint8)
+                cv2.fillConvexPoly(mask, interior, 255)
+                _, contrast = cv2.meanStdDev(cv2.Laplacian(gray, cv2.CV_32F), mask=mask)
+                focus_clear = float(contrast[0, 0]) >= 5
+                quad = points / np.array([image.shape[1], image.shape[0]])
                 if self._last_quad is not None:
                     motion = float(np.mean(np.linalg.norm(quad - self._last_quad, axis=1)) * 200)
                 self._last_quad = quad
-            elif self._last_frame is not None:
-                motion = float(np.mean(cv2.absdiff(thumb, self._last_frame)))
+            else:
+                focus_clear = True  # The scan quality check already includes sharpness.
+                if self._last_frame is not None:
+                    motion = float(np.mean(cv2.absdiff(thumb, self._last_frame)))
             # 긴 중단 후의 두 프레임을 연속 관측으로 취급하지 않는다.
             interrupted = previous_time is not None and now - previous_time > max(2., self.stable_seconds * 3)
             if self._stable_since is None or motion > self.motion_threshold or interrupted:
@@ -121,7 +132,7 @@ class CaptureCoach:
             self._last_announcement_key = key
             self._last_announcement_time = now
         return {
-            "status": status, "instruction": instruction,
+            "status": status, "instruction": instruction, "focus_clear": focus_clear,
             "should_announce": announce, "ready_to_capture": bool(ready),
             "stable_frames": self._good_frames, "motion_score": round(motion, 3),
             "quality": quality.to_dict(),

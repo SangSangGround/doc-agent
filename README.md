@@ -16,7 +16,7 @@
 | 로컬 TTS | macOS `say`, 재생·정지·반복. Windows/Linux 음성 어댑터는 미구현 |
 | 이미지 마스킹 | 사람이 검토한 이미지별 박스 적용. 자동 개인정보 영역 탐지는 아님 |
 | 로컬 검수 화면 | 탐지/OCR 오버레이, 마스킹 박스 편집·미리보기·초안 저장 |
-| iPhone 앱 | SwiftUI 화면·PC HTTPS 연결 구현, Xcode 전체 빌드·실기기 검증 대기 |
+| iPhone 앱 | 방향·비프음 안내 → 볼륨 위로 초점 → 볼륨 아래로 수동 촬영 → Vision OCR·기기 내 사진 대조·원문 듣기 |
 | 평가 도구 | COCO/YOLO 정답 연결, 탐지·안내·마스킹 평가, JSON/Markdown 보고서 |
 | 정답 박스 검수 | 원본 위 박스 편집, 미승인 초안 저장, 사람 검수 후 COCO 연결 |
 | 환경 점검·CI | 설치/언어/음성/키 설정 여부 점검, 외부 API 없는 회귀 테스트 구성 |
@@ -59,7 +59,7 @@ python -m docagent.evaluate outputs/workflow-demo/manifest.json --output-dir out
 
 ### 노트북 생활 문서 OCR·음성 질의응답
 
-등록 양식 없이 안내문·가정통신문 등 촬영한 문서의 글자를 읽는다. macOS는 Apple Vision으로 문서 경계와 글자를 인식하고 다른 OS는 OpenCV·Tesseract를 사용한다. 카메라에 문서가 안정적으로 들어오면 자동 촬영하고, 성공 후 원문 듣기·문서 질문·체크 상태 듣기를 제공한다. 비프음은 문서 위치를 안내하고 음성 안내 중에는 작아진다. 질문에는 로컬 Ollama `qwen3.5:4b`, 마이크에는 로컬 Whisper small을 사용한다.
+등록 양식 없이 안내문·가정통신문 등 촬영한 문서의 글자를 읽는다. macOS는 Apple Vision으로 문서 경계와 글자를 인식하고 다른 OS는 OpenCV·Tesseract를 사용한다. 문서가 안정적으로 들어오면 사용자가 초점을 맞추고 직접 촬영하며, 성공 후 원문 듣기·문서 질문·체크 상태 듣기를 제공한다. 비프음은 문서 위치를 안내하고 음성 안내 중에는 작아진다. 질문에는 로컬 Ollama `qwen3.5:4b`, 마이크에는 로컬 Whisper small을 사용한다.
 
 ```sh
 PYTHONPATH=src ./venv/bin/python -m docagent.home serve
@@ -67,9 +67,11 @@ PYTHONPATH=src ./venv/bin/python -m docagent.home serve
 
 [로컬 앱](http://127.0.0.1:8765) · [설치·사용·검증 범위](docs/home-document-assistant.md). 일반 문서 모드는 `--template`을 붙이지 않는다. 모델 없이 OCR부터 확인하려면 `--llm off --no-speech`를 추가한다. 인식문과 체크 상태에는 오류가 있을 수 있으며, 불확실한 글자는 함께 안내한다. 기존 등록 양식 모드는 명시적으로 `--template ... --demo`를 지정할 때 사용한다.
 
-### iPhone 앱과 개발용 PC 연결
+### iPhone 단독 실행
 
-`ios/DocAgent.xcodeproj`에 iPhone 13 이상·iOS 17 이상용 SwiftUI 앱이 있다. 촬영·원문 듣기·선택 확인·체크 결과를 앱에서 조작하고, 같은 Wi-Fi의 Python 서버가 사진을 처리한다. `docagent.home serve-mobile`로 HTTPS 서버와 연결 정보를 준비한다. [아이폰 설치·연결·시연 안내](ios/README.md)에 명령과 검증 한계를 정리했다.
+iPhone 13 이상·iOS 17 이상에서 후면 카메라로 문서를 찾고 직접 촬영한다. 네 모서리가 들어오면 긴 비프음이 난다. iOS 17.2부터 **볼륨 위로 초점 → 볼륨 아래로 촬영**할 수 있다. Apple Vision이 고해상도 원본을 읽고, 앱 안의 Qwen3.5-0.8B가 사진과 OCR을 대조한다. 빈 면으로 보이면 종이 반대쪽을 확인하도록 안내한다. Mac에서 모델을 준비한 뒤 Xcode로 설치하면 아이폰에서 오프라인으로 사용할 수 있다. [아이폰 설치·시연 안내](ios/README.md)
+
+직업훈련 생계비 대부 신청용 개인정보 동의서를 읽은 뒤 **문서에 질문하기**에서 말이나 글로 질문한다. 촬영한 원문의 제공 기관과 거부 조건을 묻거나, 앱에 저장한 금융 개인정보 판례와 용어 설명을 듣고, 앞선 답과 출처를 다시 확인할 수 있다.
 
 ### 기존 분석·검수 경로
 

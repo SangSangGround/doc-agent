@@ -116,22 +116,35 @@ async function startCamera(h) {
   media.resolve({getTracks:()=>[{stop(){stopped++;}}]});await starting;
   return {tick:[...h.intervals.values()][0],get stopped(){return stopped;}};
 }
-async function testAutoCaptureTakesOneFullResolutionImage() {
-  const h=await harness();h.get('auto-capture').checked=true;
+async function testOnlyManualShutterAfterFocusTakesFullResolutionImage() {
+  const h=await harness();
+  h.value('let now = 5000; Date.now = () => now');
   h.get('video').videoWidth=3840;h.get('video').videoHeight=2160;
   const camera=await startCamera(h);
   h.respond('frame',{ready_to_capture:false,beep_state:'stabilizing',stability_progress:.4,instruction:'잠시 고정'});
   await camera.tick();assert.equal(h.calls.filter(c=>c.action==='capture').length,0);
   assert.equal(h.get('canvas').width,960);
-  h.respond('frame',{ready_to_capture:true,beep_state:'ready',stability_progress:1,instruction:'준비'});
+  h.respond('frame',{ready_to_capture:true,focus_clear:true,beep_state:'ready',stability_progress:1,instruction:'준비'});
   await camera.tick();await camera.tick();
+  assert.equal(h.get('focus').disabled,false);assert.equal(h.get('take').disabled,true);
+  await h.get('take').onclick();await h.get('focus').onclick();
+  assert.equal(h.get('take').disabled,true);
+  h.value('now += 500');await camera.tick();
+  h.value('now += 250');await camera.tick();
+  assert.equal(h.get('take').disabled,false);
+  assert.equal(h.calls.filter(c=>c.action==='capture').length,0);
+  h.respond('frame',{ready_to_capture:true,focus_clear:false,beep_state:'ready'});
+  await camera.tick();assert.equal(h.get('take').disabled,true);await h.get('take').onclick();
+  h.respond('frame',{ready_to_capture:true,focus_clear:true,beep_state:'ready'});
+  h.value('now += 200');await camera.tick();h.value('now += 200');await camera.tick();
+  await h.get('take').onclick();
   const captures=h.calls.filter(c=>c.action==='capture');assert.equal(captures.length,1);
   assert.equal(JSON.parse(captures[0].options.body).image,'data:image/jpeg;base64,evaluated-frame');
   assert.equal(h.get('canvas').width,3840);
   assert.equal(camera.stopped,1);assert.equal(h.intervals.size,0);
 }
-async function testStoppedCameraCannotAutoCaptureLateReadyFrame() {
-  const h=await harness();h.get('auto-capture').checked=true;
+async function testStoppedCameraDiscardsLateReadyFrame() {
+  const h=await harness();
   const camera=await startCamera(h),pending=deferred();h.routes.set('frame',()=>pending.promise);
   const frame=camera.tick();h.get('camera-stop').onclick();
   pending.resolve({ok:true,json:async()=>({ready_to_capture:true,beep_state:'ready'})});await frame;
@@ -219,7 +232,7 @@ async function testOcrCheckboxReadoutIsVisibleAndNoChoicesRequired() {
 (async()=>{
   const tests=[testBusyControlsCannotStartAnotherUpload,testFailedResetCannotReuseCompletedStateOrPrivacyImage,testFileReaderIsPartOfTheLockedOperation,
     testCancellingPendingCameraStopsLateTracksAndBlocksDuplicateStarts,testFailedCameraResetDoesNotRequestPermission,testFailedCaptureKeepsPriorSuccessInvalidated,testChangedSelectionRequiresFreshCaptureButRetainsPrivacyAccess,
-    testAutoCaptureTakesOneFullResolutionImage,testStoppedCameraCannotAutoCaptureLateReadyFrame,testCancelledMicrophoneStopsLateTracks,
+    testOnlyManualShutterAfterFocusTakesFullResolutionImage,testStoppedCameraDiscardsLateReadyFrame,testCancelledMicrophoneStopsLateTracks,
     testRecordingStopsTracksAndRequiresQuestionConfirmation,testHiddenPageDiscardsLateTranscription,testRecaptureClearsQuestionEvidence,
     testHiddenDuringResetCannotStartCameraLater,testRecordingFinalizationKeepsControlsLocked,testOcrWorkflowOnlyRevealsActionsAfterCapture,testOcrCheckboxReadoutIsVisibleAndNoChoicesRequired];
   for(const test of tests){await test();console.log(`PASS ${test.name}`);}

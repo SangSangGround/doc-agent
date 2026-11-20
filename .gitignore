@@ -27,6 +27,7 @@ htmlcov/
 .pytype/
 
 # 에디터·OS
+.DS_Store
 .vscode/
 .idea/
 *.swp
@@ -55,6 +56,7 @@ sessions/
 *.pt
 *.onnx
 *.pth
+/ios/DocAgentCore/Sources/DocAgentCore/ReviewModel/*.gguf
 
 # 비밀 정보 (API 키 등) — 절대 커밋하지 않는다. 형식은 .env.example 참고
 .env

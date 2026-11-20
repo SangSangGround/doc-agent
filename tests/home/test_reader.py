@@ -26,13 +26,20 @@ def paper(w=500, h=650, background=100, rotate=0):
 
 @pytest.mark.parametrize('kwargs', [{}, {'w':650,'h':400}, {'w':420,'h':420},
                                     {'background':225}, {'rotate':16}])
-def test_general_page_auto_captures_without_a4_or_preview_sharpness(kwargs):
+def test_general_page_reports_framing_and_sharpness(kwargs):
     image = paper(**kwargs)
     coach = CaptureCoach()
     for stamp in (0., .35, .75):
         result = coach.update(image, timestamp=stamp)
     assert result['ready_to_capture'], result
     assert result['boundary']['status'] == 'framed'
+    assert result['focus_clear']
+
+
+def test_blurred_text_is_not_ready_for_focus_even_when_paper_is_in_frame():
+    result = CaptureCoach().update(cv2.GaussianBlur(paper(), (15, 15), 4))
+    assert result['boundary']['status'] == 'framed'
+    assert not result['focus_clear']
 
 
 def test_exposure_change_does_not_reset_corner_stability():
@@ -43,7 +50,7 @@ def test_exposure_change_does_not_reset_corner_stability():
     assert coach.update(cv2.convertScaleAbs(image, alpha=.98), timestamp=.75)['ready_to_capture']
 
 
-def test_cutoff_or_uniform_surface_cannot_auto_capture():
+def test_cutoff_or_uniform_surface_is_not_framed():
     for image in (paper()[:, 290:], np.full((800, 1000, 3), 245, np.uint8)):
         coach = CaptureCoach()
         for stamp in (0., .4, .9):
