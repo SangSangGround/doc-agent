@@ -277,7 +277,10 @@ private struct LiveWritingView: View {
                 sound.play(.aligned, quietly: model.guidanceSpeaking)
                 lastBeep = now
             }
-            if reached || (feedback.message != spoken && !model.guidanceSpeaking && now.timeIntervalSince(lastSpeech) >= 1.5) {
+            let elapsed = now.timeIntervalSince(lastSpeech)
+            let repeatDue = feedback.repeatSpeechAfter.map { elapsed >= $0 } ?? false
+            let changed = feedback.message != spoken && elapsed >= 2
+            if reached || (!model.guidanceSpeaking && (changed || repeatDue)) {
                 spoken = feedback.message
                 lastSpeech = now
                 model.speak(spoken)

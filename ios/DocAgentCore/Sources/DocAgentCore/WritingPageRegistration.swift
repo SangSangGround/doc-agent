@@ -6,6 +6,7 @@ import WritingVision
 
 /// The v7.5 reference matcher is stateful and must be called from a serial queue.
 public final class WritingPageRegistration {
+    public let paperCoordinates: WritingTransform?
     private let tracker: OpaquePointer
 
     public init?(reference: CGImage) {
@@ -16,9 +17,12 @@ public final class WritingPageRegistration {
            observation.boundingBox.width * observation.boundingBox.height > 0.14 {
             corners = [observation.topLeft, observation.topRight, observation.bottomRight, observation.bottomLeft]
                 .flatMap { [Double($0.x), Double(1 - $0.y)] }
+            var matrix = [Double](repeating: 0, count: 9)
+            paperCoordinates = DAWritingPaperCoordinates(corners, &matrix) ? WritingTransform(rowMajor: matrix) : nil
         } else {
             // A photographed page may share the same desk as the next page. If the
             // page outline disappears, use its printed area rather than desk texture.
+            paperCoordinates = nil
             let printed = VNDetectTextRectanglesRequest()
             try? VNImageRequestHandler(cgImage: reference).perform([printed])
             let boxes = (printed.results ?? []).map(\.boundingBox)
@@ -39,6 +43,16 @@ public final class WritingPageRegistration {
     deinit { DAWritingDestroy(tracker) }
 
     public func register(_ buffer: CVPixelBuffer) -> WritingTransform? {
+        if CVPixelBufferGetPixelFormatType(buffer) == kCVPixelFormatType_32BGRA {
+            guard CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }
+            defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+            guard let base = CVPixelBufferGetBaseAddress(buffer) else { return nil }
+            var matrix = [Double](repeating: 0, count: 9)
+            guard DAWritingRegisterBGRA(tracker, base.assumingMemoryBound(to: UInt8.self),
+                                        Int32(CVPixelBufferGetWidth(buffer)), Int32(CVPixelBufferGetHeight(buffer)),
+                                        CVPixelBufferGetBytesPerRow(buffer), &matrix) else { return nil }
+            return WritingTransform(rowMajor: matrix)
+        }
         guard [kCVPixelFormatType_420YpCbCr8BiPlanarFullRange, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange]
                 .contains(CVPixelBufferGetPixelFormatType(buffer)), CVPixelBufferGetPlaneCount(buffer) == 2,
               CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }

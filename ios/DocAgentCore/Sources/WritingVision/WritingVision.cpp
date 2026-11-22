@@ -211,3 +211,25 @@ bool DAWritingRegister(DAWritingTracker *tracker,const uint8_t *gray,int w,int h
         return true;
     } catch (const std::exception&) { return false; }
 }
+
+bool DAWritingPaperCoordinates(const double corners[8], double output[9]) {
+    if (!corners || !output) return false;
+    try {
+        cv::Point2f source[4], paper[] = {{0,0}, {1,0}, {1,1}, {0,1}};
+        for (int i = 0; i < 4; ++i) source[i] = cv::Point2f(corners[2*i], corners[2*i+1]);
+        auto matrix = cv::getPerspectiveTransform(source, paper);
+        if (!cv::checkRange(matrix)) return false;
+        std::copy_n(matrix.ptr<double>(), 9, output);
+        return true;
+    } catch (const std::exception&) { return false; }
+}
+
+bool DAWritingRegisterBGRA(DAWritingTracker *tracker, const uint8_t *bgra, int w, int h,
+                           size_t stride, double output[9]) {
+    if (!bgra || w <= 0 || h <= 0 || stride < size_t(w)*4) return false;
+    try {
+        cv::Mat gray;
+        cv::cvtColor(cv::Mat(h, w, CV_8UC4, const_cast<uint8_t*>(bgra), stride), gray, cv::COLOR_BGRA2GRAY);
+        return DAWritingRegister(tracker, gray.ptr<uint8_t>(), w, h, gray.step, output);
+    } catch (const std::exception&) { return false; }
+}

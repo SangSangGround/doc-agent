@@ -13,6 +13,9 @@ extern "C" {
 typedef struct DAWritingTracker DAWritingTracker;
 DAWritingTracker *DAWritingCreate(const uint8_t *gray, int width, int height, size_t stride,
                                   const double paperCorners[8]);
+bool DAWritingPaperCoordinates(const double corners[8], double referenceToPaper[9]);
+bool DAWritingRegisterBGRA(DAWritingTracker *tracker, const uint8_t *bgra, int width, int height,
+                           size_t stride, double referenceToLive[9]);
 void DAWritingDestroy(DAWritingTracker *tracker);
 bool DAWritingRegister(DAWritingTracker *tracker, const uint8_t *gray, int width, int height,
                        size_t stride, double referenceToLive[9]);

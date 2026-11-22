@@ -1,6 +1,14 @@
 {
-  "originHash" : "feefa18097ae3865327434e5096f5f9efd500afb0576e565e6ce707817d5b1e3",
+  "originHash" : "408ef1d3e4ecad6ed65b55f013c05ae6c2142a715a67eec911279364d10b5068",
   "pins" : [
+    {
+      "identity" : "mediapipe",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google-ai-edge/mediapipe.git",
+      "state" : {
+        "revision" : "100f769b1532d5612ea5200958af7a536b804bb6"
+      }
+    },
     {
       "identity" : "opencv-spm",
       "kind" : "remoteSourceControl",

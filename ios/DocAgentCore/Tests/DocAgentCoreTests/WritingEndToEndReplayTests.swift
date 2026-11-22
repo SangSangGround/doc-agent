@@ -70,9 +70,16 @@ final class WritingEndToEndReplayTests: XCTestCase {
             let tracker = try XCTUnwrap(WritingPageRegistration(reference: reference.image))
             let sample = try [0.0, 0.0015].map { try frame(reference.image, viewpoint: viewpoint, jitter: $0, context: context) }
             // Compute ORB on every frame. All labelled trajectories share the same camera video for a viewpoint.
-            let poses = (0..<frameCount).map { i in
+            let poses = (0..<frameCount).map { i -> WritingTransform? in
+                let image = sample[i % 2]
+                var buffer: CVPixelBuffer?
+                XCTAssertEqual(CVPixelBufferCreate(nil, image.width, image.height, kCVPixelFormatType_32BGRA,
+                                                   [kCVPixelBufferIOSurfacePropertiesKey: [:]] as CFDictionary,
+                                                   &buffer), kCVReturnSuccess)
+                guard let buffer else { return nil }
+                context.render(CIImage(cgImage: image), to: buffer)
                 let started = ProcessInfo.processInfo.systemUptime
-                let pose = tracker.register(sample[i % 2])
+                let pose = tracker.register(buffer)
                 registrationTimes.append((ProcessInfo.processInfo.systemUptime - started) * 1000)
                 return pose
             }
@@ -83,20 +90,29 @@ final class WritingEndToEndReplayTests: XCTestCase {
                 func observe(_ guide: inout WritingGuidance, _ i: Int, point: CGPoint?, pose: WritingTransform?) -> Bool {
                     let tip = point.map { viewpoint.project($0, jitter: i.isMultiple(of: 2) ? 0.0 : 0.0015) }
                     return guide.update(pose: pose, fingertip: tip, target: target, fields: fields,
-                                        time: Double(i) / 10, referenceAspect: aspect).arrived
+                                        time: Double(i) / 10, paperCoordinates: tracker.paperCoordinates, referenceAspect: aspect).arrived
                 }
-                var guide = WritingGuidance(), firstArrival: Int?
+                var guide = WritingGuidance(), firstArrival: Int?, firstNear: Int?
                 var early = false
                 for i in 0..<frameCount {
                     let remaining = CGFloat(max(0, entry-i))
                     let point = CGPoint(x: center.x, y: center.y - remaining * max(0.014, target.bounds.height))
+                    // Dwell begins at entry into the 8 mm band, before the trajectory reaches its center.
+                    func paperPosition(_ reference: CGPoint) -> CGPoint {
+                        if let p = tracker.paperCoordinates?.livePoint(reference) {
+                            return CGPoint(x: p.x * 210, y: p.y * 297)
+                        }
+                        return CGPoint(x: reference.x * 210, y: reference.y * 210 / aspect)
+                    }
+                    let a = paperPosition(point), b = paperPosition(center)
+                    if firstNear == nil && hypot(a.x-b.x, a.y-b.y) <= 8 { firstNear = i }
                     if observe(&guide, i, point: point, pose: poses[i]) {
-                        early = early || i < entry
+                        early = early || firstNear == nil || i < firstNear!
                         if firstArrival == nil { firstArrival = i }
                     }
                 }
                 if early { earlyEpisodes += 1 }
-                if let firstArrival { delays.append((firstArrival-entry) * 100) }
+                if let firstArrival, let firstNear { delays.append((firstArrival-firstNear) * 100) }
                 else { XCTFail("No arrival for \(viewpoint.name), \(target.id)") }
 
                 for other in fields where other.id != target.id {
