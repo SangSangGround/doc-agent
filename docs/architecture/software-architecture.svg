@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1500" viewBox="0 0 2400 1500" role="img" aria-labelledby="title desc">
+<title id="title">Doc Agent iPhone 앱과 개발용 PC 서버 아키텍처</title>
+<desc id="desc">SwiftUI 아이폰 앱에서 촬영한 문서를 같은 Wi-Fi의 Python HTTPS 서버로 보낸다. 서버는 OpenCV로 촬영 품질과 체크 표시를 확인하고 검토된 양식 원문과 선택 대조 결과를 반환한다. 아이폰은 iOS TTS로 읽는다. Tesseract OCR은 PC에서 마스킹 후보를 만든다. 기존 RF-DETR 분석 도구는 양식 준비를 위한 별도 경로다. 앱 전체 빌드와 실기기 검증은 대기 중이다.</desc>
+<rect width="2400" height="1500" fill="white"/>
+<text x="100" y="80" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="26" font-weight="700" fill="#096DD5" text-anchor="start">DOC AGENT  /  SOFTWARE ARCHITECTURE</text>
+<text x="100" y="168" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="64" font-weight="700" fill="#17202B" text-anchor="start">iPhone 문서 도우미 아키텍처</text>
+<text x="100" y="225" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="400" fill="#66717E" text-anchor="start">아이폰은 촬영·음성 안내, PC는 문서 확인·체크 대조를 담당합니다.</text>
+<text x="100" y="320" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17202B" text-anchor="start">사용자 기기</text>
+<text x="790" y="320" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17202B" text-anchor="start">개발용 PC 서버</text>
+<text x="1820" y="320" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17202B" text-anchor="start">양식·상태 파일 (PC)</text>
+<rect x="100" y="380" width="490" height="640" rx="12" fill="white" stroke="#D8E0E9" stroke-width="2"/>
+<rect x="135" y="410" width="29" height="46" rx="6" fill="white" stroke="#096DD5" stroke-width="3"/>
+<polyline points="144,417 155,417" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="144,448 155,448" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<text x="188" y="446" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="34" font-weight="700" fill="#17202B" text-anchor="start">iPhone 앱</text>
+<text x="130" y="493" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">SwiftUI · iPhone 13+ / iOS 17+</text>
+<rect x="125" y="525" width="440" height="135" rx="12" fill="#F3F5F8" stroke="none" stroke-width="2"/>
+<text x="150" y="564" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">촬영·사진 입력</text>
+<text x="150" y="602" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">AVFoundation · PhotosPicker</text>
+<text x="150" y="638" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">카메라 프레임 · 사진 불러오기</text>
+<rect x="125" y="680" width="440" height="135" rx="12" fill="#F3F5F8" stroke="none" stroke-width="2"/>
+<text x="150" y="719" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">원문 듣기·선택 확정</text>
+<text x="150" y="757" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">iOS TTS · VoiceOver</text>
+<text x="150" y="793" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">검토된 원문 낭독 · 선택 재확인</text>
+<rect x="125" y="835" width="440" height="135" rx="12" fill="#F3F5F8" stroke="none" stroke-width="2"/>
+<text x="150" y="874" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">체크 결과 확인</text>
+<text x="150" y="912" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">일치 · 누락 · 중복 · 판독 불가</text>
+<text x="150" y="948" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">마스킹 후보 미리보기</text>
+<text x="690" y="568" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="700" fill="#096DD5" text-anchor="middle">같은 Wi-Fi</text>
+<text x="690" y="600" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="700" fill="#096DD5" text-anchor="middle">HTTPS / JSON</text>
+<polyline points="610,650 770,650" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="770,650 757.8756443470179,657.0 757.8756443470179,643.0" fill="#096DD5"/>
+<text x="690" y="686" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="middle">사진 · 프레임</text>
+<text x="690" y="716" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="middle">사용자 선택</text>
+<polyline points="770,788 610,788" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="610,788 622.1243556529821,781.0 622.1243556529821,795.0" fill="#096DD5"/>
+<text x="690" y="826" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="middle">원문 · 판정 결과</text>
+<text x="690" y="856" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="middle">촬영 안내</text>
+<text x="690" y="934" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="21" font-weight="400" fill="#66717E" text-anchor="middle">토큰 인증</text>
+<text x="690" y="965" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="21" font-weight="400" fill="#66717E" text-anchor="middle">인증서 확인</text>
+<rect x="790" y="380" width="870" height="640" rx="12" fill="white" stroke="#096DD5" stroke-width="2"/>
+<rect x="820" y="413" width="42" height="17" rx="4" fill="white" stroke="#096DD5" stroke-width="3"/>
+<polyline points="827,421 832,421" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<rect x="820" y="438" width="42" height="17" rx="4" fill="white" stroke="#096DD5" stroke-width="3"/>
+<polyline points="827,446 832,446" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<text x="883" y="446" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="34" font-weight="700" fill="#17202B" text-anchor="start">Python 분석 서버</text>
+<text x="1628" y="445" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#66717E" text-anchor="end">단일 사용자 세션</text>
+<rect x="820" y="480" width="810" height="112" rx="12" fill="#F3F5F8" stroke="none" stroke-width="2"/>
+<text x="844" y="521" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">촬영 품질 검사</text>
+<text x="1606" y="519" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#096DD5" text-anchor="end">OpenCV</text>
+<text x="844" y="565" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">흐림·밝기·문서 경계·움직임 확인 → 촬영 안내</text>
+<rect x="820" y="610" width="810" height="112" rx="12" fill="#EAF3FE" stroke="none" stroke-width="2"/>
+<text x="844" y="651" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">문서 확인·체크 표시 판독</text>
+<text x="1606" y="649" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#096DD5" text-anchor="end">OpenCV / ORB</text>
+<text x="844" y="695" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">기준 이미지 정렬 → 등록된 체크박스의 표시 비교</text>
+<rect x="820" y="740" width="810" height="112" rx="12" fill="#EAF3FE" stroke="none" stroke-width="2"/>
+<text x="844" y="781" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">원문 조회·선택 결과 대조</text>
+<text x="1606" y="779" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#096DD5" text-anchor="end">Rule-based</text>
+<text x="844" y="825" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">검토된 원문 반환 → 선택 확정 → 작성 결과 비교</text>
+<rect x="820" y="870" width="810" height="112" rx="12" fill="#F3F5F8" stroke="none" stroke-width="2"/>
+<text x="844" y="911" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#17202B" text-anchor="start">개인정보 마스킹 후보</text>
+<text x="1606" y="909" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#096DD5" text-anchor="end">Tesseract OCR</text>
+<text x="844" y="955" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">PC에서 OCR + 패턴 검사 → 가림 후보 미리보기</text>
+<rect x="1820" y="380" width="470" height="252" rx="12" fill="#F3F5F8" stroke="#D8E0E9" stroke-width="2"/>
+<rect x="1850" y="412" width="32" height="42" rx="3" fill="white" stroke="#096DD5" stroke-width="3"/>
+<polyline points="1857,424 1875,424" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="1857,433 1875,433" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="1857,442 1875,442" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<text x="1902" y="444" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17202B" text-anchor="start">검토된 양식 묶음</text>
+<text x="1850" y="494" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="26" font-weight="400" fill="#66717E" text-anchor="start">전체 원문 · 빈 기준 이미지</text>
+<text x="1850" y="534" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="26" font-weight="400" fill="#66717E" text-anchor="start">체크박스 좌표 · 선택 규칙</text>
+<text x="1850" y="574" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="26" font-weight="400" fill="#66717E" text-anchor="start">검토·승인 기록</text>
+<text x="1850" y="609" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#096DD5" text-anchor="start">template.json + 기준 이미지</text>
+<polyline points="1802,520 1678,520" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1678,520 1690.124355652982,513.0 1690.124355652982,527.0" fill="#096DD5"/>
+<text x="1740" y="491" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#096DD5" text-anchor="middle">기준 제공</text>
+<rect x="1820" y="690" width="470" height="191" rx="12" fill="#F3F5F8" stroke="#D8E0E9" stroke-width="2"/>
+<rect x="1850" y="718" width="32" height="42" rx="3" fill="white" stroke="#096DD5" stroke-width="3"/>
+<polyline points="1857,730 1875,730" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="1857,739 1875,739" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polyline points="1857,748 1875,748" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<text x="1902" y="748" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="32" font-weight="700" fill="#17202B" text-anchor="start">선택 상태 파일</text>
+<text x="2258" y="748" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="20" font-weight="400" fill="#66717E" text-anchor="end">선택 저장</text>
+<text x="1850" y="798" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">선택 ID · 현재 항목 · 읽기 속도</text>
+<text x="1850" y="844" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#66717E" text-anchor="start">로컬 JSON · 서버 옵션으로 활성화</text>
+<polyline points="1678,803 1802,803" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1802,803 1789.875644347018,810.0 1789.875644347018,796.0" fill="#096DD5"/>
+<polyline points="1802,830 1678,830" fill="none" stroke="#096DD5" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="1678,830 1690.124355652982,823.0 1690.124355652982,837.0" fill="#096DD5"/>
+<text x="1740" y="771" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#096DD5" text-anchor="middle">저장·복원</text>
+<rect x="1820" y="916" width="470" height="104" rx="12" fill="#EAF3FE" stroke="none" stroke-width="2"/>
+<text x="1850" y="957" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="27" font-weight="700" fill="#096DD5" text-anchor="start">문서 처리는 PC에서</text>
+<text x="1850" y="994" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="23" font-weight="400" fill="#66717E" text-anchor="start">앱 사용 경로: 외부 AI 호출 없음</text>
+<rect x="100" y="1060" width="2190" height="76" rx="12" fill="#EAF3FE" stroke="none" stroke-width="2"/>
+<text x="1195" y="1109" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="30" font-weight="700" fill="#096DD5" text-anchor="middle">촬영  →  원문 듣기  →  선택 확정  →  작성 후 재촬영  →  체크 대조</text>
+<text x="100" y="1197" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#17202B" text-anchor="start">양식 준비·기존 분석 도구</text>
+<text x="490" y="1197" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#66717E" text-anchor="start">별도 실행 · 앱에서 매번 호출하지 않음</text>
+<polyline points="1585,1240 1585,1183 2340,1183 2340,520 2290,520" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round" stroke-dasharray="10 9"/>
+<polygon points="2290,520 2302.124355652982,513.0 2302.124355652982,527.0" fill="#096DD5"/>
+<rect x="1785" y="1156" width="445" height="39" rx="0" fill="white" stroke="none" stroke-width="2"/>
+<text x="2010" y="1183" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#096DD5" text-anchor="middle">사람 검토 후 양식으로 수동 등록</text>
+<rect x="100" y="1240" width="570" height="157" rx="12" fill="#F3F5F8" stroke="#D8E0E9" stroke-width="2"/>
+<text x="126" y="1283" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#17202B" text-anchor="start">RF-DETR · Roboflow API</text>
+<text x="126" y="1324" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#096DD5" text-anchor="start">체크박스·서명란 위치 탐지</text>
+<text x="126" y="1364" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="24" font-weight="400" fill="#66717E" text-anchor="start">외부 전송 전 이미지 검토</text>
+<rect x="725" y="1240" width="570" height="157" rx="12" fill="#F3F5F8" stroke="#D8E0E9" stroke-width="2"/>
+<text x="751" y="1283" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#17202B" text-anchor="start">Tesseract OCR</text>
+<text x="751" y="1324" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#096DD5" text-anchor="start">문서·작성 영역 주변 글자 추출</text>
+<text x="751" y="1364" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="24" font-weight="400" fill="#66717E" text-anchor="start">PC에서 로컬 실행</text>
+<rect x="1350" y="1240" width="940" height="157" rx="12" fill="#F3F5F8" stroke="#D8E0E9" stroke-width="2"/>
+<text x="1376" y="1283" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="31" font-weight="700" fill="#17202B" text-anchor="start">검수·승인·평가 도구</text>
+<text x="1376" y="1324" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="25" font-weight="400" fill="#096DD5" text-anchor="start">원문·좌표·마스킹 검토 → 양식 묶음 준비</text>
+<text x="1376" y="1364" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="24" font-weight="400" fill="#66717E" text-anchor="start">탐지·안내·마스킹·체크 결과를 정답 데이터와 대조</text>
+<polyline points="680,1318 715,1318" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polygon points="715,1318 702.8756443470179,1325.0 702.8756443470179,1311.0" fill="#096DD5"/>
+<polyline points="1305,1318 1340,1318" fill="none" stroke="#096DD5" stroke-width="2" stroke-linejoin="round"/>
+<polygon points="1340,1318 1327.875644347018,1325.0 1327.875644347018,1311.0" fill="#096DD5"/>
+<text x="100" y="1451" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="start">실선: 요청·응답 / 기준 조회   ·   점선: 검토 후 수동 등록</text>
+<text x="2290" y="1451" font-family="Apple SD Gothic Neo, Noto Sans CJK KR, Malgun Gothic, sans-serif" font-size="22" font-weight="400" fill="#66717E" text-anchor="end">2026.11.04 코드 기준 · iOS 전체 빌드·실기기 검증 대기</text>
+</svg>

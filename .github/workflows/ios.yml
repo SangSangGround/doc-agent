@@ -1,0 +1,25 @@
+name: iPhone 앱 빌드 및 통신 계약 검증
+on:
+  pull_request:
+    paths: ['ios/**', 'src/docagent/home/**', 'src/docagent/cloud_*.py', '.github/workflows/ios.yml']
+  push:
+    branches: [main]
+    paths: ['ios/**', 'src/docagent/home/**', 'src/docagent/cloud_*.py', '.github/workflows/ios.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Swift 촬영·문서 판독·통신 계약 테스트
+        run: swift test --package-path ios/DocAgentCore
+      - name: iPhone Simulator용 앱 빌드
+        run: >-
+          xcodebuild -project ios/DocAgent.xcodeproj -scheme DocAgent
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath outputs/ios-build CODE_SIGNING_ALLOWED=NO build

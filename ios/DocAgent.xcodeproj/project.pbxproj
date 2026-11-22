@@ -1,0 +1,295 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EA09B2BF978BF4820A0677C1 /* WritingCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */; };
+		0E5B32A2DA91A7F327707A14 /* WritingGuideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49435F704417D689415A3 /* WritingGuideSheet.swift */; };
+		7A014C3EFDBE3A4E6FE302B5 /* QuestionAudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */; };
+		D8822C57E6AD3E1D60BFFF77 /* QuestionMicrophone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */; };
+		FB98BF3E0362BAB132CD1A6C /* ConsentQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */; };
+		0118D2173817FD044E7FD8BA /* DocumentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23E1266F00AE8BDB938608D /* DocumentStyle.swift */; };
+		0F2ABD416C94D0F7465D1221 /* DocAgentApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08692A645FA1431AA8A19454 /* DocAgentApp.swift */; };
+		1382218060DB0EB82972987A /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE17194DD308939C0D4EE /* CameraView.swift */; };
+		431C03E6E38B5D95EF8305E7 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EC8ECE4FCC548928E67657 /* HomeModel.swift */; };
+		58305B5EEAAB1C31EA692967 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */; };
+		8710B0F1F4F6263B87E2DA7B /* CaptureSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1145627DA919AEE5E8D95FB7 /* CaptureSound.swift */; };
+		D9F82689E8F760ECED47CA3E /* DocAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8D6A224FA1D1DD751157EB0C /* DocAgentCore */; };
+		F533077732FDE75F7831EE1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28AAD1477D5182D66D4B03B3 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingCameraController.swift; sourceTree = "<group>"; };
+		B6A49435F704417D689415A3 /* WritingGuideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingGuideSheet.swift; sourceTree = "<group>"; };
+		7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionAudioCapture.swift; sourceTree = "<group>"; };
+		34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionMicrophone.swift; sourceTree = "<group>"; };
+		117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentQuestionView.swift; sourceTree = "<group>"; };
+		A23E1266F00AE8BDB938608D /* DocumentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStyle.swift; sourceTree = "<group>"; };
+		08692A645FA1431AA8A19454 /* DocAgentApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocAgentApp.swift; sourceTree = "<group>"; };
+		1145627DA919AEE5E8D95FB7 /* CaptureSound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSound.swift; sourceTree = "<group>"; };
+		26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		28AAD1477D5182D66D4B03B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		38A007151ABE87CC01A5B6E9 /* DocAgent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocAgent.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B594B6DB375E1BF3F23CDD6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		87EC8ECE4FCC548928E67657 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
+		962CE17194DD308939C0D4EE /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7561BFB015D8F536760CB671 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9F82689E8F760ECED47CA3E /* DocAgentCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3C3B0F03DC089F93B8457928 /* DocAgentApp */ = {
+			isa = PBXGroup;
+			children = (
+				962CE17194DD308939C0D4EE /* CameraView.swift */,
+				22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */,
+				B6A49435F704417D689415A3 /* WritingGuideSheet.swift */,
+				7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */,
+				34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */,
+				117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */,
+				1145627DA919AEE5E8D95FB7 /* CaptureSound.swift */,
+				A23E1266F00AE8BDB938608D /* DocumentStyle.swift */,
+				08692A645FA1431AA8A19454 /* DocAgentApp.swift */,
+				87EC8ECE4FCC548928E67657 /* HomeModel.swift */,
+				7B594B6DB375E1BF3F23CDD6 /* Info.plist */,
+				28AAD1477D5182D66D4B03B3 /* Assets.xcassets */,
+				26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */,
+			);
+			path = DocAgentApp;
+			sourceTree = "<group>";
+		};
+		B28B7AF69320201D1CF206EB = {
+			isa = PBXGroup;
+			children = (
+				3C3B0F03DC089F93B8457928 /* DocAgentApp */,
+				FBDC4F23F93125BBEEAE800C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FBDC4F23F93125BBEEAE800C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				38A007151ABE87CC01A5B6E9 /* DocAgent.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E8A3AD980EC179856012B7E /* DocAgent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAD1C478648BB5F4F725A516 /* Build configuration list for PBXNativeTarget "DocAgent" */;
+			buildPhases = (
+				BCE16DD0260827ECF338C787 /* Sources */,
+				7561BFB015D8F536760CB671 /* Frameworks */,
+				0189424A5A60FED329FA868E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DocAgent;
+			packageProductDependencies = (
+				8D6A224FA1D1DD751157EB0C /* DocAgentCore */,
+			);
+			productName = DocAgent;
+			productReference = 38A007151ABE87CC01A5B6E9 /* DocAgent.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		98F54143AB4E86B28C3AFEE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					0E8A3AD980EC179856012B7E = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 96316AF13F45443E4E9C4BA0 /* Build configuration list for PBXProject "DocAgent" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ko;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				ko,
+				en,
+				Base,
+			);
+			mainGroup = B28B7AF69320201D1CF206EB;
+			packageReferences = (
+				B747EAD6A8D7189EE159E1E4 /* XCLocalSwiftPackageReference "DocAgentCore" */,
+			);
+			productRefGroup = FBDC4F23F93125BBEEAE800C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E8A3AD980EC179856012B7E /* DocAgent */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0189424A5A60FED329FA868E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F533077732FDE75F7831EE1B /* Assets.xcassets in Resources */,
+				58305B5EEAAB1C31EA692967 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCE16DD0260827ECF338C787 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1382218060DB0EB82972987A /* CameraView.swift in Sources */,
+				EA09B2BF978BF4820A0677C1 /* WritingCameraController.swift in Sources */,
+				0E5B32A2DA91A7F327707A14 /* WritingGuideSheet.swift in Sources */,
+				7A014C3EFDBE3A4E6FE302B5 /* QuestionAudioCapture.swift in Sources */,
+				D8822C57E6AD3E1D60BFFF77 /* QuestionMicrophone.swift in Sources */,
+				FB98BF3E0362BAB132CD1A6C /* ConsentQuestionView.swift in Sources */,
+				8710B0F1F4F6263B87E2DA7B /* CaptureSound.swift in Sources */,
+				0118D2173817FD044E7FD8BA /* DocumentStyle.swift in Sources */,
+				0F2ABD416C94D0F7465D1221 /* DocAgentApp.swift in Sources */,
+				431C03E6E38B5D95EF8305E7 /* HomeModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		00F209874A1F7309F6DCEAA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1A6EFC2CD0AF63DD14BE0438 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UV3AFGF9FM;
+				INFOPLIST_FILE = DocAgentApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.sangsangground.DocAgent;
+				PRODUCT_NAME = DocAgent;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4D8F54E7CBAF670D9F6C230D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UV3AFGF9FM;
+				INFOPLIST_FILE = DocAgentApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.sangsangground.DocAgent;
+				PRODUCT_NAME = DocAgent;
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		ED8772ADEC3A6C25161BC957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		96316AF13F45443E4E9C4BA0 /* Build configuration list for PBXProject "DocAgent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED8772ADEC3A6C25161BC957 /* Debug */,
+				00F209874A1F7309F6DCEAA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAD1C478648BB5F4F725A516 /* Build configuration list for PBXNativeTarget "DocAgent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D8F54E7CBAF670D9F6C230D /* Debug */,
+				1A6EFC2CD0AF63DD14BE0438 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B747EAD6A8D7189EE159E1E4 /* XCLocalSwiftPackageReference "DocAgentCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = DocAgentCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8D6A224FA1D1DD751157EB0C /* DocAgentCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B747EAD6A8D7189EE159E1E4 /* XCLocalSwiftPackageReference "DocAgentCore" */;
+			productName = DocAgentCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+}

@@ -1,0 +1,7 @@
+Qwen3.5-0.8B, Qwen Team. Apache License 2.0.
+https://huggingface.co/Qwen/Qwen3.5-0.8B
+GGUF quantization and vision projector by Unsloth.
+https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF
+
+Inference uses llama.cpp, MIT license.
+https://github.com/ggml-org/llama.cpp
