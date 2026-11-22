@@ -19,7 +19,26 @@ final class HomeModel: ObservableObject {
     @Published private(set) var notice = "문서를 준비한 뒤 카메라를 열어 주세요."
     @Published var automaticSpeech = true
     @Published var readingRate = 1.0
+    /// 답을 끝까지 읽은 뒤 마이크를 다시 켜서 다음 질문을 기다린다.
+    @Published var continuousConversation = true
+    /// 질문 답변을 중간에 멈추지 않고 끝까지 읽을 때마다 1씩 늘어난다.
+    @Published private(set) var answerSpokenCount = 0
     let synthesizer = AVSpeechSynthesizer()
+    private let speechEvents = SpeechEvents()
+    private var answerUtterance: AVSpeechUtterance?
+
+    init() {
+        speechEvents.onFinish = { [weak self] utterance in
+            Task { @MainActor in self?.utteranceFinished(utterance) }
+        }
+        synthesizer.delegate = speechEvents
+    }
+
+    private func utteranceFinished(_ utterance: AVSpeechUtterance) {
+        guard utterance === answerUtterance else { return }
+        answerUtterance = nil
+        answerSpokenCount += 1
+    }
     private let reviewer = DocumentReviewer()
     private var recognition: Task<Void, Never>?
     private var revision = 0
@@ -28,20 +47,22 @@ final class HomeModel: ObservableObject {
     private var readingDocument = false
     var guidanceSpeaking: Bool { synthesizer.isSpeaking || Date() < announcementDeadline }
 
-    func speak(_ text: String, reading: Bool = false) {
-        guard reading || automaticSpeech else { return }
+    @discardableResult
+    func speak(_ text: String, reading: Bool = false) -> AVSpeechUtterance? {
+        guard reading || automaticSpeech else { return nil }
         stopSpeech()
         readingDocument = reading
         if UIAccessibility.isVoiceOverRunning && !reading {
             announcement = text
             announcementDeadline = Date().addingTimeInterval(min(18, Double(text.count) / 5 + 1))
             UIAccessibility.post(notification: .announcement, argument: text)
-        } else {
-            let utterance = AVSpeechUtterance(string: text)
-            utterance.voice = AVSpeechSynthesisVoice(language: "ko-KR")
-            utterance.rate = AVSpeechUtteranceDefaultSpeechRate * Float(readingRate)
-            synthesizer.speak(utterance)
+            return nil
         }
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "ko-KR")
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * Float(readingRate)
+        synthesizer.speak(utterance)
+        return utterance
     }
     func announcementFinished(_ notification: Notification) {
         if let text = notification.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String,
@@ -52,6 +73,7 @@ final class HomeModel: ObservableObject {
     }
     func stopSpeech() {
         synthesizer.stopSpeaking(at: .immediate)
+        answerUtterance = nil
         readingDocument = false
         announcement = nil
         announcementDeadline = .distantPast
@@ -96,10 +118,10 @@ final class HomeModel: ObservableObject {
                 let answer = try await reviewer.answer(question, lines: original, history: previous)
                 guard ticket == questionRevision, questionsPresented else { return }
                 remember(ConsentTurn(question: question, reply: answer))
-                speak(answer.spoken, reading: true)
+                answerUtterance = speak(answer.spoken, reading: true)
             } catch {
                 guard ticket == questionRevision, !Task.isCancelled else { return }
-                speak("답변을 마치지 못했어요. 다시 질문해 주세요.", reading: true)
+                answerUtterance = speak("답변을 마치지 못했어요. 다시 질문해 주세요.", reading: true)
             }
             if ticket == questionRevision {
                 pendingQuestion = nil
@@ -185,5 +207,14 @@ final class HomeModel: ObservableObject {
         lines = []
         phase = .idle
         notice = "문서를 준비한 뒤 카메라를 열어 주세요."
+    }
+}
+
+/// AVSpeechSynthesizer의 읽기 완료 알림을 받는다. 중간에 멈춘 읽기(didCancel)는 알리지 않는다.
+final class SpeechEvents: NSObject, AVSpeechSynthesizerDelegate {
+    var onFinish: ((AVSpeechUtterance) -> Void)?
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        onFinish?(utterance)
     }
 }

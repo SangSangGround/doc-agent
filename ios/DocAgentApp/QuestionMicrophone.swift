@@ -18,8 +18,12 @@ final class QuestionMicrophone: ObservableObject {
     private var hasTap = false
     private var activated = false
     private var onQuestion: ((String) -> Void)?
+    private var onSilence: (() -> Void)?
 
-    func begin(onQuestion: @escaping (String) -> Void) {
+    /// - Parameters:
+    ///   - waitSeconds: 말이 시작되지 않을 때 기다리는 최대 시간.
+    ///   - onSilence: 지정하면 아무 말도 듣지 못했을 때 오류 안내 대신 이 함수를 부른다.
+    func begin(waitSeconds: Double = 12, onSilence: (() -> Void)? = nil, onQuestion: @escaping (String) -> Void) {
         cancel()
         transcript = ""
         error = nil
@@ -28,6 +32,7 @@ final class QuestionMicrophone: ObservableObject {
             return
         }
         self.onQuestion = onQuestion
+        self.onSilence = onSilence
         phase = .preparing
         let ticket = generation
         Task { [self] in
@@ -79,7 +84,7 @@ final class QuestionMicrophone: ObservableObject {
                 engine.prepare()
                 try engine.start()
                 phase = .listening
-                schedule(seconds: 12) { self.finish() }
+                schedule(seconds: waitSeconds) { self.finish() }
             } catch { fail("마이크를 시작하지 못했어요. 다시 말하거나 입력해 주세요.") }
         }
     }
@@ -108,9 +113,11 @@ final class QuestionMicrophone: ObservableObject {
     private func deliver() {
         let question = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
         let callback = onQuestion
+        let silence = onSilence
         cancel()
-        if question.isEmpty { error = "질문을 듣지 못했어요. 다시 말해 주세요." }
-        else { callback?(question) }
+        if !question.isEmpty { callback?(question) }
+        else if let silence { silence() }
+        else { error = "질문을 듣지 못했어요. 다시 말해 주세요." }
     }
 
     private func fail(_ message: String) {
@@ -139,6 +146,7 @@ final class QuestionMicrophone: ObservableObject {
             activated = false
         }
         onQuestion = nil
+        onSilence = nil
         transcript = ""
         phase = .idle
     }
