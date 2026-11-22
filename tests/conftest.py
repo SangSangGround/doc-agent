@@ -31,6 +31,8 @@ Vision·PII·Agent 에이전트가 그대로 가져다 쓰는 결정론적 픽�
 
 from __future__ import annotations
 
+import os
+import socket
 from types import ModuleType
 
 import numpy as np
@@ -186,17 +188,35 @@ def sample_structure() -> DocumentStructure:
     )
 
 
+@pytest.fixture
+def offline_relay_ports(monkeypatch: pytest.MonkeyPatch) -> set[int]:
+    """현재 테스트가 직접 연 127.0.0.1 중계 포트만 연결할 수 있다."""
+    ports: set[int] = set()
+
+    def check_address(address):
+        if not (isinstance(address, tuple) and len(address) == 2
+                and address[0] == "127.0.0.1" and address[1] in ports):
+            raise AssertionError("오프라인 테스트에서 등록되지 않은 주소에 연결을 시도했습니다.")
+
+    def guard_socket_method(method):
+        def connect(sock, address):
+            check_address(address)
+            return method(sock, address)
+        return connect
+
+    create_connection = socket.create_connection
+
+    def connect_to_relay(address, *args, **kwargs):
+        check_address(address)  # 외부 호스트 이름은 DNS 조회 전 차단한다.
+        return create_connection(address, *args, **kwargs)
+
+    monkeypatch.setattr(socket.socket, "connect", guard_socket_method(socket.socket.connect))
+    monkeypatch.setattr(socket.socket, "connect_ex", guard_socket_method(socket.socket.connect_ex))
+    monkeypatch.setattr(socket, "create_connection", connect_to_relay)
+    return ports
+
+
 @pytest.fixture(autouse=True)
-def block_network_in_offline_suite(monkeypatch: pytest.MonkeyPatch) -> None:
-    """CI 및 명시적인 로컬 오프라인 검증에서 실제 소켓 연결을 차단한다."""
-    import os
-    import socket
-    if os.environ.get("DOCAGENT_TEST_OFFLINE") != "1":
-        return
-
-    def denied(*args, **kwargs):
-        raise AssertionError("오프라인 테스트에서 실제 네트워크 연결을 시도했습니다.")
-
-    monkeypatch.setattr(socket.socket, "connect", denied)
-    monkeypatch.setattr(socket.socket, "connect_ex", denied)
-    monkeypatch.setattr(socket, "create_connection", denied)
+def block_network_in_offline_suite(request: pytest.FixtureRequest) -> None:
+    if os.environ.get("DOCAGENT_TEST_OFFLINE") == "1":
+        request.getfixturevalue("offline_relay_ports")

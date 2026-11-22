@@ -1,6 +1,7 @@
 """Exercise the actual authenticated HTTPS relay without sending data to OpenAI."""
 import http.client
 import json
+import socket
 import ssl
 import threading
 
@@ -13,11 +14,12 @@ from docagent.home.mobile import connection_files
 
 
 @pytest.fixture
-def relay(tmp_path):
+def relay(tmp_path, offline_relay_ports):
     cert, key = connection_files(tmp_path, "127.0.0.1")
     tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     tls.load_cert_chain(cert, key)
     server = RelayServer("127.0.0.1", 0, tls, "iphone-test-pairing", Providers("fake-openai"))
+    offline_relay_ports.add(server.server_port)
     thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.02}, daemon=True)
     thread.start()
 
@@ -38,6 +40,20 @@ def relay(tmp_path):
         server.shutdown()
         server.server_close()
         thread.join(2)
+
+
+def test_relay_only_allows_its_own_loopback_port(relay, monkeypatch):
+    server, send = relay
+    assert send("/v1/status")[0] == 200
+    monkeypatch.setattr(socket, "getaddrinfo", lambda *args: pytest.fail("unexpected DNS lookup"))
+    with pytest.raises(AssertionError, match="등록되지 않은 주소"):
+        socket.create_connection(("external.invalid", server.server_port))
+    client = socket.socket()
+    client.close()  # A broken guard must not make an outbound connection during the test.
+    with pytest.raises(AssertionError, match="등록되지 않은 주소"):
+        client.connect(("127.0.0.1", server.server_port - 1))
+    with pytest.raises(AssertionError, match="등록되지 않은 주소"):
+        client.connect_ex(("192.0.2.1", server.server_port))
 
 
 def qa_data():
