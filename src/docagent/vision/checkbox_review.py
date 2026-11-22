@@ -116,7 +116,7 @@ def _static_mask(shape: tuple, groups: list[dict], page_size: tuple) -> np.ndarr
     return mask
 
 
-def _register(reference: np.ndarray, captured: np.ndarray, mask: np.ndarray) -> tuple:
+def _register(reference: np.ndarray, captured: np.ndarray, mask: np.ndarray, *, capture_mode: str) -> tuple:
     """인쇄 영역 특징점 정합과 인쇄 획 일치를 모두 요구한다."""
     detector = cv2.ORB_create(nfeatures=3500, fastThreshold=10, edgeThreshold=15)
     ref_points, ref_desc = detector.detectAndCompute(reference, mask)
@@ -135,7 +135,8 @@ def _register(reference: np.ndarray, captured: np.ndarray, mask: np.ndarray) -> 
         return None, {"reason": "insufficient_matches", "matches": len(good)}
     src = np.float32([cap_points[m.queryIdx].pt for m in good])
     dst = np.float32([ref_points[m.trainIdx].pt for m in good])
-    matrix, inliers = cv2.findHomography(src, dst, cv2.RANSAC, 2.0)
+    tolerance_px = 2.0
+    matrix, inliers = cv2.findHomography(src, dst, cv2.RANSAC, tolerance_px)
     if matrix is None or inliers is None or not np.isfinite(matrix).all():
         return None, {"reason": "homography_failed"}
     inliers = inliers.ravel().astype(bool)
@@ -150,6 +151,19 @@ def _register(reference: np.ndarray, captured: np.ndarray, mask: np.ndarray) -> 
     stats["feature_coverage"] = round(coverage, 4)
     if extent[0] < .35*w or extent[1] < .4*h or coverage < .12:
         return None, {**stats, "reason": "localized_registration"}
+
+    # 평행 이동한 스캔에 원근 변환을 맞추면 종이 끝의 가는 인쇄선이 틀어질 수 있다.
+    # 영상 전체와 넓게 분포한 ORB 내점이 같은 이동량을 지지할 때만 두 축의 이동을 쓴다.
+    method = "orb_homography_and_printed_content"
+    if capture_mode == "scan":
+        shift, response = cv2.phaseCorrelate(captured.astype(np.float32), reference.astype(np.float32))
+        offsets = dst[inliers] - src[inliers]
+        translation_errors = np.linalg.norm(offsets - shift, axis=1)
+        if response >= .8 and np.mean(translation_errors <= tolerance_px) >= .95:
+            matrix = np.eye(3)
+            matrix[:2, 2] = shift
+            method = "orb_phase_translation_and_printed_content"
+
     corners = np.float32([[[0, 0], [captured.shape[1]-1, 0],
                            [captured.shape[1]-1, captured.shape[0]-1], [0, captured.shape[0]-1]]])
     mapped = cv2.perspectiveTransform(corners, matrix)[0]
@@ -190,7 +204,7 @@ def _register(reference: np.ndarray, captured: np.ndarray, mask: np.ndarray) -> 
     stats["max_local_printed_missing_ratio"] = round(local_missing, 4)
     if local_missing > .25:
         return None, {**stats, "reason": "local_printed_content_mismatch"}
-    stats.update(reason="registered", method="orb_homography_and_printed_content")
+    stats.update(reason="registered", method=method)
     return (aligned, valid), stats
 
 
@@ -305,7 +319,7 @@ def verify_checkbox_groups(reference: np.ndarray, captured: np.ndarray, groups: 
             # 픽셀 크기가 같아도 아래 특징점/인쇄 내용 검증을 반드시 수행한다.
             captured_gray = cv2.resize(_gray(captured), size, interpolation=cv2.INTER_AREA)
         static = _static_mask(reference_gray.shape, groups, page_size_mm)
-        registration, alignment = _register(reference_gray, captured_gray, static)
+        registration, alignment = _register(reference_gray, captured_gray, static, capture_mode=capture_mode)
         if registration is None:
             return _uncertain(groups, "alignment_failed", alignment)
         aligned, valid = registration

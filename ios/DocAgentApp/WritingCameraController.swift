@@ -2,7 +2,7 @@ import AVFoundation
 import Combine
 import CoreMedia
 import DocAgentCore
-import Vision
+import MediaPipeTasksVision
 
 /// A new camera session is opened only for the writing sheet; the original
 /// capture state machine and its success tones never run on these frames.
@@ -15,11 +15,11 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
     private let target: WritingTarget
     private let fields: [WritingTarget]
     private let queue = DispatchQueue(label: "docagent.writing-camera", qos: .userInitiated)
-    private let hand = VNDetectHumanHandPoseRequest()
+    private var hand: HandLandmarker?
     private var registration: WritingPageRegistration?
     private var guidance = WritingGuidance()
     private var active = false
-    private var lastFrameTime = -Double.infinity
+    private var lastTimestampMs = -1
     private var missingFrames: DispatchWorkItem?
 
     init(reference: CGImage, target: WritingTarget, fields: [WritingTarget]) {
@@ -27,7 +27,6 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
         self.target = target
         self.fields = fields
         super.init()
-        hand.maximumHandCount = 2
         NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)),
                                                name: AVCaptureSession.wasInterruptedNotification, object: session)
         NotificationCenter.default.addObserver(self, selector: #selector(interrupted(_:)),
@@ -63,6 +62,7 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
     func stop() {
         queue.async {
             self.active = false
+            self.hand = nil
             if self.session.isRunning { self.session.stopRunning() }
             self.resetTracking()
             self.publish(WritingGuidance.seeking)
@@ -73,7 +73,7 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
         missingFrames?.cancel()
         missingFrames = nil
         guidance = WritingGuidance()
-        lastFrameTime = -.infinity
+        lastTimestampMs = -1
     }
 
     private func showPermissionError() {
@@ -84,6 +84,22 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
         if registration == nil { registration = WritingPageRegistration(reference: reference) }
         guard registration != nil else {
             publish(.init(message: "문서 글자의 특징을 충분히 찾지 못했어요. 문서를 밝은 곳에서 다시 찍어 주세요."))
+            return
+        }
+        do {
+            guard let model = Bundle.main.path(forResource: "hand_landmarker", ofType: "task") else {
+                throw CocoaError(.fileNoSuchFile)
+            }
+            let options = HandLandmarkerOptions()
+            options.baseOptions.modelAssetPath = model
+            options.runningMode = .video
+            options.numHands = 1
+            options.minHandDetectionConfidence = 0.6
+            options.minHandPresenceConfidence = 0.6
+            options.minTrackingConfidence = 0.6
+            hand = try HandLandmarker(options: options)
+        } catch {
+            publish(.init(message: "손 추적 모델을 열지 못했어요. 작성 안내를 다시 열어 주세요."))
             return
         }
         do {
@@ -101,7 +117,7 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
         let input = try AVCaptureDeviceInput(device: device)
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]
+        output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
         session.beginConfiguration()
         defer { session.commitConfiguration() }
         if session.canSetSessionPreset(.hd1280x720) { session.sessionPreset = .hd1280x720 }
@@ -124,18 +140,21 @@ final class WritingCameraController: NSObject, ObservableObject, AVCaptureVideoD
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard active, let registration, let buffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer).seconds
-        guard time.isFinite, time - lastFrameTime >= 0.10 else { return }
-        lastFrameTime = time
+        guard time.isFinite, time >= 0 else { return }
+        let timestampMs = Int(time * 1000)
+        guard timestampMs > lastTimestampMs else { return }
+        lastTimestampMs = timestampMs
         let pose = registration.register(buffer)
         var tip: CGPoint?
-        if pose != nil {
-            let request = VNImageRequestHandler(cvPixelBuffer: buffer, orientation: .up)
-            if (try? request.perform([hand])) != nil, let hands = hand.results, hands.count == 1,
-               let point = try? hands[0].recognizedPoint(.indexTip), point.confidence >= 0.55 {
-                tip = CGPoint(x: point.location.x, y: 1 - point.location.y)
-            }
+        if pose != nil, let hand,
+           let image = try? MPImage(pixelBuffer: buffer),
+           let result = try? hand.detect(videoFrame: image, timestampInMilliseconds: timestampMs),
+           let landmarks = result.landmarks.first, landmarks.count > 8 {
+            let indexTip = landmarks[8]
+            tip = CGPoint(x: CGFloat(indexTip.x), y: CGFloat(indexTip.y))
         }
         let value = guidance.update(pose: pose, fingertip: tip, target: target, fields: fields, time: time,
+                                    paperCoordinates: registration.paperCoordinates,
                                     referenceAspect: CGFloat(reference.width) / CGFloat(reference.height))
         publish(value, aspect: CGFloat(CVPixelBufferGetWidth(buffer)) / CGFloat(CVPixelBufferGetHeight(buffer)))
         // A frozen camera must not leave a latched arrival message or approach tone active.

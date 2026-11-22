@@ -5,6 +5,11 @@
 	};
 	objectVersion = 60;
 	objects = {
+		82AB593BCD8DB95F42EC7DAF = { isa = PBXBuildFile; fileRef = B1F985F28E8591D0BFFD000C; };
+		B1F985F28E8591D0BFFD000C = { isa = PBXFileReference; lastKnownFileType = file; path = hand_landmarker.task; sourceTree = "<group>"; };
+		467139FF4CCE43206B49B0D7 = { isa = PBXBuildFile; productRef = 0C78A0AB5B53B49132D3EBBE; };
+		0C78A0AB5B53B49132D3EBBE = { isa = XCSwiftPackageProductDependency; package = D0DCF7366FBF69693536B99E; productName = MediaPipeTasksVision; };
+		D0DCF7366FBF69693536B99E = { isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/google-ai-edge/mediapipe.git"; requirement = { kind = revision; revision = 100f769b1532d5612ea5200958af7a536b804bb6; }; };
 
 /* Begin PBXBuildFile section */
 		EA09B2BF978BF4820A0677C1 /* WritingCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */; };
@@ -44,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				467139FF4CCE43206B49B0D7,
 				D9F82689E8F760ECED47CA3E /* DocAgentCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +71,7 @@
 				08692A645FA1431AA8A19454 /* DocAgentApp.swift */,
 				87EC8ECE4FCC548928E67657 /* HomeModel.swift */,
 				7B594B6DB375E1BF3F23CDD6 /* Info.plist */,
+				B1F985F28E8591D0BFFD000C,
 				28AAD1477D5182D66D4B03B3 /* Assets.xcassets */,
 				26B2A637F7DC4079D5AB78A5 /* PrivacyInfo.xcprivacy */,
 			);
@@ -104,6 +111,7 @@
 			);
 			name = DocAgent;
 			packageProductDependencies = (
+				0C78A0AB5B53B49132D3EBBE,
 				8D6A224FA1D1DD751157EB0C /* DocAgentCore */,
 			);
 			productName = DocAgent;
@@ -135,6 +143,7 @@
 			);
 			mainGroup = B28B7AF69320201D1CF206EB;
 			packageReferences = (
+				D0DCF7366FBF69693536B99E,
 				B747EAD6A8D7189EE159E1E4 /* XCLocalSwiftPackageReference "DocAgentCore" */,
 			);
 			productRefGroup = FBDC4F23F93125BBEEAE800C /* Products */;
@@ -151,6 +160,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82AB593BCD8DB95F42EC7DAF,
 				F533077732FDE75F7831EE1B /* Assets.xcassets in Resources */,
 				58305B5EEAAB1C31EA692967 /* PrivacyInfo.xcprivacy in Resources */,
 			);
@@ -195,6 +205,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				DEVELOPMENT_TEAM = UV3AFGF9FM;
 				INFOPLIST_FILE = DocAgentApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -220,6 +231,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				DEVELOPMENT_TEAM = UV3AFGF9FM;
 				INFOPLIST_FILE = DocAgentApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;

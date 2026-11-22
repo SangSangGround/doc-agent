@@ -22,14 +22,16 @@ public struct WritingFeedback: Equatable, Sendable {
     public let message: String
     public let arrived: Bool
     public let beepInterval: Double?
+    public let repeatSpeechAfter: Double?
     public let targetOutline: [CGPoint]
     public let fingertip: CGPoint?
 
     public init(message: String, arrived: Bool = false, beepInterval: Double? = nil,
-                targetOutline: [CGPoint] = [], fingertip: CGPoint? = nil) {
+                repeatSpeechAfter: Double? = nil, targetOutline: [CGPoint] = [], fingertip: CGPoint? = nil) {
         self.message = message
         self.arrived = arrived
         self.beepInterval = beepInterval
+        self.repeatSpeechAfter = repeatSpeechAfter
         self.targetOutline = targetOutline
         self.fingertip = fingertip
     }
@@ -63,11 +65,13 @@ public struct WritingGuidance {
     private var previousPose: WritingTransform?
     private var previousTime: Double?
     private var insideSince: Double?
+    private var smoothedPoint: CGPoint?
 
     public init() {}
 
     public mutating func update(pose: WritingTransform?, fingertip: CGPoint?, target: WritingTarget,
                                 fields: [WritingTarget], time: Double,
+                                paperCoordinates: WritingTransform? = nil,
                                 referenceAspect: CGFloat = 210.0 / 297.0) -> WritingFeedback {
         guard let pose, time.isFinite else { self = Self(); return Self.seeking }
         // Distance is a normalized reference-image proxy, not a physical ruler.
@@ -78,6 +82,7 @@ public struct WritingGuidance {
         previousTime = time
         guard gap >= 0, gap <= 0.6, let previous, stable(previous, pose) else {
             insideSince = nil
+            smoothedPoint = nil
             return Self.seeking
         }
         let b = target.bounds
@@ -86,38 +91,68 @@ public struct WritingGuidance {
         let outline = corners.compactMap(pose.livePoint)
         guard !b.isNull, !b.isEmpty, outline.count == 4, outline.allSatisfy(Self.liveArea.contains) else {
             insideSince = nil
+            smoothedPoint = nil
             return .init(message: "작성할 칸이 화면 밖에 있어요. 휴대폰을 조금 높여 주세요.")
         }
         guard let fingertip, let tip = pose.referencePoint(fingertip),
               Self.liveArea.contains(fingertip) else {
             insideSince = nil
+            smoothedPoint = nil
             return .init(message: "한 손의 검지 끝이 보이게 종이 위에 놓아 주세요.", targetOutline: outline)
         }
-        // Never signal arrival simply for being within the desktop app's 8 mm circle:
-        // nearby opposite-consent boxes and partially overlapping candidates need an explicit exclusion.
+        // A4-equivalent distances guide movement. Other paper sizes are not physically calibrated.
+        func paperPoint(_ p: CGPoint) -> CGPoint {
+            if let normalized = paperCoordinates?.livePoint(p) {
+                return CGPoint(x: normalized.x * 210, y: normalized.y * 297)
+            }
+            return CGPoint(x: p.x * 210, y: p.y * 210 / max(0.15, min(6, referenceAspect)))
+        }
+        let point = paperPoint(tip)
+        let center = paperPoint(CGPoint(x: b.midX, y: b.midY))
+        let previousPoint = gap <= 0.5 ? smoothedPoint : nil
+        let smooth = previousPoint.map {
+            CGPoint(x: 0.55 * point.x + 0.45 * $0.x, y: 0.55 * point.y + 0.45 * $0.y)
+        } ?? point
+        smoothedPoint = smooth
+        let dx = center.x - smooth.x, dy = center.y - smooth.y
+        let distance = hypot(dx, dy)
         let inOther = fields.contains { $0.id != target.id && $0.bounds.contains(tip) }
-        let inside = b.contains(tip) && !inOther
-        if inside {
+        let atTarget = distance <= 8 && hypot(center.x - point.x, center.y - point.y) <= 8 && !inOther
+        if atTarget {
             let since = insideSince ?? time
             insideSince = since
             let arrived = time - since >= Self.holdDuration
-            return .init(message: arrived ? "\(target.label) 위에 검지 끝이 있어요." : "그 자리에 손끝을 잠시 멈춰 주세요.",
+            return .init(message: arrived ? "\(target.label) 위치 근처에 도달했어요." : "그 자리에 손끝을 잠시 멈춰 주세요.",
                          arrived: arrived, beepInterval: arrived ? nil : 0.085, targetOutline: outline, fingertip: fingertip)
         }
         insideSince = nil
-        // Camera-facing directions track the current orientation of the physical sheet.
-        // Reference-space distance stays comparable as the phone zooms in/out.
-        let center = CGPoint(x: b.midX, y: b.midY)
-        guard let liveCenter = pose.livePoint(center) else { return Self.seeking }
-        let dx = liveCenter.x - fingertip.x, dy = liveCenter.y - fingertip.y
-        let aspect = max(0.15, min(6, referenceAspect))
-        let units = hypot((center.x - tip.x) * 210, (center.y - tip.y) * 210 / aspect)
-        let heading: String
-        if abs(dx) >= abs(dy) { heading = dx >= 0 ? "오른쪽으로" : "왼쪽으로" }
-        else { heading = dy >= 0 ? "아래로" : "위로" }
-        let movement = units < 35 ? "조금 " : ""
-        return .init(message: "검지를 \(heading) \(movement)옮겨 주세요.",
-                     beepInterval: Self.interval(units), targetOutline: outline, fingertip: fingertip)
+        let message: String
+        if distance <= 10 && !inOther {
+            message = "거의 다 왔습니다. 손가락을 천천히 움직여 주세요."
+        } else {
+            let horizontal = dx > 0 ? "오른쪽" : "왼쪽"
+            let vertical = dy > 0 ? "아래" : "위"
+            let heading: String
+            if min(abs(dx), abs(dy)) >= max(11, 0.38 * max(abs(dx), abs(dy))) {
+                heading = "\(horizontal) \(vertical) 대각선으로"
+            } else if abs(dx) >= abs(dy) {
+                heading = horizontal + "으로"
+            } else {
+                heading = vertical + "로"
+            }
+            if distance > 100 { message = heading + " 이동하세요." }
+            else if distance > 35 { message = "계속 " + heading + " 움직이세요." }
+            else { message = "조금 더 " + heading + " 움직이세요." }
+        }
+        let cadence: Double
+        switch distance {
+        case ...12: cadence = 5.2
+        case ...35: cadence = 4.2
+        case ...100: cadence = 4.5
+        default: cadence = 3.7
+        }
+        return .init(message: message, beepInterval: Self.interval(distance), repeatSpeechAfter: cadence,
+                     targetOutline: outline, fingertip: fingertip)
     }
 
     private func stable(_ a: WritingTransform, _ b: WritingTransform) -> Bool {
@@ -133,12 +168,13 @@ public struct WritingGuidance {
 
     private static func interval(_ units: Double) -> Double? {
         switch units {
-        case 100...: return nil
-        case 60..<100: return 0.85
-        case 35..<60: return 0.55
-        case 20..<35: return 0.32
-        case 12..<20: return 0.18
-        default: return 0.105
+        case ...8: return 0.085
+        case ...12: return 0.105
+        case ...20: return 0.18
+        case ...35: return 0.32
+        case ...60: return 0.55
+        case ...100: return 0.85
+        default: return nil
         }
     }
 }
