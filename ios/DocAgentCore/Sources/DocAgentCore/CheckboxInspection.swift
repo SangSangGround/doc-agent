@@ -53,8 +53,9 @@ public enum CheckboxInspection {
                         let edges = [horizontal(t,l+2,r-2), horizontal(b,l+2,r-2),
                                      vertical(l,t+2,b-2), vertical(r,t+2,b-2)]
                         guard edges.min()! >= 0.56 else { continue }
-                        let score = edges.reduce(0,+) / 4
-                            - Double(abs(cx-32)+abs(cy-32)+abs(halfW-15)+abs(halfH-15))*0.002
+                        // Xcode 16 컴파일러가 한 식으로는 타입 추론 시간을 넘겨서 두 줄로 나눈다. 계산 결과는 같다.
+                        let offset: Int = abs(cx-32) + abs(cy-32) + abs(halfW-15) + abs(halfH-15)
+                        let score: Double = edges.reduce(0, +) / 4 - Double(offset) * 0.002
                         if score > best {
                             best = score
                             interior = (l+4,r-4,t+4,b-4)
