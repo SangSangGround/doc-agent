@@ -41,6 +41,12 @@ def review(page, after, **kwargs):
     return verify_checkbox_groups(page, after, GROUPS, capture_mode="scan", **kwargs)
 
 
+def translated(image, dx, dy):
+    height, width = image.shape[:2]
+    return cv2.warpAffine(image, np.float32([[1, 0, dx], [0, 1, dy]]),
+                          (width, height), borderValue=(255, 255, 255))
+
+
 @pytest.mark.parametrize("ids,expected", [([], "unmarked"), (["yes"], "single"),
                                          (["no"], "single"), (["yes", "no"], "multiple")])
 def test_observed_options_are_not_collapsed_to_any_marked(page, ids, expected):
@@ -56,8 +62,7 @@ def test_observed_options_are_not_collapsed_to_any_marked(page, ids, expected):
 
 def test_scan_translation_is_registered_before_verification(page):
     written = mark(page, "no")
-    shifted = cv2.warpAffine(written, np.float32([[1,0,9], [0,1,11]]),
-                             (840,1188), borderValue=255)
+    shifted = translated(written, 9, 11)
     result = review(page, shifted)
     assert result["status"] == "ok", result
     assert result["groups"][0]["marked_option_ids"] == ["no"]
@@ -162,19 +167,24 @@ def test_korean_demo_has_expected_per_group_states(home_demo, name, first_state,
     assert result["groups"][1]["marked_option_ids"] == ["disagree"]
 
 
-@pytest.mark.parametrize("transform", ["translate", "rotate", "lighting"])
+@pytest.mark.parametrize("transform", [
+    pytest.param((10, 12), id="translate"),
+    pytest.param((9, 4), id="translate-down-right"),
+    pytest.param((-7, -1), id="translate-up-left"),
+    "rotate", "lighting",
+])
 def test_korean_demo_capture_variation_preserves_marked_cells(home_demo, transform):
     path, manifest, reference = home_demo
     captured = cv2.imread(str(path/"correct.png"))
     h,w = captured.shape[:2]
-    if transform == "translate":
-        captured = cv2.warpAffine(captured,np.float32([[1,0,10],[0,1,12]]),(w,h),borderValue=(255,255,255))
+    if isinstance(transform, tuple):
+        captured = translated(captured, *transform)
     elif transform == "rotate":
         captured = cv2.warpAffine(captured,cv2.getRotationMatrix2D((w/2,h/2),2,1),(w,h),borderValue=(255,255,255))
     else:
         captured = np.clip(captured*np.linspace(.55,1,h)[:,None,None],0,255).astype(np.uint8)
     result = verify_checkbox_groups(reference,captured,manifest["groups"],capture_mode="scan")
-    assert result["status"] == "ok", result
+    assert result["status"] == "ok", (result["alignment"].get("reason"), result["alignment"])
     assert all(group["marked_option_ids"] == ["disagree"] for group in result["groups"])
 
 
@@ -210,10 +220,13 @@ def test_margin_only_marks_are_not_lost_by_checkbox_inset(home_demo,side,color):
     assert result["groups"][0]["options"][0]["reason"] == "mark_at_checkbox_margin"
 
 
-def test_small_missing_printed_phrase_is_not_hidden_by_global_similarity(home_demo):
+@pytest.mark.parametrize("shift", [(0, 0), (9, 4)], ids=["unshifted", "translated"])
+def test_small_missing_printed_phrase_is_not_hidden_by_global_similarity(home_demo, shift):
     path,manifest,reference = home_demo
     captured = cv2.imread(str(path/"correct.png"))
     captured[535:555,108:230] = 255
+    if shift != (0, 0):
+        captured = translated(captured, *shift)
     result = verify_checkbox_groups(reference,captured,manifest["groups"],capture_mode="scan")
     assert result["status"] == "uncertain", result
     assert result["alignment"]["reason"] == "local_printed_content_mismatch"
