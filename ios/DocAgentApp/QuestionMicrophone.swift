@@ -18,8 +18,10 @@ final class QuestionMicrophone: ObservableObject {
     private var hasTap = false
     private var activated = false
     private var onDraft: ((String) -> Void)?
+    private var onSilence: (() -> Void)?
 
-    func begin(onQuestion: @escaping (String) -> Void) {
+    /// - Parameter onSilence: 지정하면 아무 말도 받아쓰지 못했을 때 오류 안내 대신 이 함수를 부른다.
+    func begin(onSilence: (() -> Void)? = nil, onQuestion: @escaping (String) -> Void) {
         cancel()
         error = nil
         guard let recognizer, recognizer.supportsOnDeviceRecognition else {
@@ -27,6 +29,7 @@ final class QuestionMicrophone: ObservableObject {
             return
         }
         onDraft = onQuestion
+        self.onSilence = onSilence
         phase = .preparing
         let ticket = generation
         Task {
@@ -128,9 +131,11 @@ final class QuestionMicrophone: ObservableObject {
     private func deliverDraft() {
         let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
         let callback = onDraft
+        let silence = onSilence
         cancel()
-        if text.isEmpty { error = "질문을 듣지 못했어요. 다시 말하거나 입력해 주세요." }
-        else { callback?(text) }
+        if !text.isEmpty { callback?(text) }
+        else if let silence { silence() }
+        else { error = "질문을 듣지 못했어요. 다시 말하거나 입력해 주세요." }
     }
 
     private func fail(_ message: String) {
@@ -159,6 +164,7 @@ final class QuestionMicrophone: ObservableObject {
             activated = false
         }
         onDraft = nil
+        onSilence = nil
         transcript = ""
         phase = .idle
     }

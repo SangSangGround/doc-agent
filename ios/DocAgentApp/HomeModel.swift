@@ -51,6 +51,12 @@ final class HomeModel: ObservableObject {
     @Published private(set) var notice = "문서를 준비한 뒤 카메라를 열어 주세요."
     @Published var automaticSpeech = true
     @Published var readingRate = 1.0
+    /// 질문 확인과 답을 끝까지 들은 뒤 마이크를 다시 켜서 말로 이어서 대화한다.
+    @Published var continuousConversation = true
+    /// 사용자에게 차례를 넘기는 말(질문 확인, 답)을 중간에 멈추지 않고 끝까지 읽을 때마다 1씩 늘어난다.
+    @Published private(set) var handBackCount = 0
+    private var handBack: UUID?
+    private var handBackWatch: Task<Void, Never>?
     let synthesizer = AVSpeechSynthesizer()
     private let reviewer = DocumentReviewer()
     private var recognition: Task<Void, Never>?
@@ -182,7 +188,8 @@ final class HomeModel: ObservableObject {
         }
     }
 
-    func speak(_ text: String, reading: Bool = false, force: Bool = false) {
+    /// - Parameter handsBack: 끝까지 읽으면 `handBackCount`를 올려 질문 화면이 마이크를 다시 켤 수 있게 한다.
+    func speak(_ text: String, reading: Bool = false, force: Bool = false, handsBack: Bool = false) {
         guard !suspended, reading || force || automaticSpeech else { return }
         stopSpeech()
         readingDocument = reading
@@ -196,6 +203,26 @@ final class HomeModel: ObservableObject {
             utterance.rate = AVSpeechUtteranceDefaultSpeechRate * Float(readingRate)
             synthesizer.speak(utterance)
         }
+        if handsBack { watchHandBack() }
+    }
+
+    /// 원문 읽기 화면이 synthesizer.delegate를 쓰므로 delegate 대신 읽기 상태를 짧게 확인한다.
+    /// stopSpeech()로 멈추면 handBack이 지워져 차례를 넘기지 않는다.
+    private func watchHandBack() {
+        let id = UUID()
+        handBack = id
+        handBackWatch?.cancel()
+        handBackWatch = Task { [weak self] in
+            do {
+                try await Task.sleep(for: .milliseconds(300))
+                while let model = self, model.handBack == id, model.guidanceSpeaking {
+                    try await Task.sleep(for: .milliseconds(150))
+                }
+            } catch { return }
+            guard let self, self.handBack == id else { return }
+            self.handBack = nil
+            self.handBackCount += 1
+        }
     }
     func announcementFinished(_ notification: Notification) {
         if let text = notification.userInfo?[UIAccessibility.announcementStringValueUserInfoKey] as? String,
@@ -206,6 +233,9 @@ final class HomeModel: ObservableObject {
     }
     func stopSpeech() {
         synthesizer.stopSpeaking(at: .immediate)
+        handBack = nil
+        handBackWatch?.cancel()
+        handBackWatch = nil
         readingDocument = false
         announcement = nil
         announcementDeadline = .distantPast
@@ -258,7 +288,13 @@ final class HomeModel: ObservableObject {
 
     func repeatQuestion() {
         guard let question = questionToConfirm else { return }
-        speak("“" + question + "” 이렇게 질문할까요?", force: true)
+        speak("“" + question + "” 이렇게 질문할까요?", force: true, handsBack: true)
+    }
+
+    /// 확인 질문에 "아니"라고 답했을 때 질문을 지우고 다시 말하도록 차례를 넘긴다.
+    func askToRephrase() {
+        discardQuestion()
+        speak("다시 말씀해 주세요.", force: true, handsBack: true)
     }
 
     func discardQuestion() {
@@ -274,7 +310,7 @@ final class HomeModel: ObservableObject {
         if let localAnswer {
             remember(ConsentTurn(question: question, reply: localAnswer))
             discardQuestion()
-            speak(localAnswer.spoken, reading: true)
+            speak(localAnswer.spoken, reading: true, handsBack: true)
             return
         }
         guard CloudWiFiState.shared.available, CloudDocumentAPI.shared.isConfigured else {
@@ -312,7 +348,7 @@ final class HomeModel: ObservableObject {
                    let key = try? SessionAnswerCache.key(for: repeatRequest) {
                     answerCache.record(result.reply, for: key)
                 }
-                speak(result.reply.spoken, reading: true)
+                speak(result.reply.spoken, reading: true, handsBack: true)
             } catch {
                 guard ticket == questionRevision, !Task.isCancelled else { return }
                 questionToConfirm = question
