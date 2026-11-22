@@ -10,6 +10,8 @@ struct ConsentQuestionView: View {
     @State private var draft = ""
     /// 말로 질문한 뒤, 답이 끝날 때마다 마이크를 다시 켜는 중인지.
     @State private var conversing = false
+    /// 답을 찾는 동안 "찾아보고 있어요"와 틱 소리로 진행 중임을 알리는 작업.
+    @State private var waitingSignal: Task<Void, Never>?
     @FocusState private var typing: Bool
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismiss
@@ -103,8 +105,35 @@ struct ConsentQuestionView: View {
             if let message { stopConversation(); model.speak(message, reading: true) }
         }
         .onChange(of: model.answerSpokenCount) { _, _ in listenAgain() }
+        .onChange(of: model.pendingQuestion) { _, pending in
+            if pending == nil { stopWaitingSignal() } else { startWaitingSignal() }
+        }
         .onChange(of: scenePhase) { _, phase in if phase == .background { stopConversation(); mic.cancel(); draft = "" } }
-        .onDisappear { stopConversation(); mic.cancel() }
+        .onDisappear { stopWaitingSignal(); stopConversation(); mic.cancel() }
+    }
+
+    /// 답이 0.6초 안에 나오면 아무것도 하지 않는다. 늦어지면 한 번 말하고, 2초부터 1.5초마다 틱 소리와 진동을 준다.
+    private func startWaitingSignal() {
+        stopWaitingSignal()
+        waitingSignal = Task {
+            do {
+                try await Task.sleep(for: .milliseconds(600))
+                guard model.pendingQuestion != nil else { return }
+                model.speak("찾아보고 있어요.")
+                try await Task.sleep(for: .milliseconds(1400))
+                let haptic = UIImpactFeedbackGenerator(style: .soft)
+                while model.pendingQuestion != nil {
+                    if !model.synthesizer.isSpeaking { AudioServicesPlaySystemSound(1104) }
+                    haptic.impactOccurred(intensity: 0.6)
+                    try await Task.sleep(for: .milliseconds(1500))
+                }
+            } catch {}
+        }
+    }
+
+    private func stopWaitingSignal() {
+        waitingSignal?.cancel()
+        waitingSignal = nil
     }
 
     private func submit(_ text: String) {
