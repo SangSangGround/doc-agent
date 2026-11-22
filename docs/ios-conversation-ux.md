@@ -1,6 +1,6 @@
 # iPhone 질문 화면 대화 UX 개선
 
-`feat/ios-document-consent`의 `c936df1`(질문 확인, 대화 기록, 맥 중계 OpenAI 답변) 위에 질문 화면의 주고받는 흐름을 추가했다. 화면 쪽(`ios/DocAgentApp`)만 바꿨고, 엔진(`ios/DocAgentCore`)은 Xcode 16 빌드 오류 한 곳만 고쳤다(아래 "엔진 빌드 수정").
+`feat/ios-document-consent`의 `c936df1`(질문 확인, 대화 기록, 맥 중계 OpenAI 답변) 위에 질문 화면의 주고받는 흐름을 추가했다. 음성 명령 판정과 자동 녹음 취소는 `DocAgentCore`에서 테스트한다.
 
 ## 추가한 기능
 
@@ -20,11 +20,12 @@
                                      → "아니 ○○"  → "“○○” 이렇게 질문할까요?" → …
 ```
 
-- 질문 화면 아래에 **말로 이어서 대화하기** 스위치를 추가했다. 기본값은 켜짐이며, 끄면 기존처럼 확인 카드의 버튼으로 진행한다.
+- **말로 이어서 대화하기**는 기본으로 켜져 있다. 끄는 순간 자동 녹음과 재시작 예약을 취소하고 그 녹음의 늦은 인식 결과를 버린다. 사용자가 직접 시작한 녹음은 계속할 수 있고, 보류 중인 질문은 화면 버튼으로 확인할 수 있다.
 - 확인 질문에 대한 대답. 확인은 질문과 문서 원문을 맥 중계로 보내는 일이라 애매하면 확인으로 보지 않는다.
-  - 확인: "응", "어", "네", "맞아(요)", "그래", "좋아", "보내줘", "질문해줘" 등 짧은 대답을 통째로 비교한다.
+  - “응”, “네”, “맞아요”, “네, 보내줘”처럼 발화 전체가 명확한 긍정 표현일 때 전송한다.
   - 다시 말하기: "아니", "아냐", "틀렸어", "다시"로 시작하는 짧은 대답
-  - 보내지 않기: "네, 보내지 마", "응 취소", "잠깐만", "멈춰"처럼 거절하는 말이 들어간 8글자 이하의 대답은 "네"로 시작해도 확인하지 않고 다시 말하기로 처리한다. "동의 취소는 어떻게 해?"처럼 긴 질문은 질문으로 본다.
+  - “네, 보내지 마”, “응 취소”, “잠깐만”, “멈춰”는 거절로 처리한다. “동의 취소 방법은?”은 문서에 관한 질문으로 받는다.
+  - “네, 맞지 않아요”, “맞아요? 아니요”, “네, 맞는지 몰라”처럼 승인이 모호하면 원래 질문을 그대로 읽고 다시 확인한다.
   - "아니 보유 기간 알려줘", "아니, 3번 항목 알려줘"처럼 고친 질문을 붙이면 숫자와 물음표를 그대로 둔 채 그 질문으로 다시 확인한다.
   - 그 밖의 말은 새 질문으로 보고 다시 확인한다. "어떤 정보야?"처럼 "어"로 시작하는 질문은 확인으로 보지 않는다.
 - 대화가 끝나는 경우
@@ -58,7 +59,8 @@
 |---|---|
 | `ios/DocAgentApp/HomeModel.swift` | `speak(…, handsBack:)`를 추가했다. 질문 확인(`repeatQuestion`), 저장된 답, 맥 답을 끝까지 읽으면 `handBackCount`를 1 올린다. 원문 읽기 화면(`LinePlayer`)이 `synthesizer.delegate`를 쓰므로 delegate 대신 `guidanceSpeaking`을 150ms마다 확인하며, `stopSpeech()`로 멈춘 말은 차례를 넘기지 않는다. "아니"에 쓰는 `askToRephrase()`와 `continuousConversation` 설정을 추가했다. |
 | `ios/DocAgentApp/QuestionMicrophone.swift` | `begin(onSilence:onQuestion:)`로 아무 말도 받아쓰지 못했을 때의 처리를 지정할 수 있다. 기존 호출은 그대로 동작한다. |
-| `ios/DocAgentApp/ConsentQuestionView.swift` | 스위치와 안내 문구, 말로 들은 내용 처리(`heard`), 확인 대답 판정(`confirmationReply`), 종료 단어 판정(`isStopCommand`), 마이크 다시 켜기, 기다림 신호를 추가했다. |
+| `ios/DocAgentApp/ConsentQuestionView.swift` | 스위치와 안내 문구, 확인·되묻기, 마이크 다시 켜기, 기다림 신호를 연결한다. |
+| `DocAgentCore/QuestionVoiceCommand.swift`, `DocAgentCore/ConversationMicrophoneTurn.swift` | 발화를 판정하고, 자동 녹음의 예약과 결과를 같은 식별자로 추적해 취소된 녹음의 응답을 버린다. |
 
 ## 엔진 빌드 수정
 
@@ -69,6 +71,7 @@
 - `xcodebuild -project ios/DocAgent.xcodeproj -scheme DocAgent -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build` 성공 (Xcode 16.4)
 - `ios/DocAgentCore`에서 `swift test`: 49개 실행, 실패 0개, 건너뜀 3개
 - `confirmationReply`, `isStopCommand`를 떼어 낸 스크립트로 대답·종료 예시 49개 판정 확인. 리뷰에서 나온 "네, 보내지 마", "종료일 알려줘", "아니, 3번 항목 알려줘"를 포함한다.
+- `swift test --package-path ios/DocAgentCore`에 실제 판정기를 사용하는 `QuestionVoiceCommandTests`와 자동 녹음 취소·재시작을 검사하는 `ConversationMicrophoneTurnTests`가 포함돼 있다.
 - 이전 브랜치(`feat/ios-continuous-conversation`, `c936df1` 이전 구조)에서 대화 이어가기는 실기기로 확인했다. 이 브랜치의 확인 질문 대답 흐름과 기다림 신호는 **실기기에서 아직 확인하지 않았다.**
 
 ## 실기기 확인 방법
@@ -83,4 +86,3 @@
 
 - 답을 읽는 도중에 끊고 바로 질문하는 기능
 - 확인·종료 대답 목록은 고정이다. 사용자 시험에서 자주 나온 표현을 추가한다.
-- 판정 함수의 자동 테스트: 앱 타깃에는 테스트 타깃이 없어 스크립트로만 확인했다.

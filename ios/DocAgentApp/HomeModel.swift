@@ -286,9 +286,12 @@ final class HomeModel: ObservableObject {
         return answerCache.lookup(key)
     }
 
-    func repeatQuestion() {
+    func repeatQuestion(needsClarification: Bool = false) {
         guard let question = questionToConfirm else { return }
-        speak("“" + question + "” 이렇게 질문할까요?", force: true, handsBack: true)
+        let prompt = needsClarification
+            ? "이 질문이 맞으면 ‘맞아요’, 다시 말하려면 ‘아니요’라고 해 주세요."
+            : "이렇게 질문할까요?"
+        speak("“" + question + "” " + prompt, force: true, handsBack: true)
     }
 
     /// 확인 질문에 "아니"라고 답했을 때 질문을 지우고 다시 말하도록 차례를 넘긴다.

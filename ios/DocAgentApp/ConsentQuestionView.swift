@@ -12,6 +12,7 @@ struct ConsentQuestionView: View {
     @FocusState private var typing: Bool
     /// 말로 질문한 뒤 질문 확인과 답이 끝날 때마다 마이크를 다시 켜는 중인지.
     @State private var conversing = false
+    @State private var automaticTurn = ConversationMicrophoneTurn()
     /// 답을 기다리는 동안 "찾아보고 있어요"와 틱 소리로 진행 중임을 알리는 작업.
     @State private var waitingSignal: Task<Void, Never>?
     @Environment(\.scenePhase) private var scenePhase
@@ -39,7 +40,7 @@ struct ConsentQuestionView: View {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(pending).font(.headline).accessibilityAddTraits(.isHeader)
                                 ProgressView("답변을 준비하고 있어요.")
-                                Button("질문 취소") { stopConversation(); mic.cancel(); model.cancelQuestion() }.frame(minHeight: 44)
+                                Button("질문 취소") { stopConversation(); model.cancelQuestion() }.frame(minHeight: 44)
                             }.padding(18).frame(maxWidth: .infinity, alignment: .leading).documentCard().id("pending")
                         } else {
                             ForEach(dialogue) { turn in answer(turn).id(turn.id) }
@@ -87,12 +88,11 @@ struct ConsentQuestionView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background || (phase == .inactive && mic.phase == .listening) {
-                stopConversation()
                 if !mic.transcript.isEmpty { model.questionDraft = mic.transcript }
-                mic.cancel()
+                stopConversation()
             }
         }
-        .onDisappear { stopWaitingSignal(); stopConversation(); mic.cancel() }
+        .onDisappear { stopWaitingSignal(); stopConversation() }
     }
 
     @ViewBuilder private var micDock: some View {
@@ -100,7 +100,7 @@ struct ConsentQuestionView: View {
             Button {
                 switch mic.phase {
                 case .idle: startRecording()
-                case .preparing: stopConversation(); mic.cancel()
+                case .preparing: stopConversation()
                 case .listening: mic.finish()
                 case .finishing: break
                 }
@@ -109,9 +109,14 @@ struct ConsentQuestionView: View {
             }
             .buttonStyle(DocumentButtonStyle()).disabled(mic.phase == .finishing)
             .accessibilityHint("말을 마치고 잠시 쉬면 질문을 읽어줍니다. 확인 후 전송합니다.")
-            Toggle("말로 이어서 대화하기", isOn: $model.continuousConversation)
+            Toggle("말로 이어서 대화하기", isOn: Binding(
+                get: { model.continuousConversation },
+                set: { enabled in
+                    model.continuousConversation = enabled
+                    if !enabled { stopConversation(keepingManualRecording: true) }
+                }
+            ))
                 .frame(minHeight: 44)
-                .onChange(of: model.continuousConversation) { _, on in if !on { stopConversation() } }
                 .accessibilityHint("켜면 질문 확인과 답이 끝난 뒤 띵 소리와 함께 마이크가 다시 켜집니다. 맞아 또는 아니로 확인하고, 그만이라고 말하면 끝납니다.")
             if conversing {
                 Text("대화 중이에요. 띵 소리가 나면 바로 말하세요. 질문 확인에는 \"맞아\" 또는 \"아니\", 끝내려면 \"그만\".")
@@ -120,7 +125,7 @@ struct ConsentQuestionView: View {
             if mic.phase == .listening || mic.phase == .finishing {
                 if mic.phase == .finishing { ProgressView("아이폰이 질문을 받아쓰고 있어요.") }
                 else { Text("듣고 있어요.").font(.callout) }
-                Button(mic.phase == .finishing ? "받아쓰기 취소" : "녹음 취소") { stopConversation(); mic.cancel() }.frame(minHeight: 44)
+                Button(mic.phase == .finishing ? "받아쓰기 취소" : "녹음 취소") { stopConversation() }.frame(minHeight: 44)
             }
             if let error = mic.error { Text(error).foregroundStyle(DocumentStyle.caution) }
         }
@@ -170,15 +175,14 @@ struct ConsentQuestionView: View {
             }
             // 대화 중에는 마이크가 자동으로 켜져 있을 수 있다. 버튼을 누르면 먼저 녹음을 멈춰
             // 버튼을 누른 뒤 들어온 말이 새 질문이나 대답으로 처리되지 않게 한다.
-            Button { mic.cancel(); model.confirmQuestion() } label: { Label(model.localAnswer == nil ? "맞아요, 질문 보내기" : "맞아요, 저장된 답 듣기", systemImage: "checkmark") }
+            Button { cancelRecording(); model.confirmQuestion() } label: { Label(model.localAnswer == nil ? "맞아요, 질문 보내기" : "맞아요, 저장된 답 듣기", systemImage: "checkmark") }
                 .buttonStyle(DocumentButtonStyle()).disabled(!canSend)
-            Button { mic.cancel(); model.repeatQuestion() } label: { Label("질문 다시 듣기", systemImage: "speaker.wave.2.fill") }
+            Button { cancelRecording(); model.repeatQuestion() } label: { Label("질문 다시 듣기", systemImage: "speaker.wave.2.fill") }
                 .buttonStyle(DocumentButtonStyle(prominent: false))
             Button { model.discardQuestion(); startRecording() } label: { Label("다시 말하기", systemImage: "mic.fill") }
                 .buttonStyle(DocumentButtonStyle(prominent: false))
             Button {
                 stopConversation()
-                mic.cancel()
                 model.discardQuestion()
                 model.questionDraft = text
                 Task { @MainActor in
@@ -187,7 +191,7 @@ struct ConsentQuestionView: View {
                 }
             } label: { Label("글자로 수정하기", systemImage: "pencil") }
             .buttonStyle(DocumentButtonStyle(prominent: false))
-            Button("질문 취소") { stopConversation(); mic.cancel(); model.discardQuestion() }.frame(maxWidth: .infinity, minHeight: 44)
+            Button("질문 취소") { stopConversation(); model.discardQuestion() }.frame(maxWidth: .infinity, minHeight: 44)
         }.padding(18).documentCard()
     }
 
@@ -230,29 +234,42 @@ struct ConsentQuestionView: View {
     }
 
     /// 마이크를 켜고 한 번 듣는다. 대화 중이면 말이 없을 때 오류 대신 대화를 끝낸다.
-    private func startRecording() {
+    private func startRecording(automaticID: UUID? = nil) {
+        if automaticID == nil { automaticTurn.cancel() }
         guard scenePhase == .active else { return }
         typing = false
         model.stopSpeech()
         let silence: (() -> Void)? = conversing
-            ? { endConversation("대화를 마칠게요. 다시 질문하려면 말로 질문하기를 눌러 주세요.") }
+            ? {
+                guard acceptRecordingResult(automaticID) else { return }
+                endConversation("대화를 마칠게요. 다시 질문하려면 말로 질문하기를 눌러 주세요.")
+            }
             : nil
-        mic.begin(onSilence: silence, onQuestion: heard)
+        mic.begin(onSilence: silence) { text in
+            guard acceptRecordingResult(automaticID) else { return }
+            heard(text)
+        }
+    }
+
+    private func acceptRecordingResult(_ automaticID: UUID?) -> Bool {
+        guard let automaticID else { return true }
+        return automaticTurn.finishScheduled(automaticID) && model.continuousConversation && conversing
     }
 
     /// 말로 들은 내용을 처리한다. 질문 확인 중이면 "맞아/아니"로 보고, 아니면 새 질문으로 확인을 받는다.
     private func heard(_ text: String) {
         // 답을 기다리는 중에 늦게 받아쓴 말은 질문이나 대답으로 쓰지 않는다.
         guard model.pendingQuestion == nil else { return }
-        if Self.isStopCommand(text) {
+        if QuestionVoiceCommand.isStopCommand(text) {
             endConversation("대화를 마칠게요.")
             return
         }
         conversing = model.continuousConversation
         if model.questionToConfirm != nil {
-            switch Self.confirmationReply(text) {
+            switch QuestionVoiceCommand.confirmationReply(text) {
             case .yes: model.confirmQuestion()
             case .no: model.askToRephrase()
+            case .clarify: model.repeatQuestion(needsClarification: true)
             case .question(let corrected): stage(corrected)
             }
         } else {
@@ -262,18 +279,29 @@ struct ConsentQuestionView: View {
 
     /// 질문 확인이나 답을 끝까지 읽었을 때 불린다. 띵 소리와 진동으로 알린 뒤 마이크를 다시 켠다.
     private func listenAgain() {
-        guard conversing, model.continuousConversation, mic.phase == .idle, model.pendingQuestion == nil else { return }
+        guard scenePhase == .active, conversing, model.continuousConversation, mic.phase == .idle,
+              model.pendingQuestion == nil else { return }
         AudioServicesPlaySystemSound(1113)
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        Task {
-            // 띵 소리가 마이크에 질문으로 들어가지 않도록 잠시 기다린다.
-            try? await Task.sleep(for: .milliseconds(450))
-            guard conversing, mic.phase == .idle, model.pendingQuestion == nil, !model.guidanceSpeaking else { return }
-            startRecording()
+        automaticTurn.schedule(after: .milliseconds(450)) { id in
+            guard scenePhase == .active, conversing, model.continuousConversation, mic.phase == .idle,
+                  model.pendingQuestion == nil, !model.guidanceSpeaking else {
+                automaticTurn.cancel()
+                return
+            }
+            startRecording(automaticID: id)
         }
     }
 
-    private func stopConversation() { conversing = false }
+    private func cancelRecording(keepingManualRecording: Bool = false) {
+        let wasAutomatic = automaticTurn.cancel()
+        if wasAutomatic || !keepingManualRecording { mic.cancel() }
+    }
+
+    private func stopConversation(keepingManualRecording: Bool = false) {
+        conversing = false
+        cancelRecording(keepingManualRecording: keepingManualRecording)
+    }
 
     private func endConversation(_ message: String) {
         stopConversation()
@@ -302,60 +330,6 @@ struct ConsentQuestionView: View {
     private func stopWaitingSignal() {
         waitingSignal?.cancel()
         waitingSignal = nil
-    }
-
-    enum ConfirmationReply: Equatable { case yes, no, question(String) }
-
-    /// "응", "맞아", "보내줘"는 확인, "아니", "다시"는 다시 말하기로 본다.
-    /// "아니 보유 기간 알려줘"처럼 고친 질문을 바로 말하면 그 질문으로 다시 확인을 받는다.
-    /// 확인은 질문과 문서를 밖으로 보내는 일이라, 애매하면 확인으로 보지 않는다.
-    static func confirmationReply(_ text: String) -> ConfirmationReply {
-        let words = text.filter { $0.isLetter }
-        // "네, 보내지 마", "응 취소", "잠깐만"처럼 보내지 말라는 짧은 대답은 "네"로 시작해도 확인이 아니다.
-        // 긴 문장의 "취소"("동의 취소는 어떻게 해?")는 질문일 수 있어 8글자 이하만 본다.
-        let refusals = ["지마", "지말", "말아", "말고", "안돼", "안보내", "취소", "잠깐", "멈춰", "기다려"]
-        if words.count <= 8, refusals.contains(where: { words.contains($0) }) { return .no }
-        let negative = ["아니", "아냐", "틀려", "틀렸", "다시"]
-        if let lead = negative.first(where: { words.hasPrefix($0) }) {
-            // 앞의 "아니,"만 떼고 고친 질문의 숫자("3번", "2024년")와 끝의 물음표는 남긴다.
-            let rest = String(Self.dropLetters(lead.count, from: text).drop { $0.isWhitespace || $0.isPunctuation })
-            let restLetters = rest.filter { $0.isLetter }
-            let filler = ["요", "야", "에요", "예요", "어", "었어", "어요", "말할게", "말할게요", "말할래", "말해줘", "할게", "할게요", "그거아니야", "그게아니야"]
-            return restLetters.count <= 2 || filler.contains(restLetters) ? .no : .question(rest)
-        }
-        // "어떤 정보야?"가 "어"로 시작하듯 질문 첫 글자와 겹치므로 짧은 대답은 통째로 비교한다.
-        let positive: Set<String> = ["응", "어", "네", "예", "네네", "응응", "ㅇㅇ", "오케이", "그래", "그래요", "좋아", "좋아요",
-                                     "보내", "보내줘", "보내줘요", "보내주세요", "질문해", "질문해줘", "질문해주세요",
-                                     "그렇게해", "그렇게해줘", "그렇게해주세요", "맞습니다", "맞네", "맞네요"]
-        let agrees = ["맞아", "응맞", "어맞", "네맞", "예맞", "응보내", "네보내"]
-        if positive.contains(words) || (words.count <= 6 && agrees.contains(where: { words.hasPrefix($0) })) { return .yes }
-        return .question(text)
-    }
-
-    /// 앞에서부터 글자 `count`개(공백·문장부호 포함)까지 잘라낸 나머지. "아 니, 3번"처럼 띄어 말해도 맞게 자른다.
-    private static func dropLetters(_ count: Int, from text: String) -> Substring {
-        var seen = 0
-        var index = text.startIndex
-        while index < text.endIndex, seen < count {
-            if text[index].isLetter { seen += 1 }
-            index = text.index(after: index)
-        }
-        return text[index...]
-    }
-
-    /// "그만", "끝", "종료", "고마워"처럼 대화를 끝내는 말인지.
-    /// "종료일 알려줘", "그만두면 어떻게 돼", "끝까지 읽어줘"처럼 같은 말로 시작하는 질문과 헷갈리지 않게
-    /// 끝내는 말만 통째로 비교한다.
-    static func isStopCommand(_ text: String) -> Bool {
-        let words = text.filter { $0.isLetter }
-        let stops: Set<String> = [
-            "끝", "끝내", "끝내자", "끝낼게", "끝낼게요", "끝내줘", "끝이야", "대화끝",
-            "그만", "그만해", "그만해요", "그만하자", "그만할게", "그만할게요", "그만할래", "그만해줘", "이제그만", "이제그만할게",
-            "종료", "종료해", "종료해줘", "종료할게", "대화종료",
-            "됐어", "됐어요", "이제됐어", "이제됐어요",
-            "고마워", "고마워요", "고맙습니다", "감사합니다", "됐어고마워", "알겠어고마워", "고마워그만"
-        ]
-        return stops.contains(words)
     }
 
     private func stage(_ text: String) {
