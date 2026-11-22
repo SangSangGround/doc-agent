@@ -10,8 +10,6 @@ import ssl
 import subprocess
 import tempfile
 
-from docagent.home.server import HomeApplication, make_server
-from docagent.home.templates import load_template
 
 
 def private_ipv4(host: str) -> str:
@@ -68,6 +66,9 @@ def write_pairing(path: Path, payload: dict) -> None:
 
 def serve_mobile(template: Path, *, host: str, port: int, directory: Path,
                  demo: bool = False, session: Path | None = None) -> None:
+    from docagent.home.server import HomeApplication, make_server
+    from docagent.home.templates import load_template
+
     host = private_ipv4(host)
     if not 0 <= port <= 65535:
         raise ValueError("포트 범위를 확인하세요.")

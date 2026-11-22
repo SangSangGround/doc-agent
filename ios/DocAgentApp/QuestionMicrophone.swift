@@ -2,7 +2,7 @@ import AVFoundation
 import Speech
 import SwiftUI
 
-/// A single, optional Korean dictation turn. No audio file or server fallback.
+/// Apple Speech produces a draft for confirmation. The microphone has no network client.
 @MainActor
 final class QuestionMicrophone: ObservableObject {
     enum Phase { case idle, preparing, listening, finishing }
@@ -17,32 +17,29 @@ final class QuestionMicrophone: ObservableObject {
     private var generation = 0
     private var hasTap = false
     private var activated = false
-    private var onQuestion: ((String) -> Void)?
+    private var onDraft: ((String) -> Void)?
 
     func begin(onQuestion: @escaping (String) -> Void) {
         cancel()
-        transcript = ""
         error = nil
         guard let recognizer, recognizer.supportsOnDeviceRecognition else {
-            error = "이 기기에서 한국어 오프라인 음성 인식을 사용할 수 없어요. 질문을 입력하거나 예시 질문을 선택해 주세요."
+            fail("이 아이폰에서 한국어 기기 내 받아쓰기를 사용할 수 없어요. 질문을 입력하거나 예시 질문을 선택해 주세요.")
             return
         }
-        self.onQuestion = onQuestion
+        onDraft = onQuestion
         phase = .preparing
         let ticket = generation
-        Task { [self] in
-            let speech = await withCheckedContinuation { done in
-                SFSpeechRecognizer.requestAuthorization { done.resume(returning: $0) }
-            }
+        Task {
+            let authorization = await Self.speechPermission()
             guard ticket == generation else { return }
-            guard speech == .authorized else {
-                fail("음성 인식 권한을 확인해 주세요. 질문을 입력해도 돼요.")
+            guard authorization == .authorized else {
+                fail("설정에서 문서 도우미의 음성 인식 권한을 확인해 주세요. 질문을 입력해도 돼요.")
                 return
             }
-            let mic = await AVAudioApplication.requestRecordPermission()
+            let allowed = await AVAudioApplication.requestRecordPermission()
             guard ticket == generation else { return }
-            guard mic else {
-                fail("마이크 권한을 확인해 주세요. 질문을 입력해도 돼요.")
+            guard allowed else {
+                fail("설정에서 마이크 권한을 확인해 주세요. 질문을 입력해도 돼요.")
                 return
             }
             do {
@@ -56,36 +53,61 @@ final class QuestionMicrophone: ObservableObject {
                     fail("마이크 입력을 찾지 못했어요. 질문을 입력해 주세요.")
                     return
                 }
+                let endpoint = try QuestionAudioCapture(format: format)
                 let audio = SFSpeechAudioBufferRecognitionRequest()
                 audio.requiresOnDeviceRecognition = true
                 audio.shouldReportPartialResults = true
+                audio.taskHint = .dictation
+                audio.contextualStrings = ["개인정보", "첨부서류", "직업훈련 생계비 대부", "제삼자 제공", "보유 기간", "동의서"]
                 request = audio
-                input.installTap(onBus: 0, bufferSize: 1024, format: format, block: Self.tap(for: audio))
+                input.installTap(onBus: 0, bufferSize: 1024, format: format, block: Self.tap(audio, endpoint))
                 hasTap = true
-                recognition = recognizer.recognitionTask(with: audio) { [weak self] result, error in
-                    let text = result?.bestTranscription.formattedString
-                    let final = result?.isFinal == true
-                    let failed = error != nil
-                    Task { @MainActor [weak self] in
-                        guard let self, ticket == self.generation else { return }
-                        if let text, !text.isEmpty, self.transcript != text {
-                            self.transcript = text
-                            if self.phase == .listening { self.schedule(seconds: 2.4) { self.finish() } }
-                        }
-                        if final || (failed && self.phase == .finishing) { self.deliver() }
-                        else if failed { self.fail("음성 인식이 중단됐어요. 다시 말하거나 입력해 주세요.") }
-                    }
-                }
+                recognition = recognizer.recognitionTask(with: audio, resultHandler: Self.handler(self, ticket))
                 engine.prepare()
                 try engine.start()
                 phase = .listening
-                schedule(seconds: 12) { self.finish() }
-            } catch { fail("마이크를 시작하지 못했어요. 다시 말하거나 입력해 주세요.") }
+                timer = Task {
+                    while !Task.isCancelled {
+                        do { try await Task.sleep(for: .milliseconds(100)) } catch { return }
+                        guard ticket == generation else { return }
+                        if endpoint.shouldFinish() { finish(); return }
+                    }
+                }
+            } catch {
+                fail("마이크를 시작하지 못했어요. 다시 말하거나 질문을 입력해 주세요.")
+            }
         }
     }
 
-    private nonisolated static func tap(for request: SFSpeechAudioBufferRecognitionRequest) -> AVAudioNodeTapBlock {
-        { buffer, _ in request.append(buffer) }
+    private nonisolated static func speechPermission() async -> SFSpeechRecognizerAuthorizationStatus {
+        await withCheckedContinuation { done in
+            SFSpeechRecognizer.requestAuthorization { done.resume(returning: $0) }
+        }
+    }
+
+    private nonisolated static func tap(_ audio: SFSpeechAudioBufferRecognitionRequest, _ endpoint: QuestionAudioCapture) -> AVAudioNodeTapBlock {
+        { buffer, _ in
+            audio.append(buffer)
+            endpoint.append(buffer)
+        }
+    }
+
+    private nonisolated static func handler(_ microphone: QuestionMicrophone, _ ticket: Int)
+        -> (SFSpeechRecognitionResult?, Error?) -> Void {
+        { [weak microphone] result, error in
+            let text = result?.bestTranscription.formattedString
+            let final = result?.isFinal == true
+            let failed = error != nil
+            Task { @MainActor in
+                guard let microphone, microphone.generation == ticket else { return }
+                if let text, !text.isEmpty { microphone.transcript = text }
+                if final || (failed && microphone.phase == .finishing) {
+                    microphone.deliverDraft()
+                } else if failed {
+                    microphone.fail("아이폰에서 받아쓰기가 중단됐어요. 다시 말하거나 질문을 입력해 주세요.")
+                }
+            }
+        }
     }
 
     func finish() {
@@ -94,23 +116,21 @@ final class QuestionMicrophone: ObservableObject {
         stopInput()
         request?.endAudio()
         request = nil
-        schedule(seconds: 1.5) { self.deliver() }
-    }
-
-    private func schedule(seconds: Double, _ action: @escaping @MainActor () -> Void) {
         timer?.cancel()
+        let ticket = generation
         timer = Task {
-            do { try await Task.sleep(for: .seconds(seconds)) } catch { return }
-            action()
+            do { try await Task.sleep(for: .seconds(2)) } catch { return }
+            guard ticket == generation else { return }
+            deliverDraft()
         }
     }
 
-    private func deliver() {
-        let question = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
-        let callback = onQuestion
+    private func deliverDraft() {
+        let text = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        let callback = onDraft
         cancel()
-        if question.isEmpty { error = "질문을 듣지 못했어요. 다시 말해 주세요." }
-        else { callback?(question) }
+        if text.isEmpty { error = "질문을 듣지 못했어요. 다시 말하거나 입력해 주세요." }
+        else { callback?(text) }
     }
 
     private func fail(_ message: String) {
@@ -138,7 +158,7 @@ final class QuestionMicrophone: ObservableObject {
             try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
             activated = false
         }
-        onQuestion = nil
+        onDraft = nil
         transcript = ""
         phase = .idle
     }

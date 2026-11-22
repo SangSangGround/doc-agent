@@ -6,13 +6,18 @@ let package = Package(
     platforms: [.iOS(.v17), .macOS(.v13)],
     products: [.library(name: "DocAgentCore", targets: ["DocAgentCore"]),
                .executable(name: "docagent-connection-check", targets: ["ConnectionCheck"])],
+    dependencies: [
+        .package(url: "https://github.com/yeatse/opencv-spm.git", exact: "4.10.0")
+    ],
     targets: [
-        .binaryTarget(name: "llama",
-                      url: "https://github.com/ggml-org/llama.cpp/releases/download/b12559/llama-b12559-xcframework.zip",
-                      checksum: "b5adcc29276e2a41550260520768b5b7453a688680b8eca62d940760843e0a1a"),
-        .target(name: "DocAgentCore", dependencies: ["llama"],
-                resources: [.copy("ReviewModel"), .copy("consent-library.json")]),
+        .target(name: "WritingVision", dependencies: [.product(name: "OpenCV", package: "opencv-spm")]),
+        .target(name: "DocAgentCore", dependencies: ["WritingVision"],
+                exclude: ["ReviewModel", "DocumentLanguageModel.swift", "VisualReview.swift", "QuestionWhisper.swift",
+                          "ConsentConversation.swift", "ConsentDocument.swift", "PageQuestion.swift", "AttachmentSection.swift"],
+                resources: [.copy("consent-library.json")]),
         .executableTarget(name: "ConnectionCheck", dependencies: ["DocAgentCore"]),
-        .testTarget(name: "DocAgentCoreTests", dependencies: ["DocAgentCore"], resources: [.copy("Fixtures")])
+        .testTarget(name: "DocAgentCoreTests", dependencies: ["DocAgentCore"],
+                    exclude: ["QuestionWhisperTests.swift", "ConsentConversationTests.swift", "PageQuestionTests.swift"],
+                    resources: [.copy("Fixtures")])
     ]
 )

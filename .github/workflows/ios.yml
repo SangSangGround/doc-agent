@@ -1,10 +1,10 @@
 name: iPhone 앱 빌드 및 통신 계약 검증
 on:
   pull_request:
-    paths: ['ios/**', 'src/docagent/home/**', '.github/workflows/ios.yml']
+    paths: ['ios/**', 'src/docagent/home/**', 'src/docagent/cloud_*.py', '.github/workflows/ios.yml']
   push:
     branches: [main]
-    paths: ['ios/**', 'src/docagent/home/**', '.github/workflows/ios.yml']
+    paths: ['ios/**', 'src/docagent/home/**', 'src/docagent/cloud_*.py', '.github/workflows/ios.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -16,8 +16,6 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: 기기 내 사진 대조 모델 준비
-        run: python3 ios/prepare_review_model.py
       - name: Swift 촬영·문서 판독·통신 계약 테스트
         run: swift test --package-path ios/DocAgentCore
       - name: iPhone Simulator용 앱 빌드

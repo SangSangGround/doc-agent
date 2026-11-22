@@ -2,16 +2,67 @@ import Foundation
 import ImageIO
 import Vision
 
-public struct PrintedLine: Identifiable, Sendable {
+public struct PrintedLine: Codable, Identifiable, Sendable {
     public let id: Int
     public let text: String
-    public let uncertain: Bool
+    /// An internal decision score for this transcription, independent of Q&A relevance.
+    static let warningThreshold: Float = 0.70
+    let confidence: Float
+    static let contextThreshold: Float = 0.60
+    let conflictingReadings: Bool
+    let contextSupport: Float?
+    public var uncertain: Bool {
+        if conflictingReadings { return true }
+        if confidence >= Self.warningThreshold { return false }
+        guard let support = contextSupport, support >= Self.contextThreshold else { return true }
+        return (7 * confidence + 3 * support) / 10 < Self.contextThreshold
+    }
+    /// An independent context quote may support a weak reading only when local readings do not conflict.
+    public var canReviewContext: Bool { uncertain && !conflictingReadings }
+    // Vision coordinates (origin at the bottom left) keep neighboring table cells distinct in Q&A.
+    let bounds: CGRect?
     public var spoken: String { uncertain ? "인식 불확실. " + text : text }
+
+    init(id: Int, text: String, confidence: Float, bounds: CGRect? = nil,
+         conflictingReadings: Bool = false, contextSupport: Float? = nil) {
+        self.id = id
+        self.text = text
+        self.confidence = confidence.isFinite ? min(1, max(0, confidence)) : 0
+        self.bounds = bounds
+        self.conflictingReadings = conflictingReadings
+        self.contextSupport = contextSupport
+    }
+
+    init(id: Int, text: String, uncertain: Bool, bounds: CGRect? = nil) {
+        self.init(id: id, text: text, confidence: uncertain ? 0 : Self.warningThreshold, bounds: bounds)
+    }
+
+    func withText(_ text: String) -> Self {
+        Self(id: id, text: text, confidence: confidence, bounds: bounds,
+             conflictingReadings: conflictingReadings, contextSupport: contextSupport)
+    }
+
+    func corroborated(by score: Float) -> Self {
+        guard !conflictingReadings, score.isFinite, (Self.contextThreshold...1).contains(score),
+              score > (contextSupport ?? 0) else { return self }
+        return Self(id: id, text: text, confidence: confidence, bounds: bounds,
+                    conflictingReadings: false, contextSupport: score)
+    }
+}
+
+struct OCRReading {
+    let text: String
+    let confidence: Float
 }
 
 struct LocatedLine {
     let value: PrintedLine
     let bounds: CGRect
+    let second: OCRReading?
+
+    func reviewed() -> PrintedLine {
+        DocumentReviewer.reviewLine(value, second: second)
+    }
 }
 
 public struct ReviewedPage: Sendable {
@@ -28,7 +79,7 @@ public enum PhotoReader {
 
     /// Preserve the original still and EXIF orientation for the first OCR pass.
     public static func read(_ data: Data) throws -> [PrintedLine] {
-        try scan(data).lines.map(\.value)
+        try scan(data).lines.map { $0.reviewed() }
     }
 
     static func scan(_ data: Data) throws -> Page {
@@ -57,13 +108,25 @@ public enum PhotoReader {
             boundary = path
             bounds = page.boundingBox
         }
-        let lines = (request.results ?? []).enumerated().compactMap { index, observation -> LocatedLine? in
+        let observations = request.results ?? []
+        // Compare independent Vision reads at two scales before publishing any line.
+        let corrected = textRequest(corrected: true)
+        if !observations.isEmpty {
+            try? VNImageRequestHandler(cgImage: upright, options: [:]).perform([corrected])
+        }
+        try Task.checkCancellation()
+        let secondPass = corrected.results ?? []
+        let lines = observations.enumerated().compactMap { index, observation -> LocatedLine? in
             let rect = observation.boundingBox
             guard boundary?.contains(CGPoint(x: rect.midX, y: rect.midY)) ?? true,
                   let result = observation.topCandidates(1).first,
                   !result.string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-            let line = PrintedLine(id: index, text: result.string, uncertain: result.confidence < 0.7)
-            return LocatedLine(value: line, bounds: rect)
+            let line = PrintedLine(id: index, text: result.string, confidence: result.confidence, bounds: rect)
+            let matches = secondPass.filter { DocumentReviewer.sameLocation($0.boundingBox, rect) }
+            // Ambiguous overlapping second-pass rows cannot corroborate a specific line.
+            let candidate = matches.count == 1 ? matches[0].topCandidates(1).first : nil
+            let second = candidate.map { OCRReading(text: $0.string, confidence: $0.confidence) }
+            return LocatedLine(value: line, bounds: rect, second: second)
         }
         return Page(lines: lines, upright: upright, bounds: bounds)
     }
@@ -119,61 +182,20 @@ enum PaperAppearance {
     }
 }
 
-/// Serializes recognition so a cancelled photo cannot compete with its replacement for model memory.
+/// The captured image stays inside Vision and the local page-quality check.
 public actor DocumentReviewer {
     public init() {}
 
-    public func read(_ data: Data, onOCR: @Sendable ([PrintedLine]) async -> Void) async throws -> ReviewedPage {
+    public func read(_ data: Data) throws -> ReviewedPage {
         try Task.checkCancellation()
-        let page = try autoreleasepool { try PhotoReader.scan(data) }
-        try Task.checkCancellation()
-        await onOCR(page.lines.map(\.value))
-        try Task.checkCancellation()
-        let cancellation = ReviewCancellation()
-        return try await withTaskCancellationHandler {
-            try autoreleasepool { try review(page, cancellation: cancellation) }
-        } onCancel: {
-            cancellation.cancel()
-        }
-    }
-
-    private func review(_ page: PhotoReader.Page, cancellation: ReviewCancellation) throws -> ReviewedPage {
-        let originals = page.lines.map(\.value)
-        do {
-            let reviewer = try VisualReview(cancellation: cancellation)
-            try Task.checkCancellation()
-            if originals.isEmpty {
-                let pageImage = PhotoReader.crop(page.upright, to: page.bounds) ?? page.upright
-                let vote = try reviewer.blankPage(pageImage)
-                let inner = CGRect(x: 0.04, y: 0.04, width: 0.92, height: 0.92)
-                let appearance = PaperAppearance.inspect(PhotoReader.crop(pageImage, to: inner) ?? pageImage)
-                return ReviewedPage(lines: [], notice: Self.emptyNotice(appearance: appearance, vote: vote))
-            }
-            // A second OCR reading at a different scale helps distinguish a genuinely legible low-confidence line.
-            let second = PhotoReader.textRequest(corrected: true)
-            try? VNImageRequestHandler(cgImage: page.upright, options: [:]).perform([second])
-            let secondPass = second.results ?? []
-            var lines = originals
-            // Work at crop scale: small print may disappear in a whole-page VLM preview.
-            for start in stride(from: 0, to: page.lines.count, by: 4) {
-                try Task.checkCancellation()
-                let block = page.lines[start..<min(start + 4, page.lines.count)]
-                let bounds = block.reduce(CGRect.null) { $0.union($1.bounds) }
-                let padded = bounds.insetBy(dx: -0.012, dy: -max(0.006, bounds.height * 0.08))
-                guard let crop = PhotoReader.crop(page.upright, to: padded) else { continue }
-                let vote = try reviewer.matches(block.map { $0.value.text }, in: crop)
-                for index in block.indices {
-                    let line = page.lines[index]
-                    let candidates = secondPass.filter { Self.sameLocation($0.boundingBox, line.bounds) }
-                        .compactMap { $0.topCandidates(1).first?.string }
-                    lines[index] = Self.reviewLine(line.value, candidates: candidates, vote: vote)
-                }
-            }
-            return ReviewedPage(lines: lines, notice: Self.countNotice(lines))
-        } catch {
-            try Task.checkCancellation()
-            let notice = originals.isEmpty ? "글자를 읽지 못했어요. 조명과 초점을 확인하고 다시 촬영해 주세요." : Self.countNotice(originals)
-            return ReviewedPage(lines: originals, notice: notice + " 사진의 AI 재확인을 마치지 못했어요.")
+        return try autoreleasepool {
+            let page = try PhotoReader.scan(data)
+            let lines = page.lines.map { $0.reviewed() }
+            if !lines.isEmpty { return ReviewedPage(lines: lines, notice: Self.countNotice(lines)) }
+            let cropped = PhotoReader.crop(page.upright, to: page.bounds) ?? page.upright
+            let inner = CGRect(x: 0.04, y: 0.04, width: 0.92, height: 0.92)
+            let appearance = PaperAppearance.inspect(PhotoReader.crop(cropped, to: inner) ?? cropped)
+            return ReviewedPage(lines: [], notice: Self.emptyNotice(appearance: appearance))
         }
     }
 
@@ -183,19 +205,33 @@ public actor DocumentReviewer {
             && overlap.width >= 0.65 * max(a.width, b.width)
     }
 
-    static func reviewLine(_ line: PrintedLine, candidates: [String], vote: VisualVote) -> PrintedLine {
+    static func reviewLine(_ line: PrintedLine, second: OCRReading?) -> PrintedLine {
+        guard let second else { return line }
         func normalized(_ text: String) -> String {
-            text.precomposedStringWithCanonicalMapping.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+            // Ignore OCR word-spacing changes in Korean, but do not merge separate numbers.
+            var result = ""
+            for word in text.precomposedStringWithCanonicalMapping.split(whereSeparator: \.isWhitespace) {
+                if let left = result.last, let right = word.first,
+                   (left.isNumber && right.isNumber || left.isASCII && right.isASCII && left.isLetter && right.isLetter) {
+                    result.append(" ")
+                }
+                result.append(contentsOf: word)
+            }
+            return result
         }
-        let matches = candidates.contains { normalized($0) == normalized(line.text) }
-        var uncertain = line.uncertain
-        if vote == .yes && matches { uncertain = false }
-        if vote == .no && !candidates.isEmpty && !matches { uncertain = true }
-        return PrintedLine(id: line.id, text: line.text, uncertain: uncertain)
+        let score: Float
+        let disagree = normalized(second.text) != normalized(line.text)
+        if !disagree {
+            // This is an agreement heuristic, not a calibrated probability.
+            score = max(line.confidence, (line.confidence + second.confidence) / 2 + 0.20)
+        } else {
+            score = min(line.confidence, PrintedLine.warningThreshold.nextDown)
+        }
+        return PrintedLine(id: line.id, text: line.text, confidence: score, bounds: line.bounds, conflictingReadings: disagree)
     }
 
-    static func emptyNotice(appearance: PaperAppearance, vote: VisualVote) -> String {
-        if appearance == .blankCandidate && vote == .yes {
+    static func emptyNotice(appearance: PaperAppearance) -> String {
+        if appearance == .blankCandidate {
             return "글자를 찾지 못했고 이 면은 비어 보여요. 뒷면일 수 있으니 종이를 뒤집어 반대쪽을 확인해 주세요."
         }
         if appearance == .lightProblem {
@@ -204,7 +240,7 @@ public actor DocumentReviewer {
         return "글자를 확인하기 어려워요. 종이의 방향과 초점을 확인하고 다시 촬영해 주세요."
     }
 
-    private static func countNotice(_ lines: [PrintedLine]) -> String {
+    public static func countNotice(_ lines: [PrintedLine]) -> String {
         let uncertain = lines.filter(\.uncertain).count
         return "\(lines.count)줄을 읽었어요." + (uncertain == 0 ? "" : " \(uncertain)줄은 인식이 불확실해요.")
     }

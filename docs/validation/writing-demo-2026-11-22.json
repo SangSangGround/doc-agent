@@ -1,0 +1,612 @@
+{
+  "measured_local_date": "2026-11-22",
+  "host": "Apple M4, macOS, no phone attached for measurement",
+  "method": "One provided unfilled paper photographed once, deterministic transforms, recorded candidate boxes and explicit simulated ink/fingertips where indicated. No paid cloud calls.",
+  "reference_photo": {
+    "cases": [
+      {
+        "centerErrorPx": [
+          0.003338308328726397,
+          0.02020510942033384,
+          0.006918849562883072,
+          0.016013383856201237,
+          0.8121767301529498
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 46,
+        "lookupMs": 214.19112500734627,
+        "matched": true,
+        "matchedEdits": 1,
+        "name": "source_decoded",
+        "ocrMs": 1354.1710000718012,
+        "positive": true,
+        "rawEdits": 27,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          2.278455193954134,
+          3.2177446599731216,
+          2.11488945512881,
+          3.0966727716336293,
+          1.8731967386638264
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 46,
+        "lookupMs": 134.97416663449258,
+        "matched": true,
+        "matchedEdits": 1,
+        "name": "resized_margin",
+        "ocrMs": 815.1864999672398,
+        "positive": true,
+        "rawEdits": 34,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          0.4624744192446543,
+          0.8914303521365431,
+          1.188376831106587,
+          1.6249680279535295,
+          1.5413104922134384
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 47,
+        "lookupMs": 180.41149992495775,
+        "matched": true,
+        "matchedEdits": 10,
+        "name": "left_perspective",
+        "ocrMs": 785.959416651167,
+        "positive": true,
+        "rawEdits": 11,
+        "rawKeyPhrases": 6,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          2.0451388892328293,
+          1.5257780512337724,
+          3.1911708769585387,
+          3.651146124796187,
+          4.204448521449057
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 46,
+        "lookupMs": 139.55791667103767,
+        "matched": true,
+        "matchedEdits": 1,
+        "name": "right_perspective",
+        "ocrMs": 818.7509999843314,
+        "positive": true,
+        "rawEdits": 16,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          1.3902702759757262,
+          1.7910023570335118,
+          1.1611376170431504,
+          1.5350904865468484,
+          0.976704520778319
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 48,
+        "lookupMs": 125.04237506072968,
+        "matched": true,
+        "matchedEdits": 0,
+        "name": "mild_shadow",
+        "ocrMs": 795.8754166029394,
+        "positive": true,
+        "rawEdits": 13,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          1.8242515228696778,
+          2.234935749845246,
+          1.3091640860432383,
+          1.703402690886541,
+          0.15573019908665128
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 6,
+        "lines": 47,
+        "lookupMs": 123.74137493316084,
+        "matched": true,
+        "matchedEdits": 1,
+        "name": "fresh_ink",
+        "ocrMs": 800.2602084307,
+        "positive": true,
+        "rawEdits": 37,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "centerErrorPx": [
+          2.7956495996707975,
+          2.912746330963814,
+          2.2660054530549387,
+          2.154351256350045,
+          2.2668205165939037
+        ],
+        "centerInsideAnotherTarget": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "centerInsideCorrectTarget": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "displayedKeyPhrases": 5,
+        "lines": 46,
+        "lookupMs": 163.74183329753578,
+        "matched": true,
+        "matchedEdits": 36,
+        "name": "heldout_offset_keystone",
+        "ocrMs": 777.4539584061131,
+        "positive": true,
+        "rawEdits": 37,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "displayedKeyPhrases": 5,
+        "lines": 47,
+        "lookupMs": 0.5742500070482492,
+        "matched": false,
+        "matchedEdits": 28,
+        "name": "heldout_soft_focus",
+        "ocrMs": 793.3076666668057,
+        "positive": true,
+        "rawEdits": 28,
+        "rawKeyPhrases": 5,
+        "sampledCharacters": 307
+      },
+      {
+        "lines": 47,
+        "lookupMs": 0.2975416136905551,
+        "matched": false,
+        "name": "changed_revision",
+        "ocrMs": 898.5557500272989,
+        "positive": false
+      },
+      {
+        "lines": 48,
+        "lookupMs": 0.3532916307449341,
+        "matched": false,
+        "name": "changed_retention",
+        "ocrMs": 899.7702916385606,
+        "positive": false
+      },
+      {
+        "lines": 7,
+        "lookupMs": 0.024250010028481483,
+        "matched": false,
+        "name": "header_only",
+        "ocrMs": 222.73695829790086,
+        "positive": false
+      },
+      {
+        "lines": 37,
+        "lookupMs": 0.23104168940335512,
+        "matched": false,
+        "name": "no_header",
+        "ocrMs": 813.1742500700057,
+        "positive": false
+      },
+      {
+        "lines": 83,
+        "lookupMs": 0.3115833969786763,
+        "matched": false,
+        "name": "other_form_1",
+        "ocrMs": 729.1179999010637,
+        "positive": false
+      },
+      {
+        "lines": 79,
+        "lookupMs": 0.3444167086854577,
+        "matched": false,
+        "name": "same_exact_header_different_body",
+        "ocrMs": 631.5099999774247,
+        "positive": false
+      },
+      {
+        "lines": 81,
+        "lookupMs": 0.4809167003259063,
+        "matched": false,
+        "name": "other_form_2",
+        "ocrMs": 1279.6650832751766,
+        "positive": false
+      },
+      {
+        "lines": 66,
+        "lookupMs": 0.4634166834875941,
+        "matched": false,
+        "name": "other_form_3",
+        "ocrMs": 1369.8552083224058,
+        "positive": false
+      }
+    ],
+    "exactHEICLookupMs": [
+      0.7857916643843055,
+      0.5085417069494724,
+      0.5071666091680527,
+      0.5068749887868762,
+      0.5072916392236948,
+      0.5067083984613419,
+      0.5073333159089088,
+      0.5070832557976246,
+      0.507458345964551,
+      0.5072499625384808
+    ],
+    "platform": "Version 27.2 (Build 26B123)"
+  },
+  "reference_summary": {
+    "matched_positives": 7,
+    "positives": 8,
+    "matched_negatives": 0,
+    "negatives": 8,
+    "raw_edits": 203,
+    "displayed_edits": 78,
+    "gold_characters": 2456,
+    "raw_key_phrases": 41,
+    "displayed_key_phrases": 46,
+    "expected_key_phrases": 48
+  },
+  "frame_registration": [
+    {
+      "errors_px": [
+        0.49530370199011325,
+        0.4929325721835593,
+        0.5606872332550062,
+        0.562261037402154,
+        0.5887857709384469
+      ],
+      "expected": true,
+      "file": "upright.jpg",
+      "milliseconds": 28.319999924860895,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.46928996695403663,
+        0.4466611387654432,
+        0.5265548981500774,
+        0.5049008426453954,
+        0.5819141799734823
+      ],
+      "expected": true,
+      "file": "surround.jpg",
+      "milliseconds": 27.13858336210251,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.6226118414400766,
+        0.6229879038686281,
+        0.4851641804861844,
+        0.46124530026923366,
+        0.16762177903048783
+      ],
+      "expected": true,
+      "file": "perspective-left.jpg",
+      "milliseconds": 26.105666649527848,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.39763791708372265,
+        0.44081221940323995,
+        0.30903786444027265,
+        0.3304160225610691,
+        0.1803057095225996
+      ],
+      "expected": true,
+      "file": "perspective-right.jpg",
+      "milliseconds": 26.33270830847323,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        1.1109084644844747,
+        1.1578119012985908,
+        0.858270483335816,
+        0.8697781545619712,
+        0.4372512344568947
+      ],
+      "expected": true,
+      "file": "quarter-turn.jpg",
+      "milliseconds": 25.645791669376194,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.36406269774886396,
+        0.4585241096466959,
+        0.5756990281475586,
+        0.6332394358276279,
+        0.9476605400023436
+      ],
+      "expected": true,
+      "file": "partial.jpg",
+      "milliseconds": 31.24408342409879,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.3925036226135805,
+        0.3604108316621005,
+        0.44208738169815853,
+        0.42139703309755855,
+        0.45073641927494973
+      ],
+      "expected": true,
+      "file": "hand-shaped-occlusion.jpg",
+      "milliseconds": 28.054541675373912,
+      "registered": true
+    },
+    {
+      "errors_px": [
+        0.7868121245641319,
+        0.9311742834023342,
+        0.8637895445386996,
+        1.008751747639548,
+        0.9634058978716675
+      ],
+      "expected": true,
+      "file": "dim.jpg",
+      "milliseconds": 28.6775833228603,
+      "registered": true
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "mirrored.jpg",
+      "milliseconds": 107.59750008583069,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "blank.png",
+      "milliseconds": 5.811541574075818,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "same-header-changed-body.jpg",
+      "milliseconds": 38.33479166496545,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "other-1.jpg",
+      "milliseconds": 88.19337503518909,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "other-2.jpg",
+      "milliseconds": 90.08483332581818,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "other-3.jpg",
+      "milliseconds": 67.70187499932945,
+      "registered": false
+    },
+    {
+      "errors_px": [],
+      "expected": false,
+      "file": "other-4.jpg",
+      "milliseconds": 63.90504166483879,
+      "registered": false
+    }
+  ],
+  "general_fields": {
+    "condition": "EXIF-upright source photos, longest side <= 2048, JPEG quality 90; saved Gemini boxes, local Mac timings; identical bytes for second pass",
+    "pages": [
+      {
+        "page": "document1",
+        "historical_gemini_seconds": 31.984,
+        "gemini_proposals": 42,
+        "retained_regions": 33,
+        "cold_local_replay_ms": 782.5,
+        "warm_exact_replay_ms": 1.6
+      },
+      {
+        "page": "document2",
+        "historical_gemini_seconds": 34.147,
+        "gemini_proposals": 27,
+        "retained_regions": 17,
+        "cold_local_replay_ms": 788.4,
+        "warm_exact_replay_ms": 2.1,
+        "teammate_reviewed_points": {
+          "check_box": {
+            "reviewed_points": 3,
+            "region_returned": 3,
+            "point_in_region": 3
+          },
+          "input_field": {
+            "reviewed_points": 11,
+            "region_returned": 4,
+            "point_in_region": 2
+          },
+          "signature_field": {
+            "reviewed_points": 2,
+            "region_returned": 1,
+            "point_in_region": 1
+          }
+        }
+      },
+      {
+        "page": "document3",
+        "historical_gemini_seconds": 18.648,
+        "gemini_proposals": 11,
+        "retained_regions": 5,
+        "cold_local_replay_ms": 827.7,
+        "warm_exact_replay_ms": 2.2
+      },
+      {
+        "page": "test_document",
+        "historical_gemini_seconds": 123.131,
+        "gemini_proposals": 21,
+        "retained_regions": 21,
+        "cold_local_replay_ms": 22.9,
+        "warm_exact_replay_ms": 1.6
+      }
+    ],
+    "median_local_cold_ms": 785.45,
+    "median_local_warm_ms": 1.85
+  },
+  "checkbox_ink_replay": {
+    "input": "real blank photo, four boxes, one simulated tick style, all 16 binary patterns",
+    "marked_correct": 32,
+    "marked_total": 32,
+    "empty_correct": 32,
+    "empty_total": 32,
+    "undecided": 0
+  },
+  "qa_routing": {
+    "prepared_questions": 4,
+    "prepared_answered_with_citations": 4,
+    "other_questions": 4,
+    "delegated": 4,
+    "lookup_samples": 120,
+    "local_lookup_ms_p50_p95": [
+      0.115667,
+      0.36475
+    ],
+    "live_openai_calls": 0
+  },
+  "guidance_replay": {
+    "input": "7 transformed scenes of one photo, true target centers, projected simulated trajectories sampled at 10Hz",
+    "right_arrivals": 35,
+    "target_trials": 35,
+    "incorrect_neighbor_arrivals": 0,
+    "neighbor_trials": 140,
+    "premature_arrivals": 0,
+    "hand_loss_false_arrivals": 0,
+    "page_loss_false_arrivals": 0,
+    "reacquired_arrivals": 35,
+    "loss_trials_each": 35,
+    "algorithmic_dwell_ms": 650,
+    "simulated_entry_to_cue_ms_min_p50_max": [
+      700,
+      700,
+      700
+    ],
+    "registration_frames": 161,
+    "mac_registration_ms_p50_p95": [
+      28.61,
+      36.44
+    ]
+  },
+  "verification": {
+    "swift_xctests": 46,
+    "swift_failures": 0,
+    "python_tests": 1929,
+    "python_failures": 0,
+    "unsigned_iphoneos_build": "succeeded",
+    "real_gemini_calls_this_run": 0,
+    "phone_sessions_this_run": 0
+  }
+}

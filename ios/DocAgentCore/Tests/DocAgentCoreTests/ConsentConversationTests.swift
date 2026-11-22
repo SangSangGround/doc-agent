@@ -26,6 +26,7 @@ final class ConsentConversationTests: XCTestCase {
         switch ConsentConversation.plan(question, lines: page ?? lines, history: history) {
         case .direct(let r): return r
         case .search(let s): return s.certainMatch ?? s.missing
+        case .page(let page): return page.fallback
         }
     }
 
@@ -114,6 +115,14 @@ final class ConsentConversationTests: XCTestCase {
         let lines = try PhotoReader.read(photo)
         XCTAssertGreaterThan(lines.count, 15)
         let reader = DocumentReviewer()
+        let identity = try await reader.answer("이거 어떤 서류야?", lines: lines, history: [])
+        XCTAssertEqual(identity.kind, .document)
+        XCTAssertTrue(identity.text.contains("동의서"), identity.text)
+        XCTAssertTrue(identity.text.contains("대부 신청"), identity.text)
+        let overview = try await reader.answer("한 줄로 요약해줘", lines: lines, history: [])
+        XCTAssertEqual(overview.kind, .document, overview.text)
+        XCTAssertTrue(ConsentQuery(overview.text).has(["개인정보", "대부", "동의"]), overview.text)
+        XCTAssertTrue(overview.source.contains("줄 번호"))
         let first = try await reader.answer("내 정보는 누구에게 제공돼?", lines: lines, history: [])
         XCTAssertEqual(first.kind, .document)
         XCTAssertTrue(ConsentQuery(first.text).has(["한국고용정보원"]), first.text)

@@ -100,7 +100,22 @@ struct ConsentDocument {
         guard !lines.isEmpty else { return .direct(missing) }
         // A consent can mention a number of years for retaining data without stating
         // the borrower's repayment period. Require evidence about the loan term itself.
-        if let loanTopic = loanTopic(q) {
+        let contents = ConsentQuery(lines.map(\.text).joined(separator: " "))
+        let consentPage = contents.has(["개인정보", "제공받는 자", "동의서", "동의 거부", "제공받은 기관"])
+        let loanPage = contents.has(["대부", "대출", "융자"])
+        if ["기간", "기간은", "기간은요", "언제까지", "언제까지야", "언제까지예요"].contains(q.compact) {
+            var choices: [String] = []
+            if contents.has(["신청 기한", "신청 기간", "접수 기간", "신청 마감"]) { choices.append("신청 기한") }
+            if contents.has(["보유", "보관"]) { choices.append("개인정보 보유 기간") }
+            if contents.has(["납부 기한", "납부 마감", "납부 기간"]) { choices.append("납부 기한") }
+            if contents.has(["상환 기간", "거치 기간"]) { choices.append("대부 상환 기간") }
+            if choices.count > 1 { return .direct(.clarification("어떤 기간을 말씀하시는 건가요?", choices: choices)) }
+        }
+        if ["얼마", "얼마야", "얼마예요", "금액은", "비용은", "비용은얼마야"].contains(q.compact) {
+            let amounts = ["신청비", "수강료", "재료비", "참가비", "납부 금액", "환급 금액"].filter { contents.has([$0]) }
+            if amounts.count > 1 { return .direct(.clarification("어떤 금액이 궁금하세요?", choices: Array(amounts.prefix(4)))) }
+        }
+        if loanPage, let loanTopic = loanTopic(q) {
             let passages = lines.filter { ConsentQuery($0.text).has(loanTopic) }
             let candidates = passages.prefix(3).map { ConsentReply.page([$0]) }
             return candidates.isEmpty ? .direct(missing) : .search(.init(candidates: candidates, certainMatch: nil, missing: missing))
@@ -110,9 +125,16 @@ struct ConsentDocument {
         let lastField = previous.flatMap(answeredField)
         let scopeOnly = ["제공받은곳은", "제공받는곳은", "제공받은기관은", "제공받는기관은", "제3자는", "공단은", "수집쪽은", "제공쪽은"].contains { q.compact.hasSuffix($0) || q.compact.hasSuffix($0 + "요") }
         let field = scopeOnly && lastField != nil ? lastField : ConsentField.requested(q) ?? (q.has(["그럼", "그건", "그거", "그쪽", "그곳"]) ? lastField : nil)
-        if let field {
+        let privacyQuestion = q.has(["동의", "개인정보", "보유", "보관", "파기", "수집", "제공", "거부", "불이익",
+                                     "내 정보", "정보를", "어느 기관", "어떤 기관", "누구한테 줘", "누구에게 줘", "누구한테 가", "넘겨", "넘어가"])
+        let asksAboutOtherRoles = q.has(["작성자", "작성했", "작성한", "발행", "발급", "서명해야", "서명하는", "신청 자격", "신청할 수", "문의", "준비물"])
+        if let field, consentPage && !asksAboutOtherRoles && (privacyQuestion || scopeOnly || (q.has(["그럼", "거기"]) && lastField != nil)) {
             var matches = blocks(lines).filter { $0.field == field }
             let preferred = scope(q) ?? (q.has(["그럼", "거기", "그쪽", "그곳"]) ? previousQuestion.flatMap(scope) : nil)
+            if preferred == nil, field == .retention, matches.contains(where: { $0.scope == .collection }),
+               matches.contains(where: { $0.scope == .provision }) {
+                return .direct(.clarification("어느 쪽의 보유 기간이 궁금하세요?", choices: ["수집 기관의 보유 기간", "제공받은 기관의 보유 기간"]))
+            }
             if let preferred, matches.contains(where: { $0.scope == preferred }) {
                 matches = matches.filter { $0.scope == preferred }
             } else if !matches.isEmpty && preferred != nil && [.retention, .purpose].contains(field) {
@@ -143,14 +165,12 @@ struct ConsentDocument {
             if plain.isEmpty { return .direct(missing) }
             return .search(ConsentSearch(candidates: plain.prefix(3).map { .page([$0]) }, certainMatch: nil, missing: missing))
         }
-        // Open questions can still retrieve ordinary OCR prose with the user's own terms.
-        let scores: [(index: Int, score: Int)] = lines.indices.map { ($0, q.overlap(with: lines[$0].text)) }
-        let ranked = scores.filter { $0.score >= 2 }.sorted { a, b in
-            if a.score == b.score { return a.index < b.index }
-            return a.score > b.score
+        let continuing = q.has(["그럼", "그러면", "거기는", "거기서", "그곳", "그날", "그때", "그건"])
+        if continuing, let last = history.last, last.reply.kind == .document && last.question != "문서 원문 읽기" {
+            let contextual = "앞서 물은 내용: " + String(last.question.prefix(80)) + "\n현재 질문: " + q.raw
+            return PageQuestion.plan(.detail, question: contextual, lines: lines)
         }
-        let candidates = ranked.prefix(3).map { ConsentReply.page([lines[$0.index]]) }
-        return candidates.isEmpty ? .direct(missing) : .search(ConsentSearch(candidates: candidates, certainMatch: nil, missing: missing))
+        return PageQuestion.plan(.detail, question: q.raw, lines: lines)
     }
 
     private static func loanTopic(_ query: ConsentQuery) -> [String]? {

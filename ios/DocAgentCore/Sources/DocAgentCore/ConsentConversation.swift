@@ -5,7 +5,8 @@ enum ConsentConversation {
     private static let noHistory = ConsentReply.notice("다시 들을 내용이 아직 없어요. 먼저 원문을 듣거나 질문해 주세요.")
 
     static func plan(_ question: String, lines: [PrintedLine], history: [ConsentTurn]) -> ConsentPlan {
-        let q = ConsentQuery(question)
+        let resolved = resolvedChoice(question, after: history.last)
+        let q = ConsentQuery(resolved)
         guard !q.compact.isEmpty else { return .direct(.notice("질문을 말하거나 입력해 주세요.")) }
         let previous = history.filter { $0.reply.kind != .notice }
         if q.asksSource {
@@ -24,9 +25,23 @@ enum ConsentConversation {
         let library = ConsentEntry.library
         let last = previous.last
         let lastEntry = last.flatMap { turn in library.first { $0.id == turn.reply.entryID } }
+        let pointsBack = ["그거", "그게뭐야", "그건뭐야", "그거알려줘", "그게뭔데", "그것좀"].contains(q.compact)
+        if pointsBack, let entry = lastEntry { return .direct(entry.answer(detailOnly: true)) }
+        if pointsBack || ["이거", "알려줘", "설명해줘", "궁금해"].contains(q.compact) {
+            return .direct(PageQuestion.chooseTopic)
+        }
+        if AttachmentSection.requested(q), let list = AttachmentSection.answer(in: lines, for: q) {
+            return .direct(list)
+        }
+        let externalFollowUp = lastEntry != nil && !q.explicitPage && q.has(["더 쉽게", "쉽게 설명", "그 사례", "그 용어"])
+        if !q.asksExamples && !externalFollowUp, let intent = PageQuestion.overview(q, history: previous) {
+            return PageQuestion.plan(intent, question: q.raw, lines: lines)
+        }
         let terms = library.filter { $0.kind == .term && q.matches($0.keywords) > 0 }
         let refersToLastCase = lastEntry?.kind == .example && q.has(["그 사건", "그 판결", "그 사례", "더 쉽게", "더 자세"])
-        if (q.asksDefinition && !refersToLastCase) || (!q.explicitPage && terms.contains(where: q.directlyNames)) {
+        let refersToTerm = q.has(["그게", "그건", "그 단어", "그 말", "그 용어", "더 쉽게"])
+        let definition = q.asksDefinition && !refersToLastCase && (!terms.isEmpty || refersToTerm)
+        if definition || (!q.explicitPage && terms.contains(where: q.directlyNames)) {
             let sorted = terms.sorted { q.matches($0.keywords) > q.matches($1.keywords) }
             if let first = sorted.first {
                 return .search(.init(candidates: sorted.prefix(3).map { $0.answer() }, certainMatch: first.answer(), missing: noCase))
@@ -37,8 +52,8 @@ enum ConsentConversation {
                 let mentioned = library.filter { $0.kind == .term && preceding.matches($0.keywords) > 0 }
                 if mentioned.count == 1, let entry = mentioned.first { return .direct(entry.answer()) }
                 if !mentioned.isEmpty {
-                    let names = mentioned.prefix(3).map(\.title).joined(separator: ", ")
-                    return .direct(.notice("어떤 말이 궁금하세요? 방금 답에 나온 " + names + " 중에서 말해 주세요."))
+                    let choices = mentioned.prefix(3).map { $0.title + " 뜻 알려줘" }
+                    return .direct(.clarification("방금 답에서 어떤 말이 궁금하세요?", choices: choices))
                 }
             }
             return .direct(.notice("그 용어는 저장된 설명에서 확인하기 어려워요. 궁금한 단어를 한 번 더 말해 주세요."))
@@ -51,6 +66,9 @@ enum ConsentConversation {
         }
         let caseFollowUp = lastEntry?.kind == .example && !q.explicitPage &&
             (refersToLastCase || q.has(["다른 것도", "다른 건", "또 있어", "하나 더", "판결은", "결과는", "언제였", "언제야", "피해액", "벌금", "징역"]))
+        if q.asksExamples && q.has(["문서에 적힌", "문서에 나온", "서류에 적힌", "원문에 나온", "사진에 적힌"]) {
+            return PageQuestion.plan(.detail, question: q.raw, lines: lines)
+        }
         if q.asksExamples || caseFollowUp {
             return examplePlan(q, entries: library.filter { $0.kind == .example }, last: lastEntry, history: previous, lines: lines)
         }
@@ -62,6 +80,17 @@ enum ConsentConversation {
             return .search(.init(candidates: [answer], certainMatch: answer, missing: noCase))
         }
         return ConsentDocument.plan(q, lines: lines, history: previous)
+    }
+
+    private static func resolvedChoice(_ question: String, after turn: ConsentTurn?) -> String {
+        guard let choices = turn?.reply.choices, !choices.isEmpty else { return question }
+        let response = ConsentQuery.compact(question).replacingOccurrences(of: "(이요|으로|이야|요)$", with: "", options: .regularExpression)
+        let ordinals = [["1", "1번", "일번", "첫번째", "첫번째거"], ["2", "2번", "이번", "두번째", "두번째거"],
+                        ["3", "3번", "삼번", "세번째", "세번째거"], ["4", "4번", "사번", "네번째"]]
+        for (index, choice) in choices.enumerated() where index < ordinals.count {
+            if ordinals[index].contains(response) || ConsentQuery.compact(choice) == response { return choice }
+        }
+        return question
     }
 
     private static func recall(_ q: ConsentQuery, from history: [ConsentTurn]) -> ConsentTurn? {
@@ -138,22 +167,28 @@ extension DocumentReviewer {
     /// contexts at once. Questions and OCR never leave this process.
     public func answer(_ question: String, lines: [PrintedLine], history: [ConsentTurn]) async throws -> ConsentReply {
         try Task.checkCancellation()
-        switch ConsentConversation.plan(question, lines: lines, history: history) {
-        case .direct(let answer): return answer
-        case .search(let search):
-            let cancellation = ReviewCancellation()
-            return try await withTaskCancellationHandler {
-                do {
-                    return try autoreleasepool {
-                        let model = try DocumentLanguageModel(cancellation: cancellation)
-                        return try Self.selectAnswer(question, search: search, model: model)
+        let plan = ConsentConversation.plan(question, lines: lines, history: history)
+        if case .direct(let reply) = plan { return reply }
+        let cancellation = ReviewCancellation()
+        return try await withTaskCancellationHandler {
+            do {
+                return try autoreleasepool {
+                    let model = try DocumentLanguageModel(cancellation: cancellation)
+                    switch plan {
+                    case .direct(let reply): return reply
+                    case .search(let search): return try Self.selectAnswer(question, search: search, model: model)
+                    case .page(let page): return try page.answer(using: model)
                     }
-                } catch {
-                    try Task.checkCancellation()
-                    return search.certainMatch ?? search.missing
                 }
-            } onCancel: { cancellation.cancel() }
-        }
+            } catch {
+                try Task.checkCancellation()
+                switch plan {
+                case .direct(let reply): return reply
+                case .search(let search): return search.certainMatch ?? search.missing
+                case .page(let page): return page.fallback
+                }
+            }
+        } onCancel: { cancellation.cancel() }
     }
 
     static func selectAnswer(_ question: String, search: ConsentSearch, model: DocumentLanguageModel) throws -> ConsentReply {
@@ -201,4 +236,18 @@ extension DocumentReviewer {
         try Task.checkCancellation()
         return search.certainMatch ?? search.missing
     }
+}
+
+/// Only the retrieved candidates can be spoken. Even a confident but invalid model output
+/// cannot invent an amount, a legal finding, or a source.
+struct ConsentSearch {
+    let candidates: [ConsentReply]
+    let certainMatch: ConsentReply?
+    let missing: ConsentReply
+}
+
+enum ConsentPlan {
+    case direct(ConsentReply)
+    case search(ConsentSearch)
+    case page(PageQuestion)
 }

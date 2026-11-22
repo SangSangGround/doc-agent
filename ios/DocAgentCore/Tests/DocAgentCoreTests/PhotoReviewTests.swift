@@ -35,53 +35,48 @@ final class PhotoReviewTests: XCTestCase {
         XCTAssertEqual(PaperAppearance.inspect(try paper(shade: 1.0)), .lightProblem)
         XCTAssertEqual(PaperAppearance.inspect(try paper(shade: 0.04)), .lightProblem)
         XCTAssertEqual(PaperAppearance.inspect(try paper(shade: 0.90, text: "금액 12,000원")), .other)
-        XCTAssertTrue(DocumentReviewer.emptyNotice(appearance: .blankCandidate, vote: .yes).contains("뒷면"))
-        for (image, vote) in [(PaperAppearance.lightProblem, VisualVote.yes), (.other, .yes), (.blankCandidate, .unsure), (.blankCandidate, .no)] {
-            XCTAssertFalse(DocumentReviewer.emptyNotice(appearance: image, vote: vote).contains("뒷면"))
+        XCTAssertTrue(DocumentReviewer.emptyNotice(appearance: .blankCandidate).contains("뒷면"))
+        for appearance in [PaperAppearance.lightProblem, .other] {
+            XCTAssertFalse(DocumentReviewer.emptyNotice(appearance: appearance).contains("뒷면"))
         }
     }
-    func testRecheckKeepsNumbersAndRequiresTwoAgreements() {
-        let low = PrintedLine(id: 1, text: "참가비 12,000원", uncertain: true)
-        XCTAssertFalse(DocumentReviewer.reviewLine(low, candidates: [low.text], vote: .yes).uncertain)
-        XCTAssertTrue(DocumentReviewer.reviewLine(low, candidates: ["참가비 12,800원"], vote: .yes).uncertain)
-        XCTAssertTrue(DocumentReviewer.reviewLine(low, candidates: [low.text], vote: .unsure).uncertain)
-        let high = PrintedLine(id: 2, text: "3월 11일", uncertain: false)
-        let disputed = DocumentReviewer.reviewLine(high, candidates: ["3월 17일"], vote: .no)
-        XCTAssertEqual(disputed.text, high.text)
-        XCTAssertTrue(disputed.uncertain)
-        XCTAssertFalse(DocumentReviewer.reviewLine(high, candidates: [high.text], vote: .no).uncertain)
+    func testTwoVisionReadsRaiseScoreAndKeepOriginalText() {
+        let low = PrintedLine(id: 1, text: "참가비 12,000원", confidence: 0.5)
+        let again = OCRReading(text: "참가비 12,000 원", confidence: 0.5)
+        let confirmed = DocumentReviewer.reviewLine(low, second: again)
+        XCTAssertEqual(confirmed.confidence, PrintedLine.warningThreshold, accuracy: 0.0001)
+        XCTAssertFalse(confirmed.uncertain)
+        XCTAssertEqual(confirmed.spoken, low.text)
+        XCTAssertEqual(confirmed.withText("12,000원").confidence, confirmed.confidence)
+        XCTAssertTrue(DocumentReviewer.reviewLine(low, second: nil).uncertain)
+        let weak = PrintedLine(id: 0, text: "가", confidence: 0.2)
+        XCTAssertTrue(DocumentReviewer.reviewLine(weak, second: .init(text: "가", confidence: 0.2)).uncertain)
+        XCTAssertTrue(PrintedLine(id: 0, text: "", confidence: .nan).uncertain)
+    }
+
+    func testConflictingReadingsKeepWarningEvenWithContextAgreement() {
+        for (first, other) in [("3월 11일", "3월 17일"), ("동의 없이 신청", "동의 있어야 신청"),
+                               ("1 2", "12"), ("1.5%", "15%"), ("1만 원", "1억 원")] {
+            let high = PrintedLine(id: 2, text: first, confidence: 1)
+            let disputed = DocumentReviewer.reviewLine(high, second: .init(text: other, confidence: 1))
+            XCTAssertEqual(disputed.text, first)
+            XCTAssertTrue(disputed.conflictingReadings)
+            XCTAssertTrue(disputed.corroborated(by: 1).uncertain, "\(first) / \(other)")
+        }
         let top = CGRect(x: 0.1, y: 0.6, width: 0.4, height: 0.05)
         XCTAssertFalse(DocumentReviewer.sameLocation(top, top.offsetBy(dx: 0, dy: 0.095)))
         XCTAssertTrue(DocumentReviewer.sameLocation(top, top.offsetBy(dx: 0.015, dy: 0.002)))
     }
 
-    func testBundledModelReviewsBlankAndKoreanPrintOffline() async throws {
-        guard VisualReview.weights != nil, VisualReview.projector != nil else {
-            throw XCTSkip("Run ios/prepare_review_model.py to test the bundled model.")
-        }
+    func testCameraReadsBlankAndKoreanPrintLocally() async throws {
         let reader = DocumentReviewer()
-        let blank = try await reader.read(png(paper(shade: 0.91))) { _ in }
+        let blank = try await reader.read(png(paper(shade: 0.91)))
         XCTAssertTrue(blank.lines.isEmpty)
         XCTAssertTrue(blank.notice.contains("뒤집어"), blank.notice)
-        let printed = try await reader.read(png(paper(shade: 0.91, text: "참가비 12,000원"))) { _ in }
+        let printed = try await reader.read(png(paper(shade: 0.91, text: "참가비 12,000원")))
         XCTAssertTrue(printed.lines.contains { $0.text.contains("12,000") }, printed.notice)
         XCTAssertFalse(printed.notice.contains("마치지 못"), printed.notice)
         XCTAssertFalse(printed.notice.contains("뒷면"), printed.notice)
     }
 
-    func testVisibleKoreanAmountCanClearALowConfidenceFlag() throws {
-        guard VisualReview.weights != nil, VisualReview.projector != nil else {
-            throw XCTSkip("Run ios/prepare_review_model.py to test the bundled model.")
-        }
-        let page = try PhotoReader.scan(png(paper(shade: 0.91, text: "참가비 12,000원")))
-        let located = try XCTUnwrap(page.lines.first { $0.value.text.contains("12,000") })
-        let crop = try XCTUnwrap(PhotoReader.crop(page.upright, to: located.bounds.insetBy(dx: -0.012, dy: -0.012)))
-        let model = try VisualReview(cancellation: ReviewCancellation())
-        let vote = try model.matches([located.value.text], in: crop)
-        XCTAssertEqual(vote, .yes)
-        let weak = PrintedLine(id: 0, text: located.value.text, uncertain: true)
-        let verified = DocumentReviewer.reviewLine(weak, candidates: [located.value.text], vote: vote)
-        XCTAssertEqual(verified.text, located.value.text)
-        XCTAssertFalse(verified.uncertain)
-    }
 }

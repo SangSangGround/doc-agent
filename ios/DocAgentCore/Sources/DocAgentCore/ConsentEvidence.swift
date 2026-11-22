@@ -1,12 +1,13 @@
 import Foundation
 
-public struct ConsentReply: Sendable, Equatable {
-    public enum Kind: String, Sendable { case document, example, term, notice }
+public struct ConsentReply: Codable, Sendable, Equatable {
+    public enum Kind: String, Codable, Sendable { case document, example, term, notice }
     public let kind: Kind
     public let text: String
     public let source: String
     public let url: URL?
     let entryID: String?
+    public internal(set) var choices: [String] = []
 
     public var spoken: String {
         switch kind {
@@ -21,19 +22,27 @@ public struct ConsentReply: Sendable, Equatable {
         Self(kind: .notice, text: message, source: "", url: nil, entryID: nil)
     }
 
+    static func clarification(_ message: String, choices: [String]) -> Self {
+        var reply = notice(message + " " + choices.enumerated().map { "\($0.offset + 1)번, \($0.element)." }.joined(separator: " "))
+        reply.choices = choices
+        return reply
+    }
+
     public static func page(_ lines: [PrintedLine]) -> Self {
-        let numbers = lines.map { String($0.id + 1) }
-        let reference = numbers.count <= 8 ? "촬영한 문서의 인식 줄 번호 " + numbers.joined(separator: ", ") : "촬영한 문서의 원문"
+        var seen = Set<Int>()
+        let numbers = lines.compactMap { seen.insert($0.id).inserted ? String($0.id + 1) : nil }
+        let reference = "촬영한 문서의 인식 줄 번호 " + numbers.joined(separator: ", ")
         return Self(kind: .document, text: lines.map(\.spoken).joined(separator: "\n"),
                     source: reference, url: nil, entryID: nil)
     }
 }
 
-public struct ConsentTurn: Identifiable, Sendable {
-    public let id = UUID()
+public struct ConsentTurn: Codable, Identifiable, Sendable {
+    public let id: UUID
     public let question: String
     public let reply: ConsentReply
     public init(question: String, reply: ConsentReply) {
+        id = UUID()
         self.question = question
         self.reply = reply
     }
@@ -129,17 +138,4 @@ struct ConsentQuery {
         text.replacingOccurrences(of: "<", with: "＜").replacingOccurrences(of: ">", with: "＞")
             .replacingOccurrences(of: "\0", with: "")
     }
-}
-
-/// Only the retrieved candidates can be spoken. Even a confident but invalid model output
-/// cannot invent an amount, a legal finding, or a source.
-struct ConsentSearch {
-    let candidates: [ConsentReply]
-    let certainMatch: ConsentReply?
-    let missing: ConsentReply
-}
-
-enum ConsentPlan {
-    case direct(ConsentReply)
-    case search(ConsentSearch)
 }

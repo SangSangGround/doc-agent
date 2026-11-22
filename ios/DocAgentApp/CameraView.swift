@@ -342,7 +342,7 @@ private final class PreviewSurface: UIView {
         outer.lineWidth = 5
         outer.strokeColor = UIColor.black.withAlphaComponent(0.6).cgColor
         inner.lineWidth = 2.5
-        inner.strokeColor = UIColor(red: 0.86, green: 0.81, blue: 1, alpha: 1).cgColor
+        inner.strokeColor = UIColor(red: 1, green: 0.81, blue: 0.24, alpha: 1).cgColor
     }
     required init?(coder: NSCoder) { nil }
     @objc func tapped(_ tap: UITapGestureRecognizer) {
@@ -354,11 +354,20 @@ private final class PreviewSurface: UIView {
             connection.videoRotationAngle = 90
         }
         let path = UIBezierPath()
-        for (index, p) in corners.enumerated() {
-            let location = preview.layerPointConverted(fromCaptureDevicePoint: CGPoint(x: 1 - p.y, y: 1 - p.x))
-            if index == 0 { path.move(to: location) } else { path.addLine(to: location) }
+        if corners.count == 4 {
+            let points = corners.map { preview.layerPointConverted(fromCaptureDevicePoint: CGPoint(x: 1 - $0.y, y: 1 - $0.x)) }
+            for (index, point) in points.enumerated() {
+                for adjacent in [points[(index + 3) % 4], points[(index + 1) % 4]] {
+                    let dx = adjacent.x - point.x
+                    let dy = adjacent.y - point.y
+                    let length = hypot(dx, dy)
+                    guard length > 0 else { continue }
+                    let scale = min(0.22, 32 / length)
+                    path.move(to: point)
+                    path.addLine(to: CGPoint(x: point.x + scale * dx, y: point.y + scale * dy))
+                }
+            }
         }
-        if corners.count == 4 { path.close() }
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         outer.path = path.cgPath
@@ -403,6 +412,11 @@ struct CameraSheet: View {
     @State private var audioUnavailable = false
     @State private var announcedReady = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.scenePhase) private var scenePhase
+
+    private static let fitColors = [DocumentStyle.gold, DocumentStyle.gold, DocumentStyle.gold,
+                                    DocumentStyle.orange, DocumentStyle.orange, DocumentStyle.orange,
+                                    DocumentStyle.accent, DocumentStyle.accent]
 
     private var instruction: String {
         if let error = camera.errorMessage { return error }
@@ -434,9 +448,12 @@ struct CameraSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Button { model.cameraPresented = false } label: {
+                Button {
+                    model.stopSpeech()
+                    model.cameraPresented = false
+                } label: {
                     Image(systemName: "xmark").font(.headline).frame(width: 46, height: 46)
-                        .background(DocumentStyle.canvas, in: Circle())
+                        .background(.white.opacity(0.15), in: Circle())
                 }.accessibilityLabel("촬영 닫기")
                 Spacer()
                 Text("문서 촬영").font(.headline).accessibilityAddTraits(.isHeader)
@@ -444,21 +461,33 @@ struct CameraSheet: View {
                 Color.clear.frame(width: 46, height: 1).accessibilityHidden(true)
             }
             .padding(.horizontal, 16).padding(.vertical, 5)
-            .background(DocumentStyle.card.ignoresSafeArea(edges: .top))
+            .foregroundStyle(.white)
+            .background(DocumentStyle.darkInk.ignoresSafeArea(edges: .top))
             GeometryReader { space in
                 ScrollView {
                     VStack(spacing: 12) {
                         CameraPreview(camera: camera)
                             .frame(maxWidth: .infinity).frame(height: min(435, max(160, space.size.height * (typeSize.isAccessibilitySize ? 0.35 : 0.62))))
-                            .background(Color(red: 0.12, green: 0.11, blue: 0.16))
-                            .clipShape(RoundedRectangle(cornerRadius: 22)).accessibilityHidden(true)
+                            .background(DocumentStyle.darkInk)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .overlay { RoundedRectangle(cornerRadius: 20).strokeBorder(DocumentStyle.border).allowsHitTesting(false) }
+                            .overlay(alignment: .bottomLeading) {
+                                if !typeSize.isAccessibilitySize {
+                                    Text(status).font(.caption.bold())
+                                        .foregroundStyle(camera.step == .clipped ? .white : DocumentStyle.darkInk)
+                                        .padding(.horizontal, 12).padding(.vertical, 7)
+                                        .background(camera.step == .clipped ? DocumentStyle.color(0xA62C20) : DocumentStyle.gold, in: Capsule()).padding(10)
+                                        .allowsHitTesting(false)
+                                }
+                            }
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 10) {
                             HStack(alignment: .center) {
                                 Text(status).font(.title3.bold()).accessibilityAddTraits(.isHeader)
                                 Spacer(minLength: 4)
                                 Button { model.speak(instruction, reading: true) } label: {
                                     Image(systemName: "speaker.wave.2.fill").frame(width: 44, height: 44)
-                                        .background(DocumentStyle.lavender, in: Circle())
+                                        .background(DocumentStyle.accentFill, in: RoundedRectangle(cornerRadius: 12))
                                 }.accessibilityLabel("현재 촬영 안내 다시 듣기")
                             }
                             Text(instruction).font(.body).fixedSize(horizontal: false, vertical: true)
@@ -466,7 +495,7 @@ struct CameraSheet: View {
                                 let level = camera.step.needsFraming ? min(7, camera.fitLevel ?? 0) : 8
                                 HStack(spacing: 5) {
                                     ForEach(0..<8, id: \.self) { index in
-                                        Capsule().fill(index < level ? DocumentStyle.accent : DocumentStyle.border).frame(height: 6)
+                                        Capsule().fill(index < level ? Self.fitColors[index] : DocumentStyle.border).frame(height: 6)
                                     }
                                 }.accessibilityHidden(true)
                             }
@@ -496,7 +525,8 @@ struct CameraSheet: View {
             } catch { /* SwiftUI cancels the sound clock when the camera closes. */ }
         }
         .onAppear {
-            camera.onPhoto = { model.capture($0) }
+            guard scenePhase == .active, model.cameraPresented else { return }
+            camera.onPhoto = { if model.cameraPresented { model.capture($0) } }
             camera.onBeep = present
             camera.maySpeak = { model.automaticSpeech && !model.guidanceSpeaking }
             camera.onDirection = { model.speak($0) }
@@ -504,15 +534,10 @@ struct CameraSheet: View {
             camera.start()
             model.speak("충전 단자를 몸 쪽으로 두세요. 구도가 좋아질수록 삐 소리가 빨라져요.")
         }
-        .onDisappear {
-            camera.onBeep = nil
-            camera.onDirection = nil
-            camera.maySpeak = nil
-            camera.onPhoto = nil
-            camera.stop()
-            sound.stop()
-            if !model.busy { model.stopSpeech() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { stopCamera() }
         }
+        .onDisappear { stopCamera() }
         .onChange(of: camera.errorMessage) { _, error in if let error { model.speak(error) } }
         .onChange(of: camera.step) { previous, step in
             if step.needsFraming || (step == .focusing && previous == .framed) { announcedReady = false }
@@ -521,6 +546,17 @@ struct CameraSheet: View {
                 model.speak("초점을 다시 맞춰 주세요.")
             }
         }
+    }
+
+    private func stopCamera() {
+        guard camera.onPhoto != nil else { return }
+        camera.onBeep = nil
+        camera.onDirection = nil
+        camera.maySpeak = nil
+        camera.onPhoto = nil
+        camera.stop()
+        sound.stop()
+        if !model.busy { model.stopSpeech() }
     }
 
     @ViewBuilder private var captureButtons: some View {

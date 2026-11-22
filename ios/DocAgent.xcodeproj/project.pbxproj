@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA09B2BF978BF4820A0677C1 /* WritingCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */; };
+		0E5B32A2DA91A7F327707A14 /* WritingGuideSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49435F704417D689415A3 /* WritingGuideSheet.swift */; };
+		7A014C3EFDBE3A4E6FE302B5 /* QuestionAudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */; };
 		D8822C57E6AD3E1D60BFFF77 /* QuestionMicrophone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */; };
 		FB98BF3E0362BAB132CD1A6C /* ConsentQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */; };
 		0118D2173817FD044E7FD8BA /* DocumentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A23E1266F00AE8BDB938608D /* DocumentStyle.swift */; };
@@ -20,6 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingCameraController.swift; sourceTree = "<group>"; };
+		B6A49435F704417D689415A3 /* WritingGuideSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WritingGuideSheet.swift; sourceTree = "<group>"; };
+		7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionAudioCapture.swift; sourceTree = "<group>"; };
 		34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionMicrophone.swift; sourceTree = "<group>"; };
 		117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentQuestionView.swift; sourceTree = "<group>"; };
 		A23E1266F00AE8BDB938608D /* DocumentStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStyle.swift; sourceTree = "<group>"; };
@@ -49,6 +55,9 @@
 			isa = PBXGroup;
 			children = (
 				962CE17194DD308939C0D4EE /* CameraView.swift */,
+				22A970B4E424DE1030E4D4EB /* WritingCameraController.swift */,
+				B6A49435F704417D689415A3 /* WritingGuideSheet.swift */,
+				7CD6E2D3CB18C8A0A12723B0 /* QuestionAudioCapture.swift */,
 				34FF682211BB58BB90F26F51 /* QuestionMicrophone.swift */,
 				117A0614DD1407581B1FAC9E /* ConsentQuestionView.swift */,
 				1145627DA919AEE5E8D95FB7 /* CaptureSound.swift */,
@@ -155,6 +164,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1382218060DB0EB82972987A /* CameraView.swift in Sources */,
+				EA09B2BF978BF4820A0677C1 /* WritingCameraController.swift in Sources */,
+				0E5B32A2DA91A7F327707A14 /* WritingGuideSheet.swift in Sources */,
+				7A014C3EFDBE3A4E6FE302B5 /* QuestionAudioCapture.swift in Sources */,
 				D8822C57E6AD3E1D60BFFF77 /* QuestionMicrophone.swift in Sources */,
 				FB98BF3E0362BAB132CD1A6C /* ConsentQuestionView.swift in Sources */,
 				8710B0F1F4F6263B87E2DA7B /* CaptureSound.swift in Sources */,

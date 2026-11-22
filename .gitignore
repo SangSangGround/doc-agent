@@ -57,11 +57,13 @@ sessions/
 *.onnx
 *.pth
 /ios/DocAgentCore/Sources/DocAgentCore/ReviewModel/*.gguf
+/ios/DocAgentCore/Sources/QuestionSpeech/SpeechModel/*.bin
 
 # 비밀 정보 (API 키 등) — 절대 커밋하지 않는다. 형식은 .env.example 참고
 .env
 .env.*
 !.env.example
+!.env.cloud.example
 
 # 탐지 결과 이미지
 outputs/

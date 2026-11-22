@@ -79,14 +79,14 @@ final class DocumentLanguageModel {
     }
 
     /// Returns false when the actual tokenized prompt exceeds the local context.
-    func evaluate(_ prompt: String) throws -> Bool {
+    func evaluate(_ prompt: String, reserving outputTokens: Int = 0) throws -> Bool {
         try Task.checkCancellation()
         let vocab = llama_model_get_vocab(model)
         var tokens = [llama_token](repeating: 0, count: Int(llama_n_ctx(context)))
         let count = tokens.withUnsafeMutableBufferPointer { buffer in
             llama_tokenize(vocab, prompt, Int32(prompt.utf8.count), buffer.baseAddress, Int32(buffer.count), false, true)
         }
-        guard count > 0, count < tokens.count else { return false }
+        guard count > 0, Int(count) + outputTokens < tokens.count else { return false }
         guard let batch = llama_batch_ext_init(context) else { throw VisualReviewError.inference }
         defer { llama_batch_ext_free(batch) }
         llama_memory_clear(llama_get_memory(context), true)
@@ -105,5 +105,37 @@ final class DocumentLanguageModel {
             guard status == 0 else { throw VisualReviewError.inference }
         }
         return true
+    }
+
+    /// Greedy, bounded, single-line completion. Token pieces can split a Korean UTF-8 character.
+    func complete(_ prompt: String, limit: Int) throws -> String? {
+        guard try evaluate(prompt, reserving: limit) else { return nil }
+        guard let sampler = llama_sampler_init_greedy() else { throw VisualReviewError.inference }
+        defer { llama_sampler_free(sampler) }
+        guard let batch = llama_batch_ext_init(context) else { throw VisualReviewError.inference }
+        defer { llama_batch_ext_free(batch) }
+        let vocab = llama_model_get_vocab(model)
+        var bytes: [UInt8] = []
+        var position = llama_memory_seq_pos_max(llama_get_memory(context), 0) + 1
+        for _ in 0..<limit {
+            try Task.checkCancellation()
+            let token = llama_sampler_sample(sampler, context, -1)
+            if llama_vocab_is_eog(vocab, token) { break }
+            var piece = [CChar](repeating: 0, count: 256)
+            let count = llama_token_to_piece(vocab, token, &piece, Int32(piece.count), 0, false)
+            guard count >= 0 else { return nil }
+            bytes += piece.prefix(Int(count)).map { UInt8(bitPattern: $0) }
+            if bytes.last == 10, bytes.contains(where: { $0 > 32 }) { break }
+            llama_batch_ext_clear(batch)
+            let index = llama_batch_ext_add_token(batch, 0, token)
+            guard index >= 0, llama_batch_ext_set_pos(batch, index, &position),
+                  llama_batch_ext_set_output_logits(batch, index, true),
+                  llama_process(context, LLAMA_PROCESS_TYPE_DECODE, batch) == 0 else {
+                try Task.checkCancellation()
+                throw VisualReviewError.inference
+            }
+            position += 1
+        }
+        return String(bytes: bytes, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
