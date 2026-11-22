@@ -99,7 +99,9 @@ def test_writing_gate_cache_and_image_binding_over_https(relay, monkeypatch):
     assert send("/v1/fields", b"", "image/jpeg")[0] == 415
     assert send("/v1/review", json_bytes(body))[0] == 400
     assert not calls
-    first = send("/v1/fields", json_bytes(body))
+    # Match the iOS /fields deadline. A cold Mac also compiles the Vision text helper on this path.
+    analysis_timeout = 160
+    first = send("/v1/fields", json_bytes(body), timeout=analysis_timeout)
     assert first[0] == 200
     assert first[1]["imageSHA256"] == body["imageSHA256"]
     assert first[1]["coordinateSpace"] == "upright-top-left-normalized"
@@ -112,7 +114,7 @@ def test_writing_gate_cache_and_image_binding_over_https(relay, monkeypatch):
     assert send("/v1/fields", json_bytes(body)) == first
     assert send("/v1/fields", json_bytes({**body, "allowImageProcessing": False}))[0] == 400
     assert len(calls) == 1
-    second = send("/v1/fields", json_bytes(request(page(True))))
+    second = send("/v1/fields", json_bytes(request(page(True))), timeout=analysis_timeout)
     assert second[0] == 200 and first[1]["imageSHA256"] != second[1]["imageSHA256"]
     # The same physical square still exists when ink is added. The phone reads the current mark separately.
     assert second[1]["fields"][0]["bounds"] == pytest.approx(first[1]["fields"][0]["bounds"])

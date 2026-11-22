@@ -6,10 +6,12 @@ import hmac
 import os
 import re
 import secrets
+import socket
 import ssl
 import subprocess
 import tempfile
 import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -75,8 +77,29 @@ class RelayServer(ThreadingHTTPServer):
         try:
             with self.tls.wrap_socket(request, server_side=True) as connection:
                 super().finish_request(connection, client_address)
+                self._close_after_response(connection)
         except (OSError, EOFError):
             pass
+
+    @staticmethod
+    def _close_after_response(connection: ssl.SSLSocket) -> None:
+        # The handler has flushed the HTTP reply. Send TLS close_notify without waiting for the peer.
+        connection.setblocking(False)
+        try:
+            connection.unwrap()
+            return
+        except ssl.SSLError:
+            pass  # A client can still be uploading the body of an already rejected request.
+
+        # Closing TCP with unread bytes can reset it before the client sees the reply.
+        # Half-close first, then discard in-flight bytes without delaying the HTTP response.
+        with socket.socket(fileno=connection.detach()) as transport:
+            transport.shutdown(socket.SHUT_WR)
+            deadline = time.monotonic() + 1.0
+            while (remaining := deadline - time.monotonic()) > 0:
+                transport.settimeout(remaining)
+                if not transport.recv(64 * 1024):
+                    break
 
     def handle_error(self, request, client_address):
         # Never print arbitrary exception data from a request.

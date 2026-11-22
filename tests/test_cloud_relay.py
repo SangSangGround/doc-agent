@@ -23,9 +23,9 @@ def relay(tmp_path, offline_relay_ports):
     thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.02}, daemon=True)
     thread.start()
 
-    def send(path, body=None, content_type="application/json", token="iphone-test-pairing", extra=None):
+    def send(path, body=None, content_type="application/json", token="iphone-test-pairing", extra=None, *, timeout=5):
         headers = {"Authorization": f"Bearer {token}", "Content-Type": content_type, **(extra or {})}
-        client = http.client.HTTPSConnection("127.0.0.1", server.server_port, timeout=5,
+        client = http.client.HTTPSConnection("127.0.0.1", server.server_port, timeout=timeout,
                                             context=ssl.create_default_context(cafile=str(cert)))
         try:
             client.request("GET" if body is None else "POST", path, body=body, headers=headers)
