@@ -1,0 +1,752 @@
+{
+  "title": "외국인 및 외국국적동포 세대별 주민등록표 [ ]기록 [ ]정정·변경 [ ]삭제 신청서",
+  "description": "외국인 또는 외국국적동포의 세대별 주민등록표 기록, 기재사항의 정정·변경, 또는 등록표 상의 삭제를 신청하는 서식입니다.",
+  "application_types": [
+    {
+      "id": "type_001",
+      "name": "기록 신청",
+      "aliases": [
+        "기록"
+      ],
+      "description": "외국인등록자 또는 국내거소신고 외국국적동포를 세대별 주민등록표에 기록 신청"
+    },
+    {
+      "id": "type_002",
+      "name": "정정·변경 신청",
+      "aliases": [
+        "정정·변경",
+        "정정",
+        "변경"
+      ],
+      "description": "주민등록표에 기록된 성명, 등록번호, 가족관계 등 기재사항의 정정이나 변경 신청"
+    },
+    {
+      "id": "type_003",
+      "name": "삭제 신청",
+      "aliases": [
+        "삭제"
+      ],
+      "description": "세대별 주민등록표에 기록된 대상자의 삭제 신청"
+    }
+  ],
+  "sections": [
+    {
+      "id": "section_title",
+      "title": "신청 구분(상단)",
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003"
+      ]
+    },
+    {
+      "id": "section_official",
+      "title": "접수 및 처리 기관 기재란",
+      "field_ids": [
+        "F004",
+        "F005",
+        "F006"
+      ]
+    },
+    {
+      "id": "section_record",
+      "title": "기록 신청",
+      "field_ids": [
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014",
+        "F015",
+        "F016",
+        "F017",
+        "F018",
+        "F019",
+        "F020"
+      ]
+    },
+    {
+      "id": "section_modify",
+      "title": "정정·변경 신청",
+      "field_ids": [
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029"
+      ]
+    },
+    {
+      "id": "section_delete",
+      "title": "삭제 신청",
+      "field_ids": [
+        "F030",
+        "F031"
+      ]
+    },
+    {
+      "id": "section_submit_declaration",
+      "title": "신청 취지 및 신청일자",
+      "field_ids": [
+        "F032",
+        "F033",
+        "F034",
+        "F035"
+      ]
+    },
+    {
+      "id": "section_applicant",
+      "title": "신청인",
+      "field_ids": [
+        "F036",
+        "F037",
+        "F038",
+        "F039",
+        "F040"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F001",
+      "name": "신청 구분_기록",
+      "kind": "check_box",
+      "section_id": "section_title",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "상단 제목 중 기록 신청 선택",
+      "source_text": "[ ]기록",
+      "review_required": false
+    },
+    {
+      "id": "F002",
+      "name": "신청 구분_정정·변경",
+      "kind": "check_box",
+      "section_id": "section_title",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "상단 제목 중 정정·변경 신청 선택",
+      "source_text": "[ ]정정·변경",
+      "review_required": false
+    },
+    {
+      "id": "F003",
+      "name": "신청 구분_삭제",
+      "kind": "check_box",
+      "section_id": "section_title",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_003"
+      ],
+      "explanation": "상단 제목 중 삭제 신청 선택",
+      "source_text": "[ ]삭제 신청서",
+      "review_required": false
+    },
+    {
+      "id": "F004",
+      "name": "접수 번호",
+      "kind": "input_field",
+      "section_id": "section_official",
+      "role": "official",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "어두운 칸으로 담당 공무원이 기재하는 접수 번호란",
+      "source_text": "접수 번호",
+      "review_required": false
+    },
+    {
+      "id": "F005",
+      "name": "신청일(접수처)",
+      "kind": "input_field",
+      "section_id": "section_official",
+      "role": "official",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "어두운 칸으로 담당 공무원이 기재하는 신청일란",
+      "source_text": "신청일 년 월 일",
+      "review_required": false
+    },
+    {
+      "id": "F006",
+      "name": "관계 기관 통보",
+      "kind": "signature_field",
+      "section_id": "section_official",
+      "role": "official",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "어두운 칸으로 담당 공무원 확인 및 통보 확인 날인란",
+      "source_text": "관계 기관 통보 (인)",
+      "review_required": false
+    },
+    {
+      "id": "F007",
+      "name": "기록 대상자 구분_등록외국인",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "출입국관리법 제31조에 따라 등록한 외국인 선택",
+      "source_text": "[ ] 「출입국관리법」 제31조에 따라 등록한 외국인",
+      "review_required": false
+    },
+    {
+      "id": "F008",
+      "name": "기록 대상자 구분_국내거소신고 외국국적동포",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "재외동포법 제6조에 따라 국내거소신고를 한 외국국적동포 선택",
+      "source_text": "[ ] 「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포",
+      "review_required": false
+    },
+    {
+      "id": "F009",
+      "name": "기록 대상자 로마자 성명",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "기록 대상자의 로마자 성명 기재",
+      "source_text": "로마자 성명",
+      "review_required": false
+    },
+    {
+      "id": "F010",
+      "name": "기록 대상자 외국인등록번호 또는 국내거소신고번호",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "외국인등록번호 또는 국내거소신고번호 기재",
+      "source_text": "외국인등록번호 또는 국내거소신고번호",
+      "review_required": false
+    },
+    {
+      "id": "F011",
+      "name": "기록 대상자 한글 성명",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "기록 대상자의 한글 성명 기재",
+      "source_text": "한글 성명",
+      "review_required": false
+    },
+    {
+      "id": "F012",
+      "name": "세대주 또는 세대원과의 관계_세대주의 배우자",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "세대주와의 관계가 배우자인 경우 선택",
+      "source_text": "[ ] 세대주의 배우자",
+      "review_required": false
+    },
+    {
+      "id": "F013",
+      "name": "세대주 또는 세대원과의 관계_세대주의 직계혈족",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "세대주와의 관계가 직계혈족인 경우 선택",
+      "source_text": "[ ] 세대주의 직계혈족",
+      "review_required": false
+    },
+    {
+      "id": "F014",
+      "name": "세대주 또는 세대원과의 관계_세대원의 배우자",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "세대원(민법 제779조에 따른 가족 범위 한정)의 배우자인 경우 선택",
+      "source_text": "[ ] 세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자",
+      "review_required": false
+    },
+    {
+      "id": "F015",
+      "name": "세대주 또는 세대원과의 관계_세대원의 직계혈족",
+      "kind": "check_box",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "세대원의 직계혈족인 경우 선택",
+      "source_text": "[ ] 세대원의 직계혈족",
+      "review_required": false
+    },
+    {
+      "id": "F016",
+      "name": "세대주와의 관계",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition": "기록 대상자(외국인 또는 외국국적동포)가 세대주의 배우자 또는 직계혈족이 아닌 경우에만 작성",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "세대주의 배우자 또는 직계혈족이 아닌 경우 세대주와의 구체적 관계를 작성",
+      "source_text": "세대주와의 관계 ※ 기록 대상자(외국인 또는 외국국적동포)가 세대주의 배우자 또는 직계혈족이 아닌 경우에만 작성합니다.",
+      "review_required": false
+    },
+    {
+      "id": "F017",
+      "name": "속할 세대_세대주 성명",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "속할 세대의 세대주 성명 기재",
+      "source_text": "세대주 성명",
+      "review_required": false
+    },
+    {
+      "id": "F018",
+      "name": "속할 세대_세대주 서명 또는 인",
+      "kind": "signature_field",
+      "section_id": "section_record",
+      "role": "third_party",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "속할 세대의 세대주 서명 또는 날인",
+      "source_text": "(서명 또는 인)",
+      "review_required": false
+    },
+    {
+      "id": "F019",
+      "name": "속할 세대_세대주 주민등록번호",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "속할 세대의 세대주 주민등록번호 기재",
+      "source_text": "세대주 주민등록번호",
+      "review_required": false
+    },
+    {
+      "id": "F020",
+      "name": "속할 세대_주소",
+      "kind": "input_field",
+      "section_id": "section_record",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "속할 세대의 주소 기재 (시·도, 시·군·구 포함)",
+      "source_text": "주소 (시·도) (시·군·구)",
+      "review_required": false
+    },
+    {
+      "id": "F021",
+      "name": "정정·변경 대상자 로마자 성명",
+      "kind": "input_field",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "정정 또는 변경 대상자의 로마자 성명 기재",
+      "source_text": "로마자 성명",
+      "review_required": false
+    },
+    {
+      "id": "F022",
+      "name": "정정·변경 대상자 외국인등록번호 또는 국내거소신고번호",
+      "kind": "input_field",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "정정 또는 변경 대상자의 외국인등록번호 또는 국내거소신고번호 기재",
+      "source_text": "외국인등록번호 또는 국내거소신고번호",
+      "review_required": false
+    },
+    {
+      "id": "F023",
+      "name": "정정·변경 대상자 한글 성명",
+      "kind": "input_field",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "정정 또는 변경 대상자의 한글 성명 기재",
+      "source_text": "한글 성명",
+      "review_required": false
+    },
+    {
+      "id": "F024",
+      "name": "정정·변경 사항_성명",
+      "kind": "check_box",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "성명을 정정·변경하려는 경우 선택",
+      "source_text": "[ ] 성명",
+      "review_required": false
+    },
+    {
+      "id": "F025",
+      "name": "정정·변경 사항_외국인등록번호 또는 국내거소신고번호",
+      "kind": "check_box",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "외국인등록번호 또는 국내거소신고번호를 정정·변경하려는 경우 선택",
+      "source_text": "[ ] 외국인등록번호 또는 국내거소신고번호",
+      "review_required": false
+    },
+    {
+      "id": "F026",
+      "name": "정정·변경 사항_가족관계",
+      "kind": "check_box",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "세대주 또는 세대원과 대상자 사이의 가족관계를 정정·변경하려는 경우 선택",
+      "source_text": "[ ] 세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계",
+      "review_required": false
+    },
+    {
+      "id": "F027",
+      "name": "정정·변경 사항_그 밖의 변경사항",
+      "kind": "check_box",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "그 밖의 사항을 변경하려는 경우 선택",
+      "source_text": "[ ] 그 밖의 변경사항",
+      "review_required": false
+    },
+    {
+      "id": "F028",
+      "name": "정정·변경 전",
+      "kind": "input_field",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "정정 또는 변경 전 내용을 기재",
+      "source_text": "정정·변경 전",
+      "review_required": false
+    },
+    {
+      "id": "F029",
+      "name": "정정·변경 후",
+      "kind": "input_field",
+      "section_id": "section_modify",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "정정 또는 변경 후 내용을 기재",
+      "source_text": "정정·변경 후",
+      "review_required": false
+    },
+    {
+      "id": "F030",
+      "name": "삭제 대상자 성명",
+      "kind": "input_field",
+      "section_id": "section_delete",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_003"
+      ],
+      "explanation": "삭제 대상자의 성명(로마자 또는 한글)을 기재",
+      "source_text": "대상자 성명 ※ 로마자 또는 한글 성명을 작성합니다.",
+      "review_required": false
+    },
+    {
+      "id": "F031",
+      "name": "삭제 대상자 외국인등록번호 또는 국내거소신고번호",
+      "kind": "input_field",
+      "section_id": "section_delete",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_003"
+      ],
+      "explanation": "삭제 대상자의 외국인등록번호 또는 국내거소신고번호 기재",
+      "source_text": "외국인등록번호 또는 국내거소신고번호",
+      "review_required": false
+    },
+    {
+      "id": "F032",
+      "name": "신청 취지_기록",
+      "kind": "check_box",
+      "section_id": "section_submit_declaration",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_001"
+      ],
+      "explanation": "하단 신청 취지 문구의 기록 선택",
+      "source_text": "세대별 주민등록표의 [ ]기록",
+      "review_required": false
+    },
+    {
+      "id": "F033",
+      "name": "신청 취지_정정·변경",
+      "kind": "check_box",
+      "section_id": "section_submit_declaration",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_002"
+      ],
+      "explanation": "하단 신청 취지 문구의 정정·변경 선택",
+      "source_text": "[ ]정정·변경",
+      "review_required": false
+    },
+    {
+      "id": "F034",
+      "name": "신청 취지_삭제",
+      "kind": "check_box",
+      "section_id": "section_submit_declaration",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [
+        "type_003"
+      ],
+      "explanation": "하단 신청 취지 문구의 삭제를 신청합니다 선택",
+      "source_text": "[ ]삭제를 신청합니다.",
+      "review_required": false
+    },
+    {
+      "id": "F035",
+      "name": "신청 일자",
+      "kind": "input_field",
+      "section_id": "section_submit_declaration",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청 연월일 기재란",
+      "source_text": "년 월 일",
+      "review_required": false
+    },
+    {
+      "id": "F036",
+      "name": "신청인 성명",
+      "kind": "input_field",
+      "section_id": "section_applicant",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청인의 성명 기재란",
+      "source_text": "성명",
+      "review_required": false
+    },
+    {
+      "id": "F037",
+      "name": "신청인 서명 또는 인",
+      "kind": "signature_field",
+      "section_id": "section_applicant",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청인 서명 또는 날인란",
+      "source_text": "(서명 또는 인)",
+      "review_required": false
+    },
+    {
+      "id": "F038",
+      "name": "신청인 연락처",
+      "kind": "input_field",
+      "section_id": "section_applicant",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청인의 전화번호 등 연락처 기재란",
+      "source_text": "연락처",
+      "review_required": false
+    },
+    {
+      "id": "F039",
+      "name": "기록·정정·변경 대상자와의 관계",
+      "kind": "input_field",
+      "section_id": "section_applicant",
+      "role": "applicant",
+      "requirement": "required",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청인과 대상자와의 관계 기재란",
+      "source_text": "기록·정정·변경 대상자와의 관계",
+      "review_required": false
+    },
+    {
+      "id": "F040",
+      "name": "제출처",
+      "kind": "other",
+      "section_id": "section_applicant",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition": "",
+      "applicable_type_ids": [],
+      "explanation": "신청서를 제출하는 관할 시장·군수 또는 구청장 명칭 지정란",
+      "source_text": "시장·군수 또는 구청장 귀하",
+      "review_required": false
+    }
+  ],
+  "choice_groups": [
+    {
+      "id": "cg_title_types",
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003"
+      ],
+      "exclusive": true
+    },
+    {
+      "id": "cg_record_person_type",
+      "field_ids": [
+        "F007",
+        "F008"
+      ],
+      "exclusive": true
+    },
+    {
+      "id": "cg_record_relationship_type",
+      "field_ids": [
+        "F012",
+        "F013",
+        "F014",
+        "F015"
+      ],
+      "exclusive": true
+    },
+    {
+      "id": "cg_modify_items",
+      "field_ids": [
+        "F024",
+        "F025",
+        "F026",
+        "F027"
+      ],
+      "exclusive": false
+    },
+    {
+      "id": "cg_submit_types",
+      "field_ids": [
+        "F032",
+        "F033",
+        "F034"
+      ],
+      "exclusive": true
+    }
+  ],
+  "schema_version": "0.1.0",
+  "document_id": "document1",
+  "source_image": "document1.jpg",
+  "generation_note": "AI extracted; requires field/role/condition review. No navigation approved."
+}

@@ -1,0 +1,1790 @@
+{
+  "source": "gemini",
+  "model": "gemini-4-hydrogen",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document2.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 27,
+  "class_counts": {
+    "check_box": 12,
+    "input_field": 13,
+    "signature_field": 2
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "신규",
+      "box_2d": [
+        107,
+        273,
+        125,
+        314
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        431.424,
+        949.536,
+        504.0
+      ],
+      "center_px": {
+        "x": 887.544,
+        "y": 467.712
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        825.552,
+        431.424,
+        949.536,
+        504.0
+      ],
+      "original_center_px": {
+        "x": 887.544,
+        "y": 467.712
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        830.812,
+        431.156,
+        956.812,
+        498.094
+      ],
+      "refined_center_px": {
+        "x": 893.812,
+        "y": 464.625
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 6.987,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "변경",
+      "box_2d": [
+        105,
+        383,
+        123,
+        424
+      ],
+      "bbox_xyxy_px": [
+        1158.192,
+        423.36,
+        1282.176,
+        495.936
+      ],
+      "center_px": {
+        "x": 1220.184,
+        "y": 459.648
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1158.192,
+        423.36,
+        1282.176,
+        495.936
+      ],
+      "original_center_px": {
+        "x": 1220.184,
+        "y": 459.648
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1200.938,
+        425.25,
+        1326.938,
+        494.156
+      ],
+      "refined_center_px": {
+        "x": 1263.938,
+        "y": 459.703
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 43.754,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "해지",
+      "box_2d": [
+        102,
+        520,
+        121,
+        563
+      ],
+      "bbox_xyxy_px": [
+        1572.48,
+        411.264,
+        1702.512,
+        487.872
+      ],
+      "center_px": {
+        "x": 1637.496,
+        "y": 449.568
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1572.48,
+        411.264,
+        1702.512,
+        487.872
+      ],
+      "original_center_px": {
+        "x": 1637.496,
+        "y": 449.568
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1571.062,
+        417.375,
+        1695.094,
+        488.25
+      ],
+      "refined_center_px": {
+        "x": 1633.078,
+        "y": 452.812
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 5.481,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "접수 번호",
+      "box_2d": [
+        141,
+        195,
+        158,
+        368
+      ],
+      "bbox_xyxy_px": [
+        589.68,
+        568.512,
+        1112.832,
+        637.056
+      ],
+      "center_px": {
+        "x": 851.256,
+        "y": 602.784
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        589.68,
+        568.512,
+        1112.832,
+        637.056
+      ],
+      "original_center_px": {
+        "x": 851.256,
+        "y": 602.784
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "border_evidence",
+        "candidate_count": 1,
+        "method": "line_supported_cell",
+        "geometry_sides": {
+          "top": 1.0,
+          "bottom": 1.0,
+          "right": 0.966
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "possible",
+          "brightness_delta": 104.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        589.68,
+        568.969,
+        1112.344,
+        630.0
+      ],
+      "refined_center_px": {
+        "x": 851.012,
+        "y": 599.484
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 3.309,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "official_possible",
+        "reason": "접수/기관 처리 용어 포함; 신청인 안내에서 제외 권고",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "low_official"
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "접수일",
+      "box_2d": [
+        138,
+        418,
+        155,
+        608
+      ],
+      "bbox_xyxy_px": [
+        1264.032,
+        556.416,
+        1838.592,
+        624.96
+      ],
+      "center_px": {
+        "x": 1551.312,
+        "y": 590.688
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1264.032,
+        556.416,
+        1838.592,
+        624.96
+      ],
+      "original_center_px": {
+        "x": 1551.312,
+        "y": 590.688
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "border_evidence",
+        "candidate_count": 1,
+        "method": "line_supported_cell",
+        "geometry_sides": {
+          "top": 0.984,
+          "bottom": 1.0,
+          "left": 0.7,
+          "right": 0.933
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "possible",
+          "brightness_delta": 106.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1240.312,
+        557.156,
+        1834.875,
+        618.188
+      ],
+      "refined_center_px": {
+        "x": 1537.594,
+        "y": 587.672
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 14.046,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "official_possible",
+        "reason": "접수/기관 처리 용어 포함; 신청인 안내에서 제외 권고",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "low_official"
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "신청인 성명",
+      "box_2d": [
+        160,
+        260,
+        185,
+        505
+      ],
+      "bbox_xyxy_px": [
+        786.24,
+        645.12,
+        1527.12,
+        745.92
+      ],
+      "center_px": {
+        "x": 1156.68,
+        "y": 695.52
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        786.24,
+        645.12,
+        1527.12,
+        745.92
+      ],
+      "original_center_px": {
+        "x": 1156.68,
+        "y": 695.52
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "border_evidence",
+        "candidate_count": 1,
+        "method": "line_supported_cell",
+        "geometry_sides": {
+          "top": 0.912,
+          "bottom": 0.958,
+          "left": 1.0
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        677.25,
+        643.781,
+        1527.12,
+        744.188
+      ],
+      "refined_center_px": {
+        "x": 1102.185,
+        "y": 693.984
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 54.517,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "box_2d": [
+        159,
+        505,
+        183,
+        607
+      ],
+      "bbox_xyxy_px": [
+        1527.12,
+        641.088,
+        1835.568,
+        737.856
+      ],
+      "center_px": {
+        "x": 1681.344,
+        "y": 689.472
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1527.12,
+        641.088,
+        1835.568,
+        737.856
+      ],
+      "original_center_px": {
+        "x": 1681.344,
+        "y": 689.472
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "signature_area_requires_review",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "signature_review",
+        "reason": "인쇄된 서명 문구와 실제 서명 공간 구분 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "신청인 주민등록번호",
+      "box_2d": [
+        154,
+        706,
+        181,
+        853
+      ],
+      "bbox_xyxy_px": [
+        2134.944,
+        620.928,
+        2579.472,
+        729.792
+      ],
+      "center_px": {
+        "x": 2357.208,
+        "y": 675.36
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2134.944,
+        620.928,
+        2579.472,
+        729.792
+      ],
+      "original_center_px": {
+        "x": 2357.208,
+        "y": 675.36
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "partial_line_evidence",
+        "candidate_count": 1,
+        "method": "open_table_row",
+        "geometry_sides": {
+          "top": 1.0,
+          "bottom": 1.0
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": {
+        "x": 2357.208,
+        "y": 669.375
+      },
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "label": "신청인 우편번호",
+      "box_2d": [
+        186,
+        318,
+        199,
+        412
+      ],
+      "bbox_xyxy_px": [
+        961.632,
+        749.952,
+        1245.888,
+        802.368
+      ],
+      "center_px": {
+        "x": 1103.76,
+        "y": 776.16
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        961.632,
+        749.952,
+        1245.888,
+        802.368
+      ],
+      "original_center_px": {
+        "x": 1103.76,
+        "y": 776.16
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "신청인 주소",
+      "box_2d": [
+        182,
+        420,
+        199,
+        853
+      ],
+      "bbox_xyxy_px": [
+        1270.08,
+        733.824,
+        2579.472,
+        802.368
+      ],
+      "center_px": {
+        "x": 1924.776,
+        "y": 768.096
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1270.08,
+        733.824,
+        2579.472,
+        802.368
+      ],
+      "original_center_px": {
+        "x": 1924.776,
+        "y": 768.096
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "신청인 휴대전화번호",
+      "box_2d": [
+        201,
+        323,
+        217,
+        853
+      ],
+      "bbox_xyxy_px": [
+        976.752,
+        810.432,
+        2579.472,
+        874.944
+      ],
+      "center_px": {
+        "x": 1778.112,
+        "y": 842.688
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        976.752,
+        810.432,
+        2579.472,
+        874.944
+      ],
+      "original_center_px": {
+        "x": 1778.112,
+        "y": 842.688
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "partial_line_evidence",
+        "candidate_count": 1,
+        "method": "underline_baseline",
+        "geometry_sides": {
+          "bottom": 0.543,
+          "left": 0.75
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": {
+        "x": 1719.908,
+        "y": 840.31
+      },
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 우편번호",
+      "box_2d": [
+        224,
+        318,
+        238,
+        413
+      ],
+      "bbox_xyxy_px": [
+        961.632,
+        903.168,
+        1248.912,
+        959.616
+      ],
+      "center_px": {
+        "x": 1105.272,
+        "y": 931.392
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        961.632,
+        903.168,
+        1248.912,
+        959.616
+      ],
+      "original_center_px": {
+        "x": 1105.272,
+        "y": 931.392
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "border_evidence",
+        "candidate_count": 1,
+        "method": "line_supported_cell",
+        "geometry_sides": {
+          "top": 0.977,
+          "left": 0.583,
+          "right": 0.708
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        919.406,
+        895.781,
+        1256.062,
+        959.616
+      ],
+      "refined_center_px": {
+        "x": 1087.734,
+        "y": 927.699
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 17.922,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 주소지",
+      "box_2d": [
+        236,
+        224,
+        267,
+        853
+      ],
+      "bbox_xyxy_px": [
+        677.376,
+        951.552,
+        2579.472,
+        1076.544
+      ],
+      "center_px": {
+        "x": 1628.424,
+        "y": 1014.048
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        677.376,
+        951.552,
+        2579.472,
+        1076.544
+      ],
+      "original_center_px": {
+        "x": 1628.424,
+        "y": 1014.048
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "label": "전입신고 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        271,
+        546,
+        285,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1092.672,
+        1723.68,
+        1149.12
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1120.896
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1651.104,
+        1092.672,
+        1723.68,
+        1149.12
+      ],
+      "original_center_px": {
+        "x": 1687.392,
+        "y": 1120.896
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1649.812,
+        1096.594,
+        1730.531,
+        1139.906
+      ],
+      "refined_center_px": {
+        "x": 1690.172,
+        "y": 1118.25
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 3.838,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "label": "주소 변경 또는 정정 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        289,
+        546,
+        302,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1165.248,
+        1723.68,
+        1217.664
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1191.456
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1651.104,
+        1165.248,
+        1723.68,
+        1217.664
+      ],
+      "original_center_px": {
+        "x": 1687.392,
+        "y": 1191.456
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1651.781,
+        1167.469,
+        1732.5,
+        1212.75
+      ],
+      "refined_center_px": {
+        "x": 1692.141,
+        "y": 1190.109
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 4.936,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "conditional",
+        "reason": "선택/관계/조건에 따라 작성 여부가 달라질 수 있음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "label": "세대주 변경 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        307,
+        546,
+        320,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1237.824,
+        1723.68,
+        1290.24
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1264.032
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1651.104,
+        1237.824,
+        1723.68,
+        1290.24
+      ],
+      "original_center_px": {
+        "x": 1687.392,
+        "y": 1264.032
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1651.781,
+        1238.344,
+        1734.469,
+        1285.594
+      ],
+      "refined_center_px": {
+        "x": 1693.125,
+        "y": 1261.969
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 6.093,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F017",
+      "class_name": "check_box",
+      "label": "주민등록증 발급ㆍ재발급 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        325,
+        547,
+        338,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1654.128,
+        1310.4,
+        1723.68,
+        1362.816
+      ],
+      "center_px": {
+        "x": 1688.904,
+        "y": 1336.608
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1654.128,
+        1310.4,
+        1723.68,
+        1362.816
+      ],
+      "original_center_px": {
+        "x": 1688.904,
+        "y": 1336.608
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1653.75,
+        1309.219,
+        1734.469,
+        1358.438
+      ],
+      "refined_center_px": {
+        "x": 1694.109,
+        "y": 1333.828
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 5.901,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F018",
+      "class_name": "check_box",
+      "label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        342,
+        547,
+        355,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1654.128,
+        1378.944,
+        1723.68,
+        1431.36
+      ],
+      "center_px": {
+        "x": 1688.904,
+        "y": 1405.152
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1654.128,
+        1378.944,
+        1723.68,
+        1431.36
+      ],
+      "original_center_px": {
+        "x": 1688.904,
+        "y": 1405.152
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1653.75,
+        1380.094,
+        1738.406,
+        1431.281
+      ],
+      "refined_center_px": {
+        "x": 1696.078,
+        "y": 1405.688
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 7.194,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F019",
+      "class_name": "check_box",
+      "label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 우편",
+      "box_2d": [
+        339,
+        761,
+        353,
+        785
+      ],
+      "bbox_xyxy_px": [
+        2301.264,
+        1366.848,
+        2373.84,
+        1423.296
+      ],
+      "center_px": {
+        "x": 2337.552,
+        "y": 1395.072
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2301.264,
+        1366.848,
+        2373.84,
+        1423.296
+      ],
+      "original_center_px": {
+        "x": 2337.552,
+        "y": 1395.072
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        2311.312,
+        1368.281,
+        2394.0,
+        1413.562
+      ],
+      "refined_center_px": {
+        "x": 2352.656,
+        "y": 1390.922
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 15.664,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F020",
+      "class_name": "check_box",
+      "label": "신규",
+      "box_2d": [
+        405,
+        195,
+        419,
+        223
+      ],
+      "bbox_xyxy_px": [
+        589.68,
+        1632.96,
+        674.352,
+        1689.408
+      ],
+      "center_px": {
+        "x": 632.016,
+        "y": 1661.184
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        589.68,
+        1632.96,
+        674.352,
+        1689.408
+      ],
+      "original_center_px": {
+        "x": 632.016,
+        "y": 1661.184
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        596.531,
+        1639.969,
+        677.25,
+        1685.25
+      ],
+      "refined_center_px": {
+        "x": 636.891,
+        "y": 1662.609
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 5.079,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F021",
+      "class_name": "check_box",
+      "label": "변경",
+      "box_2d": [
+        404,
+        275,
+        417,
+        303
+      ],
+      "bbox_xyxy_px": [
+        831.6,
+        1628.928,
+        916.272,
+        1681.344
+      ],
+      "center_px": {
+        "x": 873.936,
+        "y": 1655.136
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        831.6,
+        1628.928,
+        916.272,
+        1681.344
+      ],
+      "original_center_px": {
+        "x": 873.936,
+        "y": 1655.136
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        834.75,
+        1636.031,
+        917.438,
+        1681.312
+      ],
+      "refined_center_px": {
+        "x": 876.094,
+        "y": 1658.672
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 4.142,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F022",
+      "class_name": "check_box",
+      "label": "해지",
+      "box_2d": [
+        403,
+        354,
+        416,
+        383
+      ],
+      "bbox_xyxy_px": [
+        1070.496,
+        1624.896,
+        1158.192,
+        1677.312
+      ],
+      "center_px": {
+        "x": 1114.344,
+        "y": 1651.104
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1070.496,
+        1624.896,
+        1158.192,
+        1677.312
+      ],
+      "original_center_px": {
+        "x": 1114.344,
+        "y": 1651.104
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1072.969,
+        1634.062,
+        1155.656,
+        1679.344
+      ],
+      "refined_center_px": {
+        "x": 1114.312,
+        "y": 1656.703
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 5.599,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "label": "년",
+      "box_2d": [
+        414,
+        686,
+        428,
+        736
+      ],
+      "bbox_xyxy_px": [
+        2074.464,
+        1669.248,
+        2225.664,
+        1725.696
+      ],
+      "center_px": {
+        "x": 2150.064,
+        "y": 1697.472
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2074.464,
+        1669.248,
+        2225.664,
+        1725.696
+      ],
+      "original_center_px": {
+        "x": 2150.064,
+        "y": 1697.472
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        414,
+        756,
+        427,
+        788
+      ],
+      "bbox_xyxy_px": [
+        2286.144,
+        1669.248,
+        2382.912,
+        1721.664
+      ],
+      "center_px": {
+        "x": 2334.528,
+        "y": 1695.456
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2286.144,
+        1669.248,
+        2382.912,
+        1721.664
+      ],
+      "original_center_px": {
+        "x": 2334.528,
+        "y": 1695.456
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F025",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        413,
+        806,
+        426,
+        840
+      ],
+      "bbox_xyxy_px": [
+        2437.344,
+        1665.216,
+        2540.16,
+        1717.632
+      ],
+      "center_px": {
+        "x": 2488.752,
+        "y": 1691.424
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2437.344,
+        1665.216,
+        2540.16,
+        1717.632
+      ],
+      "original_center_px": {
+        "x": 2488.752,
+        "y": 1691.424
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F026",
+      "class_name": "input_field",
+      "label": "신청인",
+      "box_2d": [
+        654,
+        675,
+        669,
+        775
+      ],
+      "bbox_xyxy_px": [
+        2041.2,
+        2636.928,
+        2343.6,
+        2697.408
+      ],
+      "center_px": {
+        "x": 2192.4,
+        "y": 2667.168
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2041.2,
+        2636.928,
+        2343.6,
+        2697.408
+      ],
+      "original_center_px": {
+        "x": 2192.4,
+        "y": 2667.168
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "partial_line_evidence",
+        "candidate_count": 1,
+        "method": "underline_baseline",
+        "geometry_sides": {
+          "bottom": 0.97,
+          "left": 0.731
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 3.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": {
+        "x": 2181.769,
+        "y": 2669.026
+      },
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F027",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "box_2d": [
+        653,
+        775,
+        668,
+        872
+      ],
+      "bbox_xyxy_px": [
+        2343.6,
+        2632.896,
+        2636.928,
+        2693.376
+      ],
+      "center_px": {
+        "x": 2490.264,
+        "y": 2663.136
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2343.6,
+        2632.896,
+        2636.928,
+        2693.376
+      ],
+      "original_center_px": {
+        "x": 2490.264,
+        "y": 2663.136
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "signature_area_requires_review",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 3.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "signature_review",
+        "reason": "인쇄된 서명 문구와 실제 서명 공간 구분 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1573,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 509
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "output_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 1612
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1573,
+    "total_output_tokens": 1612,
+    "total_thought_tokens": 2173,
+    "total_tokens": 5358,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 34.147,
+  "refinement": {
+    "method": "local_geometry_v2",
+    "working_image_size": [
+      1536,
+      2048
+    ],
+    "preview_rescaled": false,
+    "api_calls": 0,
+    "navigation_verified": false,
+    "note": "candidate matches are NOT ground-truth or finger-navigation validation",
+    "counts": {
+      "matched_candidate": 16,
+      "needs_review": 5,
+      "unresolved": 6
+    },
+    "class_counts": {
+      "check_box": {
+        "matched_candidate": 12
+      },
+      "input_field": {
+        "matched_candidate": 4,
+        "needs_review": 3,
+        "unresolved": 6
+      },
+      "signature_field": {
+        "needs_review": 2
+      }
+    },
+    "role_counts": {
+      "unknown": 15,
+      "official_possible": 2,
+      "applicant_possible": 7,
+      "signature_review": 2,
+      "conditional": 1
+    },
+    "source_detection_json": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document2\\detection_result.json"
+  }
+}

@@ -1,0 +1,28 @@
+﻿id,class_name,label,status,method,reason,role,review_priority,center_shift_px,navigation_allowed
+F001,check_box,신규,matched_candidate,bracket_pair,geometry_matched,unknown,normal,6.987,False
+F002,check_box,변경,matched_candidate,bracket_pair,geometry_matched,unknown,normal,43.754,False
+F003,check_box,해지,matched_candidate,bracket_pair,geometry_matched,unknown,normal,5.481,False
+F004,input_field,접수 번호,matched_candidate,line_supported_cell,border_evidence,official_possible,low_official,3.309,False
+F005,input_field,접수일,matched_candidate,line_supported_cell,border_evidence,official_possible,low_official,14.046,False
+F006,input_field,신청인 성명,matched_candidate,line_supported_cell,border_evidence,applicant_possible,normal,54.517,False
+F007,signature_field,신청인 서명 또는 인,needs_review,,signature_area_requires_review,signature_review,high,,False
+F008,input_field,신청인 주민등록번호,needs_review,open_table_row,partial_line_evidence,applicant_possible,high,,False
+F009,input_field,신청인 우편번호,unresolved,,no_supported_geometry,applicant_possible,high,,False
+F010,input_field,신청인 주소,unresolved,,no_supported_geometry,applicant_possible,high,,False
+F011,input_field,신청인 휴대전화번호,needs_review,underline_baseline,partial_line_evidence,applicant_possible,high,,False
+F012,input_field,신청 대상 건물ㆍ시설 우편번호,matched_candidate,line_supported_cell,border_evidence,unknown,normal,17.922,False
+F013,input_field,신청 대상 건물ㆍ시설 주소지,unresolved,,no_supported_geometry,applicant_possible,high,,False
+F014,check_box,전입신고 사실 휴대전화 문자 등의 전송,matched_candidate,bracket_pair,geometry_matched,unknown,normal,3.838,False
+F015,check_box,주소 변경 또는 정정 사실 휴대전화 문자 등의 전송,matched_candidate,bracket_pair,geometry_matched,conditional,normal,4.936,False
+F016,check_box,세대주 변경 사실 휴대전화 문자 등의 전송,matched_candidate,bracket_pair,geometry_matched,unknown,normal,6.093,False
+F017,check_box,주민등록증 발급ㆍ재발급 사실 휴대전화 문자 등의 전송,matched_candidate,bracket_pair,geometry_matched,unknown,normal,5.901,False
+F018,check_box,주민등록표 열람 또는 등ㆍ초본 교부 사실 휴대전화 문자 등의 전송,matched_candidate,bracket_pair,geometry_matched,unknown,normal,7.194,False
+F019,check_box,주민등록표 열람 또는 등ㆍ초본 교부 사실 우편,matched_candidate,bracket_pair,geometry_matched,unknown,normal,15.664,False
+F020,check_box,신규,matched_candidate,bracket_pair,geometry_matched,unknown,normal,5.079,False
+F021,check_box,변경,matched_candidate,bracket_pair,geometry_matched,unknown,normal,4.142,False
+F022,check_box,해지,matched_candidate,bracket_pair,geometry_matched,unknown,normal,5.599,False
+F023,input_field,년,unresolved,,no_supported_geometry,unknown,high,,False
+F024,input_field,월,unresolved,,no_supported_geometry,unknown,high,,False
+F025,input_field,일,unresolved,,no_supported_geometry,unknown,high,,False
+F026,input_field,신청인,needs_review,underline_baseline,partial_line_evidence,applicant_possible,high,,False
+F027,signature_field,신청인 서명 또는 인,needs_review,,signature_area_requires_review,signature_review,high,,False

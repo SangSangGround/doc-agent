@@ -1,0 +1,36 @@
+# 문서 AI 안내 프로토타입 전용 제외 목록 (저장소 루트 .gitignore와 함께 적용된다)
+
+# 가상환경
+.venv_scan/
+.venv_ocr/
+
+# MediaPipe 손 모델: ios/DocAgentApp/hand_landmarker.task 를 복사해서 사용한다
+*.task
+
+# 실제 문서 촬영본·스캔 결과 (개인정보 가능)
+detection/test_images/
+detection/scan_output/
+ocr/*.json
+ocr/*.txt
+
+# 실행·검증 결과물
+step3_output/
+step4_output*/
+step5_output/
+detection/detection_result.json
+detection/raw_result.json
+
+# Gemini 원본 응답 (재생성 가능, 검토 전 데이터)
+**/gemini_raw.json
+**/workflow_raw_response.json
+
+# 패치 스크립트가 남기는 백업
+*.bak
+*.bak.*
+*.bak_*
+*.backup
+*.backup_*
+*.before_*
+
+# 음성 진단 녹음
+*.wav

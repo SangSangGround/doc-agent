@@ -1,0 +1,421 @@
+{
+  "schema": "document_workflow_v1",
+  "document_id": "document5",
+  "provenance": {
+    "generator": "gemini",
+    "model": "gemini-3.8-flash",
+    "latency_seconds": 24.641,
+    "usage": {
+      "initial_input_tokens": 2435,
+      "input_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 1371
+        },
+        {
+          "modality": "image",
+          "tokens": 1064
+        }
+      ],
+      "total_cached_tokens": 0,
+      "total_input_tokens": 2435,
+      "total_output_tokens": 2229,
+      "total_thought_tokens": 0,
+      "total_tokens": 4664,
+      "total_tool_use_tokens": 0
+    },
+    "generated_at": "2026-11-28T03:05:31",
+    "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document5.jpg",
+    "image_sha256": "d9b04f75662fb296d0daf8c031107873418e3a067d9ff4fa1595207eeaea34eb",
+    "detection_result": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document5\\detection_result.json",
+    "detection_sha256": "fcaffef235470fd4897edd706cd64963312c768fb9b449c21acc464fb63ab88a",
+    "ocr_text": null,
+    "ai_inferred": true,
+    "human_reviewed": false,
+    "note": ""
+  },
+  "title": "개인 정보 동의서",
+  "description": "심뇌혈관질환 예방관리 사업 추진과 관련하여 개인정보 및 민감정보의 수집과 이용에 동의하는 서식입니다.",
+  "selection_question": "",
+  "application_types": [],
+  "sections": [
+    {
+      "id": "sec_basic_info",
+      "title": "기본 정보",
+      "description": "신청자의 성명, 생년월일, 성별, 기저질환, 주민등록번호, 연락처 및 주소를 작성하는 영역입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008"
+      ]
+    },
+    {
+      "id": "sec_consent",
+      "title": "개인정보 및 민감정보 수집·이용에 관한 동의",
+      "description": "개인정보 수집 및 이용 목적 등을 확인하고 동의 여부를 선택하는 영역입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F009",
+        "F010",
+        "F011"
+      ]
+    },
+    {
+      "id": "sec_signature",
+      "title": "작성일자 및 신청인 서명",
+      "description": "동의서 작성 일자를 기재하고 신청인의 성명을 적고 서명 또는 날인하는 영역입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F012",
+        "F013",
+        "F014",
+        "F015"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F001",
+      "class_name": "input_field",
+      "detected_label": "성명",
+      "name": "성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 이름을 입력합니다.",
+      "source_quote": "성 명",
+      "aliases": [
+        "성명",
+        "이름",
+        "신청자성명"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F002",
+      "class_name": "input_field",
+      "detected_label": "생년월일",
+      "name": "생년월일",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 생년월일을 입력합니다.",
+      "source_quote": "생년월일",
+      "aliases": [
+        "생년월일",
+        "생일",
+        "태어난날"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "detected_label": "남",
+      "name": "남",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "성별이 남성인 경우 체크합니다.",
+      "source_quote": "남□",
+      "aliases": [
+        "남",
+        "남자",
+        "남성"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_gender",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F004",
+      "class_name": "check_box",
+      "detected_label": "여",
+      "name": "여",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "성별이 여성인 경우 체크합니다.",
+      "source_quote": "여□",
+      "aliases": [
+        "여",
+        "여자",
+        "여성"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_gender",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "detected_label": "기저질환",
+      "name": "기저질환",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "보유하고 있는 기저질환을 입력합니다.",
+      "source_quote": "기저질환",
+      "aliases": [
+        "기저질환",
+        "지병",
+        "앓고있는질환"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "detected_label": "주민등록번호(선택)",
+      "name": "주민등록번호(선택)",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "선택 사항으로 주민등록번호를 입력합니다.",
+      "source_quote": "주민등록번호(선택)",
+      "aliases": [
+        "주민등록번호선택",
+        "주민번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "detected_label": "전화번호",
+      "name": "전화번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "연락 가능한 휴대폰 또는 유선 전화번호를 입력합니다.",
+      "source_quote": "전화번호",
+      "aliases": [
+        "전화번호",
+        "연락처",
+        "휴대폰번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "detected_label": "주소",
+      "name": "주소",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 거주지 주소를 입력합니다.",
+      "source_quote": "주 소",
+      "aliases": [
+        "주소",
+        "자택주소"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "detected_label": "개인정보 및 민감정보 수집·이용에 관한 동의",
+      "name": "개인정보 및 민감정보 수집·이용에 관한 동의 제목 체크박스",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "항목 제목 앞에 위치한 확인용 체크박스입니다.",
+      "source_quote": "□ 개인정보 및 민감정보 수집 · 이용에 관한 동의",
+      "aliases": [
+        "개인정보및민감정보수집이용에관한동의제목체크박스",
+        "개인정보및민감정보수집",
+        "이용에관한동의제목체크박스",
+        "개인정보및민감정보수집이용에관한동의",
+        "이용에관한동의",
+        "개인정보동의체크"
+      ],
+      "confidence": "medium",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": true
+    },
+    {
+      "id": "F010",
+      "class_name": "check_box",
+      "detected_label": "동의 여부 (예)",
+      "name": "동의 여부 예",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "개인정보 및 민감정보 수집과 이용에 동의하면 체크합니다.",
+      "source_quote": "위와 같이 개인정보 및 민감정보를 수집·이용하는데 동의하십니까? □ 예",
+      "aliases": [
+        "동의여부예",
+        "동의예",
+        "동의함"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_consent",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F011",
+      "class_name": "check_box",
+      "detected_label": "동의 여부 (아니오)",
+      "name": "동의 여부 아니오",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "개인정보 및 민감정보 수집과 이용에 동의하지 않으면 체크합니다.",
+      "source_quote": "□ 아니오",
+      "aliases": [
+        "동의여부아니오",
+        "동의아니오",
+        "동의안함"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_consent",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "detected_label": "월",
+      "name": "작성 월",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청일을 나타내는 두 자리 월을 입력합니다.",
+      "source_quote": "2026년 월",
+      "aliases": [
+        "작성월",
+        "월"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "detected_label": "일",
+      "name": "작성 일",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청일을 나타내는 두 자리 일을 입력합니다.",
+      "source_quote": "일",
+      "aliases": [
+        "작성일",
+        "일"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F014",
+      "class_name": "input_field",
+      "detected_label": "신청인",
+      "name": "신청인 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 성명을 입력합니다.",
+      "source_quote": "신청인 :",
+      "aliases": [
+        "신청인성명",
+        "신청인",
+        "신청인이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F015",
+      "class_name": "signature_field",
+      "detected_label": "(서명 또는 인)",
+      "name": "신청인 서명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 정자 서명 또는 도장을 날인합니다.",
+      "source_quote": "(서명 또는 인)",
+      "aliases": [
+        "신청인서명",
+        "서명또는인",
+        "서명",
+        "날인",
+        "사인"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    }
+  ],
+  "choice_groups": [
+    {
+      "id": "cg_gender",
+      "type": "single_choice",
+      "question": "성별을 선택해 주세요.",
+      "field_ids": [
+        "F003",
+        "F004"
+      ]
+    },
+    {
+      "id": "cg_consent",
+      "type": "single_choice",
+      "question": "개인정보 및 민감정보 수집·이용에 동의하십니까?",
+      "field_ids": [
+        "F010",
+        "F011"
+      ]
+    }
+  ],
+  "dependencies": [],
+  "uncertain_items": [
+    {
+      "field_id": "F009",
+      "reason": "항목 제목 앞에 위치한 단순 기호성 체크박스인지 작성자가 필수 체크해야 하는 박스인지 불분명합니다."
+    }
+  ],
+  "validation": {
+    "warnings": []
+  }
+}

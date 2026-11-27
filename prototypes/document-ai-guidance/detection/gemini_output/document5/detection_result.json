@@ -1,0 +1,383 @@
+{
+  "source": "gemini",
+  "model": "gemini-3.8-flash",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document5.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 15,
+  "class_counts": {
+    "check_box": 5,
+    "input_field": 9,
+    "signature_field": 1
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "input_field",
+      "label": "성명",
+      "box_2d": [
+        229,
+        216,
+        254,
+        376
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        923.328,
+        1137.024,
+        1024.128
+      ],
+      "center_px": {
+        "x": 895.104,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F002",
+      "class_name": "input_field",
+      "label": "생년월일",
+      "box_2d": [
+        228,
+        503,
+        254,
+        657
+      ],
+      "bbox_xyxy_px": [
+        1521.072,
+        919.296,
+        1986.768,
+        1024.128
+      ],
+      "center_px": {
+        "x": 1753.92,
+        "y": 971.712
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "남",
+      "box_2d": [
+        237,
+        688,
+        246,
+        699
+      ],
+      "bbox_xyxy_px": [
+        2080.512,
+        955.584,
+        2113.776,
+        991.872
+      ],
+      "center_px": {
+        "x": 2097.144,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F004",
+      "class_name": "check_box",
+      "label": "여",
+      "box_2d": [
+        237,
+        722,
+        246,
+        733
+      ],
+      "bbox_xyxy_px": [
+        2183.328,
+        955.584,
+        2216.592,
+        991.872
+      ],
+      "center_px": {
+        "x": 2199.96,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "기저질환",
+      "box_2d": [
+        254,
+        216,
+        277,
+        376
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        1024.128,
+        1137.024,
+        1116.864
+      ],
+      "center_px": {
+        "x": 895.104,
+        "y": 1070.496
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "주민등록번호(선택)",
+      "box_2d": [
+        254,
+        500,
+        277,
+        744
+      ],
+      "bbox_xyxy_px": [
+        1512.0,
+        1024.128,
+        2249.856,
+        1116.864
+      ],
+      "center_px": {
+        "x": 1880.928,
+        "y": 1070.496
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "label": "전화번호",
+      "box_2d": [
+        276,
+        216,
+        297,
+        377
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        1112.832,
+        1140.048,
+        1197.504
+      ],
+      "center_px": {
+        "x": 896.616,
+        "y": 1155.168
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "주소",
+      "box_2d": [
+        276,
+        501,
+        297,
+        744
+      ],
+      "bbox_xyxy_px": [
+        1515.024,
+        1112.832,
+        2249.856,
+        1197.504
+      ],
+      "center_px": {
+        "x": 1882.44,
+        "y": 1155.168
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "label": "개인정보 및 민감정보 수집·이용에 관한 동의",
+      "box_2d": [
+        382,
+        160,
+        392,
+        173
+      ],
+      "bbox_xyxy_px": [
+        483.84,
+        1540.224,
+        523.152,
+        1580.544
+      ],
+      "center_px": {
+        "x": 503.496,
+        "y": 1560.384
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F010",
+      "class_name": "check_box",
+      "label": "동의 여부 (예)",
+      "box_2d": [
+        687,
+        615,
+        696,
+        627
+      ],
+      "bbox_xyxy_px": [
+        1859.76,
+        2769.984,
+        1896.048,
+        2806.272
+      ],
+      "center_px": {
+        "x": 1877.904,
+        "y": 2788.128
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F011",
+      "class_name": "check_box",
+      "label": "동의 여부 (아니오)",
+      "box_2d": [
+        686,
+        670,
+        696,
+        682
+      ],
+      "bbox_xyxy_px": [
+        2026.08,
+        2765.952,
+        2062.368,
+        2806.272
+      ],
+      "center_px": {
+        "x": 2044.224,
+        "y": 2786.112
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        706,
+        394,
+        724,
+        461
+      ],
+      "bbox_xyxy_px": [
+        1191.456,
+        2846.592,
+        1394.064,
+        2919.168
+      ],
+      "center_px": {
+        "x": 1292.76,
+        "y": 2882.88
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        706,
+        480,
+        724,
+        540
+      ],
+      "bbox_xyxy_px": [
+        1451.52,
+        2846.592,
+        1632.96,
+        2919.168
+      ],
+      "center_px": {
+        "x": 1542.24,
+        "y": 2882.88
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F014",
+      "class_name": "input_field",
+      "label": "신청인",
+      "box_2d": [
+        736,
+        439,
+        755,
+        625
+      ],
+      "bbox_xyxy_px": [
+        1327.536,
+        2967.552,
+        1890.0,
+        3044.16
+      ],
+      "center_px": {
+        "x": 1608.768,
+        "y": 3005.856
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F015",
+      "class_name": "signature_field",
+      "label": "(서명 또는 인)",
+      "box_2d": [
+        734,
+        633,
+        752,
+        730
+      ],
+      "bbox_xyxy_px": [
+        1914.192,
+        2959.488,
+        2207.52,
+        3032.064
+      ],
+      "center_px": {
+        "x": 2060.856,
+        "y": 2995.776
+      },
+      "confidence": null,
+      "navigation_verified": false
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1219,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 155
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1219,
+    "total_output_tokens": 720,
+    "total_thought_tokens": 1324,
+    "total_tokens": 3263,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 23.123
+}

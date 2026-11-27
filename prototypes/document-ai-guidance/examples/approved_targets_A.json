@@ -1,0 +1,8 @@
+{
+  "targets": [
+    {"id": "T001", "verified": true, "kind": "input_field"},
+    {"id": "T002", "verified": true, "kind": "input_field"},
+    {"id": "T003", "verified": false, "kind": "signature_field"},
+    {"id": "T004", "verified": true, "kind": "input_field"}
+  ]
+}

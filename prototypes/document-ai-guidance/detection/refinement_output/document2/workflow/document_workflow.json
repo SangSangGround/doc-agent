@@ -1,0 +1,805 @@
+{
+  "schema": "document_workflow_v1",
+  "document_id": "document2",
+  "provenance": {
+    "generator": "gemini",
+    "model": "gemini-3.8-flash",
+    "latency_seconds": 54.079,
+    "usage": {
+      "initial_input_tokens": 3148,
+      "input_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 2084
+        },
+        {
+          "modality": "image",
+          "tokens": 1064
+        }
+      ],
+      "total_cached_tokens": 0,
+      "total_input_tokens": 3148,
+      "total_output_tokens": 4530,
+      "total_thought_tokens": 2240,
+      "total_tokens": 9918,
+      "total_tool_use_tokens": 0
+    },
+    "generated_at": "2026-11-28T02:27:22",
+    "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document2.jpg",
+    "image_sha256": "c42313190161766ec73614e4470e69271b68f10a52f099f19c2405b3c4592cc8",
+    "detection_result": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document2\\detection_result.json",
+    "detection_sha256": "725be191443616e1aec6b327985c85c70264d9d9be398764f9d34ee12ae6a2fd",
+    "ocr_text": null,
+    "ai_inferred": true,
+    "human_reviewed": false,
+    "note": ""
+  },
+  "title": "전입신고, 주소 변경 또는 정정, 세대주 변경, 주민등록증 발급ㆍ재발급, 주민등록표 열람 또는 등ㆍ초본 교부 사실 통보 서비스 [ ]신규 [ ]변경 [ ]해지 신청서",
+  "description": "전입신고, 주소 변경, 세대주 변경, 주민등록증 발급, 주민등록표 열람 등의 사실을 휴대전화 문자나 우편으로 통보받기 위해 신청하는 서식입니다.",
+  "selection_question": "신규 신청, 변경 신청, 해지 신청 중 어떤 업무를 진행하시겠습니까?",
+  "application_types": [
+    {
+      "id": "new",
+      "spoken_name": "신규",
+      "description": "통보 서비스를 새로 신청합니다.",
+      "aliases": [
+        "신규",
+        "신규신청",
+        "새로신청",
+        "신규등록"
+      ],
+      "selector_field_ids": [
+        "F001",
+        "F020"
+      ],
+      "section_ids": [
+        "sec_type",
+        "sec_official",
+        "sec_applicant",
+        "sec_target",
+        "sec_service",
+        "sec_submission",
+        "sec_consent"
+      ]
+    },
+    {
+      "id": "change",
+      "spoken_name": "변경",
+      "description": "이미 신청한 통보 서비스 내용을 변경합니다.",
+      "aliases": [
+        "변경",
+        "변경신청",
+        "내용변경",
+        "정보변경"
+      ],
+      "selector_field_ids": [
+        "F002",
+        "F021"
+      ],
+      "section_ids": [
+        "sec_type",
+        "sec_official",
+        "sec_applicant",
+        "sec_target",
+        "sec_service",
+        "sec_submission",
+        "sec_consent"
+      ]
+    },
+    {
+      "id": "terminate",
+      "spoken_name": "해지",
+      "description": "이용 중인 통보 서비스를 해지합니다.",
+      "aliases": [
+        "해지",
+        "해지신청",
+        "서비스해지",
+        "취소"
+      ],
+      "selector_field_ids": [
+        "F003",
+        "F022"
+      ],
+      "section_ids": [
+        "sec_type",
+        "sec_official",
+        "sec_applicant",
+        "sec_submission",
+        "sec_consent"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "sec_type",
+      "title": "신청 구분",
+      "description": "상단 신청 구분을 선택합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003"
+      ]
+    },
+    {
+      "id": "sec_official",
+      "title": "접수 정보",
+      "description": "담당 공무원이 기재하는 접수 정보입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F004",
+        "F005"
+      ]
+    },
+    {
+      "id": "sec_applicant",
+      "title": "신청인 인적사항",
+      "description": "신청인의 성명, 주민등록번호, 주소 및 연락처를 기재합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F006",
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011"
+      ]
+    },
+    {
+      "id": "sec_target",
+      "title": "신청 대상 건물·시설",
+      "description": "전입신고 사실 통보서비스 신청 시 대상 건물이나 시설의 주소를 기재합니다.",
+      "applies_to": [
+        "new",
+        "change"
+      ],
+      "field_ids": [
+        "F012",
+        "F013"
+      ]
+    },
+    {
+      "id": "sec_service",
+      "title": "신청 서비스 선택",
+      "description": "통보받고자 하는 세부 서비스 및 통보 방식을 선택합니다.",
+      "applies_to": [
+        "new",
+        "change"
+      ],
+      "field_ids": [
+        "F014",
+        "F015",
+        "F016",
+        "F017",
+        "F018",
+        "F019"
+      ]
+    },
+    {
+      "id": "sec_submission",
+      "title": "신청 확인 및 일자",
+      "description": "신청 유형을 재확인하고 신청 날짜를 작성합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F020",
+        "F021",
+        "F022",
+        "F023",
+        "F024",
+        "F025"
+      ]
+    },
+    {
+      "id": "sec_consent",
+      "title": "행정정보 공동이용 동의",
+      "description": "행정정보 공동이용을 확인하고 신청인 성명을 적고 서명합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F026",
+        "F027"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "detected_label": "신규",
+      "name": "제목 신규 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신규 신청인 경우 체크합니다.",
+      "source_quote": "[ ]신규",
+      "aliases": [
+        "제목신규체크박스",
+        "신규",
+        "신규체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "new",
+      "uncertain": false
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "detected_label": "변경",
+      "name": "제목 변경 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "변경 신청인 경우 체크합니다.",
+      "source_quote": "[ ]변경",
+      "aliases": [
+        "제목변경체크박스",
+        "변경",
+        "변경체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "change",
+      "uncertain": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "detected_label": "해지",
+      "name": "제목 해지 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "해지 신청인 경우 체크합니다.",
+      "source_quote": "[ ]해지",
+      "aliases": [
+        "제목해지체크박스",
+        "해지",
+        "해지체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "terminate",
+      "uncertain": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "detected_label": "접수 번호",
+      "name": "접수 번호",
+      "role": "official",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "담당 공무원이 접수 번호를 기재하므로 비워둡니다.",
+      "source_quote": "접수 번호",
+      "aliases": [
+        "접수번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "detected_label": "접수일",
+      "name": "접수일",
+      "role": "official",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "담당 공무원이 접수 일자를 기재하므로 비워둡니다.",
+      "source_quote": "접수일",
+      "aliases": [
+        "접수일",
+        "접수일자"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "detected_label": "신청인 성명",
+      "name": "신청인 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 한글 성명을 기재합니다.",
+      "source_quote": "성명",
+      "aliases": [
+        "신청인성명",
+        "이름",
+        "신청인이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "detected_label": "신청인 서명 또는 인",
+      "name": "신청인 서명 또는 인",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 서명을 하거나 도장을 찍습니다.",
+      "source_quote": "(서명 또는 인)",
+      "aliases": [
+        "신청인서명또는인",
+        "신청인서명",
+        "서명",
+        "도장",
+        "사인"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "detected_label": "신청인 주민등록번호",
+      "name": "신청인 주민등록번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 주민등록번호 13자리를 기재합니다.",
+      "source_quote": "주민등록번호",
+      "aliases": [
+        "신청인주민등록번호",
+        "주민번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "detected_label": "신청인 우편번호",
+      "name": "신청인 우편번호",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "신청인 주소의 5자리 우편번호를 기재합니다.",
+      "source_quote": "(우편번호 )",
+      "aliases": [
+        "신청인우편번호",
+        "우편번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "detected_label": "신청인 주소",
+      "name": "신청인 주소",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 도로명 주소를 기재합니다.",
+      "source_quote": "주소",
+      "aliases": [
+        "신청인주소",
+        "집주소",
+        "주소지"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "detected_label": "신청인 휴대전화번호",
+      "name": "신청인 휴대전화번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "통보 문자를 받을 신청인의 휴대전화번호를 기재합니다.",
+      "source_quote": "휴대전화번호",
+      "aliases": [
+        "신청인휴대전화번호",
+        "휴대폰번호",
+        "전화번호",
+        "핸드폰번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "detected_label": "신청 대상 건물ㆍ시설 우편번호",
+      "name": "신청 대상 건물·시설 우편번호",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "전입신고 사실 통보서비스 신청 시 작성",
+      "description": "전입신고 통보 대상 건물 또는 시설의 우편번호를 기재합니다.",
+      "source_quote": "※전입신고 사실 통보서비스 신청 시 작성합니다.",
+      "aliases": [
+        "신청대상건물시설우편번호",
+        "신청대상건물",
+        "시설우편번호",
+        "대상건물우편번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "detected_label": "신청 대상 건물ㆍ시설 주소지",
+      "name": "신청 대상 건물·시설 주소지",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "전입신고 사실 통보서비스 신청 시 작성",
+      "description": "전입신고 통보 대상 건물 또는 시설의 상세 주소를 기재합니다.",
+      "source_quote": "※전입신고 사실 통보서비스 신청 시 작성합니다.",
+      "aliases": [
+        "신청대상건물시설주소지",
+        "신청대상건물",
+        "시설주소지",
+        "대상건물주소"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "detected_label": "전입신고 사실 휴대전화 문자 등의 전송",
+      "name": "전입신고 사실 문자 전송 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "전입신고 사실을 문자로 통보받으려면 체크합니다.",
+      "source_quote": "전입신고 사실 [ ]휴대전화 문자 등의 전송",
+      "aliases": [
+        "전입신고사실문자전송체크",
+        "전입신고사실휴대전화문자등의전송",
+        "전입신고통보",
+        "전입신고문자"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "detected_label": "주소 변경 또는 정정 사실 휴대전화 문자 등의 전송",
+      "name": "주소 변경 또는 정정 사실 문자 전송 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "주소 변경이나 정정 사실을 문자로 통보받으려면 체크합니다.",
+      "source_quote": "주소 변경 또는 정정 사실 [ ]휴대전화 문자 등의 전송",
+      "aliases": [
+        "주소변경또는정정사실문자전송체크",
+        "주소변경",
+        "정정사실문자전송체크",
+        "주소변경또는정정사실휴대전화문자등의전송",
+        "정정사실휴대전화문자등의전송",
+        "주소변경문자",
+        "주소정정통보"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "detected_label": "세대주 변경 사실 휴대전화 문자 등의 전송",
+      "name": "세대주 변경 사실 문자 전송 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "세대주 변경 사실을 문자로 통보받으려면 체크합니다.",
+      "source_quote": "세대주 변경 사실 [ ]휴대전화 문자 등의 전송",
+      "aliases": [
+        "세대주변경사실문자전송체크",
+        "세대주변경사실휴대전화문자등의전송",
+        "세대주변경문자",
+        "세대주통보"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F017",
+      "class_name": "check_box",
+      "detected_label": "주민등록증 발급ㆍ재발급 사실 휴대전화 문자 등의 전송",
+      "name": "주민등록증 발급·재발급 사실 문자 전송 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "주민등록증 발급 및 재발급 사실을 문자로 통보받으려면 체크합니다.",
+      "source_quote": "주민등록증 발급ㆍ재발급 사실 [ ]휴대전화 문자 등의 전송",
+      "aliases": [
+        "주민등록증발급재발급사실문자전송체크",
+        "주민등록증발급",
+        "재발급사실문자전송체크",
+        "주민등록증발급재발급사실휴대전화문자등의전송",
+        "재발급사실휴대전화문자등의전송",
+        "주민등록증문자",
+        "신분증발급통보"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F018",
+      "class_name": "check_box",
+      "detected_label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 휴대전화 문자 등의 전송",
+      "name": "주민등록표 열람 또는 등·초본 교부 사실 문자 전송 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "주민등록표 열람 및 교부 사실을 문자로 통보받으려면 체크합니다.",
+      "source_quote": "주민등록표 열람 또는 등ㆍ초본 교부 사실 [ ]휴대전화 문자 등의 전송",
+      "aliases": [
+        "주민등록표열람또는등초본교부사실문자전송체크",
+        "주민등록표열람",
+        "초본교부사실문자전송체크",
+        "주민등록표열람또는등초본교부사실휴대전화문자등의전송",
+        "초본교부사실휴대전화문자등의전송",
+        "등초본문자",
+        "열람통보문자"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_read_notice",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F019",
+      "class_name": "check_box",
+      "detected_label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 우편",
+      "name": "주민등록표 열람 또는 등·초본 교부 사실 우편 체크",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "주민등록표 열람 및 교부 사실을 우편으로 통보받으려면 체크합니다.",
+      "source_quote": "주민등록표 열람 또는 등ㆍ초본 교부 사실 [ ]우편",
+      "aliases": [
+        "주민등록표열람또는등초본교부사실우편체크",
+        "주민등록표열람",
+        "초본교부사실우편체크",
+        "주민등록표열람또는등초본교부사실우편",
+        "초본교부사실우편",
+        "등초본우편",
+        "열람통보우편"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_read_notice",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F020",
+      "class_name": "check_box",
+      "detected_label": "신규",
+      "name": "본문 신규 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청 문장 내 신규 신청 확인 체크박스에 표시합니다.",
+      "source_quote": "통보 서비스를 ([ ] 신규",
+      "aliases": [
+        "본문신규체크박스",
+        "신규",
+        "본문신규"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "new",
+      "uncertain": false
+    },
+    {
+      "id": "F021",
+      "class_name": "check_box",
+      "detected_label": "변경",
+      "name": "본문 변경 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청 문장 내 변경 신청 확인 체크박스에 표시합니다.",
+      "source_quote": "[ ] 변경",
+      "aliases": [
+        "본문변경체크박스",
+        "변경",
+        "본문변경"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "change",
+      "uncertain": false
+    },
+    {
+      "id": "F022",
+      "class_name": "check_box",
+      "detected_label": "해지",
+      "name": "본문 해지 체크박스",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청 문장 내 해지 신청 확인 체크박스에 표시합니다.",
+      "source_quote": "[ ] 해지) 신청합니다.",
+      "aliases": [
+        "본문해지체크박스",
+        "해지",
+        "본문해지"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "terminate",
+      "uncertain": false
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "detected_label": "년",
+      "name": "신청일 년",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 연도를 4자리 숫자로 기재합니다.",
+      "source_quote": "년",
+      "aliases": [
+        "신청일년",
+        "년",
+        "신청연도",
+        "연도"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "detected_label": "월",
+      "name": "신청일 월",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 월을 숫자로 기재합니다.",
+      "source_quote": "월",
+      "aliases": [
+        "신청일월",
+        "월",
+        "신청월"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F025",
+      "class_name": "input_field",
+      "detected_label": "일",
+      "name": "신청일 일",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 날을 숫자로 기재합니다.",
+      "source_quote": "일",
+      "aliases": [
+        "신청일일",
+        "일",
+        "신청일자"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F026",
+      "class_name": "input_field",
+      "detected_label": "신청인",
+      "name": "동의서 신청인 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "행정정보 공동이용 동의서란의 신청인 성명을 기재합니다.",
+      "source_quote": "신청인",
+      "aliases": [
+        "동의서신청인성명",
+        "신청인",
+        "동의서이름",
+        "동의인성명"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F027",
+      "class_name": "signature_field",
+      "detected_label": "신청인 서명 또는 인",
+      "name": "동의서 신청인 서명 또는 인",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "행정정보 공동이용 동의란에 서명을 하거나 도장을 찍습니다.",
+      "source_quote": "(서명 또는 인)",
+      "aliases": [
+        "동의서신청인서명또는인",
+        "동의서신청인서명",
+        "신청인서명또는인",
+        "신청인서명",
+        "동의서서명",
+        "동의서사인"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    }
+  ],
+  "choice_groups": [
+    {
+      "id": "cg_read_notice",
+      "type": "multi_choice",
+      "question": "주민등록표 열람 또는 등·초본 교부 사실 통보 방식을 선택해 주세요.",
+      "field_ids": [
+        "F018",
+        "F019"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "field_id": "F012",
+      "depends_on": "F014",
+      "relation": "F014(전입신고 사실 통보서비스)를 신청하는 경우에만 작성합니다."
+    },
+    {
+      "field_id": "F013",
+      "depends_on": "F014",
+      "relation": "F014(전입신고 사실 통보서비스)를 신청하는 경우에만 작성합니다."
+    }
+  ],
+  "uncertain_items": [],
+  "validation": {
+    "warnings": []
+  }
+}

@@ -1,0 +1,16 @@
+﻿id,class_name,label,status,method,reason,role,review_priority,center_shift_px,navigation_allowed
+F001,input_field,성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,5.063,False
+F002,input_field,생년월일,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,2.407,False
+F003,check_box,남,matched_candidate,closed_checkbox,geometry_matched,unknown,normal,1.873,False
+F004,check_box,여,matched_candidate,closed_checkbox,geometry_matched,unknown,normal,1.792,False
+F005,input_field,기저질환,matched_candidate,empty_table_cell,geometry_matched,unknown,normal,4.733,False
+F006,input_field,주민등록번호(선택),matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,2.643,False
+F007,input_field,전화번호,matched_candidate,empty_table_cell,geometry_matched,unknown,normal,3.125,False
+F008,input_field,주소,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,1.313,False
+F009,check_box,개인정보 및 민감정보 수집·이용에 관한 동의,matched_candidate,closed_checkbox,geometry_matched,unknown,normal,0.975,False
+F010,check_box,동의 여부 (예),matched_candidate,closed_checkbox,geometry_matched,unknown,normal,1.405,False
+F011,check_box,동의 여부 (아니오),matched_candidate,closed_checkbox,geometry_matched,unknown,normal,0.729,False
+F012,input_field,월,unresolved,,no_supported_geometry,unknown,high,,False
+F013,input_field,일,unresolved,,no_supported_geometry,unknown,high,,False
+F014,input_field,신청인,needs_review,underline_baseline,partial_line_evidence,applicant_possible,high,,False
+F015,signature_field,(서명 또는 인),needs_review,,signature_area_requires_review,signature_review,high,,False

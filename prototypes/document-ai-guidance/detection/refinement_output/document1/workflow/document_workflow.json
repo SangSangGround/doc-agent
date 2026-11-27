@@ -1,0 +1,1193 @@
+{
+  "schema": "document_workflow_v1",
+  "document_id": "document1",
+  "provenance": {
+    "generator": "gemini",
+    "model": "gemini-4-hydrogen",
+    "latency_seconds": 56.592,
+    "usage": {
+      "cached_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 2696
+        },
+        {
+          "modality": "image",
+          "tokens": 660
+        }
+      ],
+      "initial_input_tokens": 5405,
+      "input_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 4341
+        },
+        {
+          "modality": "image",
+          "tokens": 1064
+        }
+      ],
+      "output_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 6780
+        }
+      ],
+      "total_cached_tokens": 3356,
+      "total_input_tokens": 5405,
+      "total_output_tokens": 6780,
+      "total_thought_tokens": 5267,
+      "total_tokens": 17452,
+      "total_tool_use_tokens": 0
+    },
+    "generated_at": "2026-11-23T01:07:52",
+    "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document1.jpg",
+    "image_sha256": "8479c9e9ce4621cedfd2a8e2291b463e05bd4cf1752ce11ca9ddb973450b7cd0",
+    "detection_result": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document1\\detection_result.json",
+    "detection_sha256": "3fe09612cb863cd91e88a09eae2f79915e6b954e8400de213c15faec95089e80",
+    "ocr_text": null,
+    "ai_inferred": true,
+    "human_reviewed": false,
+    "note": ""
+  },
+  "title": "외국인 및 외국국적동포 세대별 주민등록표 [ ]기록 [ ]정정ㆍ변경 [ ]삭제 신청서",
+  "description": "외국인 및 외국국적동포를 세대별 주민등록표에 기록하거나, 기록된 사항을 정정ㆍ변경 또는 삭제하기 위해 신청하는 서식입니다.",
+  "selection_question": "기록, 정정ㆍ변경, 삭제 중 어떤 신청을 진행하시겠습니까?",
+  "application_types": [
+    {
+      "id": "record",
+      "spoken_name": "기록 신청",
+      "description": "외국인 또는 외국국적동포를 세대별 주민등록표에 새로 기록할 때 선택합니다.",
+      "aliases": [
+        "기록신청",
+        "기록",
+        "신규기록",
+        "등록"
+      ],
+      "selector_field_ids": [
+        "F001",
+        "F033"
+      ],
+      "section_ids": [
+        "sec_title",
+        "sec_official",
+        "sec_record",
+        "sec_applicant"
+      ]
+    },
+    {
+      "id": "change",
+      "spoken_name": "정정ㆍ변경 신청",
+      "description": "이미 기록된 외국인 또는 외국국적동포의 사항을 정정하거나 변경할 때 선택합니다.",
+      "aliases": [
+        "정정변경신청",
+        "정정",
+        "변경신청",
+        "변경",
+        "정정변경",
+        "수정"
+      ],
+      "selector_field_ids": [
+        "F002",
+        "F034"
+      ],
+      "section_ids": [
+        "sec_title",
+        "sec_official",
+        "sec_change",
+        "sec_applicant"
+      ]
+    },
+    {
+      "id": "delete",
+      "spoken_name": "삭제 신청",
+      "description": "세대별 주민등록표에 기록된 외국인 또는 외국국적동포의 기록을 삭제할 때 선택합니다.",
+      "aliases": [
+        "삭제신청",
+        "삭제",
+        "말소"
+      ],
+      "selector_field_ids": [
+        "F003",
+        "F035"
+      ],
+      "section_ids": [
+        "sec_title",
+        "sec_official",
+        "sec_delete",
+        "sec_applicant"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "sec_title",
+      "title": "신청 종류 선택",
+      "description": "서식 상단 제목에서 신청하려는 종류에 표시합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003"
+      ]
+    },
+    {
+      "id": "sec_official",
+      "title": "접수 및 기관 처리란",
+      "description": "색상이 어두운 칸으로, 접수 기관에서 작성하므로 신청인은 비워둡니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F004",
+        "F005",
+        "F006",
+        "F007"
+      ]
+    },
+    {
+      "id": "sec_record",
+      "title": "기록 신청 내용",
+      "description": "기록 대상자의 인적사항과 속할 세대 정보를 작성합니다.",
+      "applies_to": [
+        "record"
+      ],
+      "field_ids": [
+        "F008",
+        "F009",
+        "F010",
+        "F011",
+        "F012",
+        "F013",
+        "F014",
+        "F015",
+        "F016",
+        "F017",
+        "F018",
+        "F019",
+        "F020",
+        "F021"
+      ]
+    },
+    {
+      "id": "sec_change",
+      "title": "정정ㆍ변경 신청 내용",
+      "description": "정정ㆍ변경 대상자의 인적사항과 변경 전후 내용을 작성합니다.",
+      "applies_to": [
+        "change"
+      ],
+      "field_ids": [
+        "F022",
+        "F023",
+        "F024",
+        "F025",
+        "F026",
+        "F027",
+        "F028",
+        "F029",
+        "F030"
+      ]
+    },
+    {
+      "id": "sec_delete",
+      "title": "삭제 신청 내용",
+      "description": "삭제 대상자의 성명과 등록번호 또는 거소신고번호를 작성합니다.",
+      "applies_to": [
+        "delete"
+      ],
+      "field_ids": [
+        "F031",
+        "F032"
+      ]
+    },
+    {
+      "id": "sec_applicant",
+      "title": "신청 확인 및 신청인 정보",
+      "description": "하단 신청 문구의 신청 종류를 표시하고 신청 날짜와 신청인 정보를 작성합니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F033",
+        "F034",
+        "F035",
+        "F036",
+        "F037",
+        "F038",
+        "F039",
+        "F040",
+        "F041",
+        "F042"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "detected_label": "기록",
+      "name": "제목 기록 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 신청을 하는 경우 체크합니다.",
+      "description": "기록 신청에 해당하면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "제목기록체크박스",
+        "기록",
+        "기록체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "record",
+      "uncertain": false
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "detected_label": "정정ㆍ변경",
+      "name": "제목 정정ㆍ변경 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "정정ㆍ변경 신청을 하는 경우 체크합니다.",
+      "description": "정정ㆍ변경 신청에 해당하면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "제목정정변경체크박스",
+        "제목정정",
+        "변경체크박스",
+        "정정변경",
+        "정정",
+        "변경",
+        "정정변경체크",
+        "변경체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "change",
+      "uncertain": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "detected_label": "삭제",
+      "name": "제목 삭제 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "삭제 신청을 하는 경우 체크합니다.",
+      "description": "삭제 신청에 해당하면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "제목삭제체크박스",
+        "삭제",
+        "삭제체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "delete",
+      "uncertain": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "detected_label": "접수 번호",
+      "name": "접수 번호",
+      "role": "official",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "어두운 칸이므로 신청인은 작성하지 않고 비워둡니다.",
+      "source_quote": "※ 색상이 어두운 칸은 비워두어야 합니다.",
+      "aliases": [
+        "접수번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "detected_label": "신청일",
+      "name": "접수 신청일",
+      "role": "official",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "어두운 칸이므로 신청인은 작성하지 않고 비워둡니다.",
+      "source_quote": "※ 색상이 어두운 칸은 비워두어야 합니다.",
+      "aliases": [
+        "접수신청일",
+        "신청일",
+        "상단신청일",
+        "접수일"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "detected_label": "관계 기관 통보",
+      "name": "관계 기관 통보",
+      "role": "official",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "어두운 칸이므로 신청인은 작성하지 않고 비워둡니다.",
+      "source_quote": "※ 색상이 어두운 칸은 비워두어야 합니다.",
+      "aliases": [
+        "관계기관통보"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "detected_label": "관계 기관 통보 인",
+      "name": "관계 기관 통보 날인",
+      "role": "official",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "어두운 칸이므로 신청인은 서명이나 도장을 찍지 않습니다.",
+      "source_quote": "※ 색상이 어두운 칸은 비워두어야 합니다.",
+      "aliases": [
+        "관계기관통보날인",
+        "관계기관통보인"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F008",
+      "class_name": "check_box",
+      "detected_label": "「출입국관리법」 제31조에 따라 등록한 외국인",
+      "name": "등록 외국인 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 출입국관리법에 따라 등록한 외국인인 경우 체크합니다.",
+      "description": "대상자가 등록 외국인인 경우에 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "등록외국인체크박스",
+        "출입국관리법제31조에따라등록한외국인",
+        "등록외국인",
+        "출입국관리법외국인"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_target_status",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "detected_label": "「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포",
+      "name": "국내거소신고 외국국적동포 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 국내거소신고를 한 외국국적동포인 경우 체크합니다.",
+      "description": "대상자가 국내거소신고를 한 외국국적동포인 경우에 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "국내거소신고외국국적동포체크박스",
+        "재외동포의출입국과법적지위에관한법률제6조에따라국내거소신고를한외국국적동포",
+        "외국국적동포",
+        "거소신고동포"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_target_status",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "detected_label": "로마자 성명",
+      "name": "기록 대상자 로마자 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "기록 대상자의 영문 로마자 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "기록대상자로마자성명",
+        "로마자성명",
+        "영문성명",
+        "영문이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "detected_label": "한글 성명",
+      "name": "기록 대상자 한글 성명",
+      "role": "applicant",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "기록 대상자의 한글 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "기록대상자한글성명",
+        "한글성명",
+        "한국어성명",
+        "한글이름"
+      ],
+      "confidence": "medium",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": true
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "detected_label": "외국인등록번호 또는 국내거소신고번호",
+      "name": "기록 대상자 외국인등록번호 또는 국내거소신고번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "대상자의 외국인등록번호 또는 국내거소신고번호를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "기록대상자외국인등록번호또는국내거소신고번호",
+        "기록대상자외국인등록번호",
+        "국내거소신고번호",
+        "외국인등록번호또는국내거소신고번호",
+        "외국인등록번호",
+        "거소신고번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F013",
+      "class_name": "check_box",
+      "detected_label": "세대주의 배우자",
+      "name": "세대주의 배우자 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 세대주의 배우자인 경우 체크합니다.",
+      "description": "대상자가 세대주의 배우자라면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "세대주의배우자체크박스",
+        "세대주의배우자",
+        "세대주배우자"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_family_relation",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "detected_label": "세대주의 직계혈족",
+      "name": "세대주의 직계혈족 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 세대주의 직계혈족인 경우 체크합니다.",
+      "description": "대상자가 세대주의 직계혈족이라면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "세대주의직계혈족체크박스",
+        "세대주의직계혈족",
+        "세대주직계혈족"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_family_relation",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "detected_label": "세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자",
+      "name": "세대원의 배우자 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 세대주 가족 범위 내 세대원의 배우자인 경우 체크합니다.",
+      "description": "대상자가 세대원의 배우자라면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "세대원의배우자체크박스",
+        "세대원세대주의민법제779조에따른가족의범위로한정한다의배우자",
+        "세대원배우자"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_family_relation",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "detected_label": "세대원의 직계혈족",
+      "name": "세대원의 직계혈족 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 세대원의 직계혈족인 경우 체크합니다.",
+      "description": "대상자가 세대원의 직계혈족이라면 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "세대원의직계혈족체크박스",
+        "세대원의직계혈족",
+        "세대원직계혈족"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_family_relation",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F017",
+      "class_name": "input_field",
+      "detected_label": "세대주와의 관계",
+      "name": "세대주와의 관계",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 대상자가 세대주의 배우자 또는 직계혈족이 아닌 경우에만 작성합니다.",
+      "description": "세대주의 배우자나 직계혈족이 아닐 때만 세대주와의 관계를 적습니다.",
+      "source_quote": "※ 기록 대상자(외국인 또는 외국국적동포)가 세대주의 배우자 또는 직계혈족이 아닌 경우에만 작성합니다.",
+      "aliases": [
+        "세대주와의관계",
+        "세대주관계"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F018",
+      "class_name": "input_field",
+      "detected_label": "세대주 성명",
+      "name": "세대주 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "속할 세대의 세대주 이름을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "세대주성명",
+        "세대주이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F019",
+      "class_name": "signature_field",
+      "detected_label": "세대주 서명 또는 인",
+      "name": "세대주 서명 또는 인",
+      "role": "unknown",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "세대주의 서명을 하거나 도장을 찍습니다.",
+      "source_quote": "",
+      "aliases": [
+        "세대주서명또는인",
+        "세대주서명",
+        "세대주도장"
+      ],
+      "confidence": "medium",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": true
+    },
+    {
+      "id": "F020",
+      "class_name": "input_field",
+      "detected_label": "세대주 주민등록번호",
+      "name": "세대주 주민등록번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "속할 세대 세대주의 주민등록번호를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "세대주주민등록번호",
+        "세대주주민번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F021",
+      "class_name": "input_field",
+      "detected_label": "주소 (시ㆍ도) (시ㆍ군ㆍ구)",
+      "name": "속할 세대 주소",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "속할 세대의 주소를 시ㆍ도 및 시ㆍ군ㆍ구부터 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "속할세대주소",
+        "주소시도시군구",
+        "주소시",
+        "도시",
+        "세대주소",
+        "거주지주소"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F022",
+      "class_name": "input_field",
+      "detected_label": "정정ㆍ변경 신청 대상자 로마자 성명",
+      "name": "정정ㆍ변경 대상자 로마자 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "정정ㆍ변경 대상자의 영문 로마자 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "정정변경대상자로마자성명",
+        "정정",
+        "변경대상자로마자성명",
+        "정정변경신청대상자로마자성명",
+        "변경신청대상자로마자성명",
+        "변경대상자영문성명"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "detected_label": "정정ㆍ변경 신청 대상자 한글 성명",
+      "name": "정정ㆍ변경 대상자 한글 성명",
+      "role": "applicant",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "정정ㆍ변경 대상자의 한글 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "정정변경대상자한글성명",
+        "정정",
+        "변경대상자한글성명",
+        "정정변경신청대상자한글성명",
+        "변경신청대상자한글성명",
+        "변경대상자한글이름"
+      ],
+      "confidence": "medium",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": true
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "detected_label": "정정ㆍ변경 신청 외국인등록번호 또는 국내거소신고번호",
+      "name": "정정ㆍ변경 대상자 외국인등록번호 또는 국내거소신고번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "대상자의 외국인등록번호 또는 국내거소신고번호를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "정정변경대상자외국인등록번호또는국내거소신고번호",
+        "정정",
+        "변경대상자외국인등록번호",
+        "국내거소신고번호",
+        "정정변경신청외국인등록번호또는국내거소신고번호",
+        "변경신청외국인등록번호",
+        "변경대상자등록번호",
+        "변경대상자거소번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F025",
+      "class_name": "check_box",
+      "detected_label": "성명",
+      "name": "성명 변경 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "성명을 정정하거나 변경하는 경우 체크합니다.",
+      "description": "정정ㆍ변경할 사항이 성명인 경우 체크 표시를 합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "성명변경체크박스",
+        "성명",
+        "성명변경"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_change_items",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F026",
+      "class_name": "check_box",
+      "detected_label": "외국인등록번호 또는 국내거소신고번호",
+      "name": "등록번호 또는 거소신고번호 변경 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "외국인등록번호 또는 국내거소신고번호를 변경하는 경우 체크합니다.",
+      "description": "외국인등록번호나 국내거소신고번호를 변경할 때 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "등록번호또는거소신고번호변경체크박스",
+        "등록번호",
+        "거소신고번호변경체크박스",
+        "외국인등록번호또는국내거소신고번호",
+        "외국인등록번호",
+        "국내거소신고번호",
+        "등록번호변경",
+        "거소번호변경"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_change_items",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F027",
+      "class_name": "check_box",
+      "detected_label": "세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계",
+      "name": "가족관계 변경 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "세대주 또는 세대원과 대상자 사이의 가족관계를 변경하는 경우 체크합니다.",
+      "description": "세대주나 세대원과의 가족관계를 변경할 때 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "가족관계변경체크박스",
+        "세대주또는세대원과대상자외국인또는외국국적동포사이의가족관계",
+        "세대주",
+        "세대원과대상자외국인",
+        "외국국적동포사이의가족관계",
+        "가족관계변경"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_change_items",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F028",
+      "class_name": "check_box",
+      "detected_label": "그 밖의 변경사항",
+      "name": "그 밖의 변경사항 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "그 밖의 사항을 정정하거나 변경하는 경우 체크합니다.",
+      "description": "앞의 항목 외 다른 사항을 변경하는 경우 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "그밖의변경사항체크박스",
+        "그밖의변경사항",
+        "기타변경사항",
+        "그밖의사항"
+      ],
+      "confidence": "high",
+      "choice_group_id": "cg_change_items",
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F029",
+      "class_name": "input_field",
+      "detected_label": "정정ㆍ변경 전",
+      "name": "정정ㆍ변경 전 내용",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "정정하거나 변경하기 전의 기존 내용을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "정정변경전내용",
+        "정정",
+        "변경전내용",
+        "정정변경전",
+        "변경전",
+        "기존내용"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F030",
+      "class_name": "input_field",
+      "detected_label": "정정ㆍ변경 후",
+      "name": "정정ㆍ변경 후 내용",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "정정하거나 변경할 새로운 내용을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "정정변경후내용",
+        "정정",
+        "변경후내용",
+        "정정변경후",
+        "변경후",
+        "수정후내용"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F031",
+      "class_name": "input_field",
+      "detected_label": "삭제 신청 대상자 성명",
+      "name": "삭제 대상자 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "삭제 대상자의 로마자 또는 한글 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "삭제대상자성명",
+        "삭제신청대상자성명",
+        "삭제대상자이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F032",
+      "class_name": "input_field",
+      "detected_label": "삭제 신청 외국인등록번호 또는 국내거소신고번호",
+      "name": "삭제 대상자 외국인등록번호 또는 국내거소신고번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "삭제 대상자의 외국인등록번호 또는 국내거소신고번호를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "삭제대상자외국인등록번호또는국내거소신고번호",
+        "삭제대상자외국인등록번호",
+        "국내거소신고번호",
+        "삭제신청외국인등록번호또는국내거소신고번호",
+        "삭제신청외국인등록번호",
+        "삭제대상자등록번호",
+        "삭제대상자거소번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F033",
+      "class_name": "check_box",
+      "detected_label": "기록",
+      "name": "하단 기록 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "기록 신청을 하는 경우 체크합니다.",
+      "description": "기록을 신청하는 경우 하단 문구 안에도 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "하단기록체크박스",
+        "기록",
+        "하단기록",
+        "기록확인체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "record",
+      "uncertain": false
+    },
+    {
+      "id": "F034",
+      "class_name": "check_box",
+      "detected_label": "정정ㆍ변경",
+      "name": "하단 정정ㆍ변경 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "정정ㆍ변경 신청을 하는 경우 체크합니다.",
+      "description": "정정ㆍ변경을 신청하는 경우 하단 문구 안에도 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "하단정정변경체크박스",
+        "하단정정",
+        "변경체크박스",
+        "정정변경",
+        "정정",
+        "변경",
+        "하단정정변경",
+        "정정변경확인체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "change",
+      "uncertain": false
+    },
+    {
+      "id": "F035",
+      "class_name": "check_box",
+      "detected_label": "삭제",
+      "name": "하단 삭제 체크박스",
+      "role": "applicant",
+      "requirement": "conditional",
+      "condition_text": "삭제 신청을 하는 경우 체크합니다.",
+      "description": "삭제를 신청하는 경우 하단 문구 안에도 체크합니다.",
+      "source_quote": "※ [ ]는 해당하는 곳에만 √표를 합니다.",
+      "aliases": [
+        "하단삭제체크박스",
+        "삭제",
+        "하단삭제",
+        "삭제확인체크"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": "delete",
+      "uncertain": false
+    },
+    {
+      "id": "F036",
+      "class_name": "input_field",
+      "detected_label": "년",
+      "name": "신청 연도",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 날짜의 연도를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청연도",
+        "년",
+        "신청년"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F037",
+      "class_name": "input_field",
+      "detected_label": "월",
+      "name": "신청 월",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 날짜의 월을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청월",
+        "월",
+        "신청달"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F038",
+      "class_name": "input_field",
+      "detected_label": "일",
+      "name": "신청 일",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청하는 날짜의 일을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청일",
+        "일",
+        "신청날짜"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F039",
+      "class_name": "input_field",
+      "detected_label": "신청인 성명",
+      "name": "신청인 성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청서를 제출하는 신청인의 성명을 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청인성명",
+        "신청인이름",
+        "제출자성명"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F040",
+      "class_name": "signature_field",
+      "detected_label": "신청인 서명 또는 인",
+      "name": "신청인 서명 또는 인",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 서명을 하거나 도장을 찍습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청인서명또는인",
+        "신청인서명",
+        "신청인도장"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F041",
+      "class_name": "input_field",
+      "detected_label": "신청인 연락처",
+      "name": "신청인 연락처",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 전화번호 등 연락처를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "신청인연락처",
+        "전화번호",
+        "연락처"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F042",
+      "class_name": "input_field",
+      "detected_label": "기록ㆍ정정ㆍ변경 대상자와의 관계",
+      "name": "대상자와의 관계",
+      "role": "applicant",
+      "requirement": "unknown",
+      "condition_text": "",
+      "description": "신청인과 기록ㆍ정정ㆍ변경 대상자의 관계를 적습니다.",
+      "source_quote": "",
+      "aliases": [
+        "대상자와의관계",
+        "기록정정변경대상자와의관계",
+        "기록",
+        "정정",
+        "변경대상자와의관계",
+        "신청인과의관계",
+        "대상자관계"
+      ],
+      "confidence": "medium",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": true
+    }
+  ],
+  "choice_groups": [
+    {
+      "id": "cg_target_status",
+      "type": "single_choice",
+      "question": "기록 대상자가 등록 외국인인지, 국내거소신고를 한 외국국적동포인지 하나만 선택해 주세요.",
+      "field_ids": [
+        "F008",
+        "F009"
+      ]
+    },
+    {
+      "id": "cg_family_relation",
+      "type": "single_choice",
+      "question": "기록 대상자와 세대주 또는 세대원의 관계에 해당하는 항목을 하나 선택해 주세요.",
+      "field_ids": [
+        "F013",
+        "F014",
+        "F015",
+        "F016"
+      ]
+    },
+    {
+      "id": "cg_change_items",
+      "type": "multi_choice",
+      "question": "정정하거나 변경하려는 사항에 해당하는 항목을 모두 선택해 주세요.",
+      "field_ids": [
+        "F025",
+        "F026",
+        "F027",
+        "F028"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "field_id": "F017",
+      "depends_on": "F013",
+      "relation": "F013(세대주의 배우자)에 체크하지 않은 경우에만 작성합니다."
+    },
+    {
+      "field_id": "F017",
+      "depends_on": "F014",
+      "relation": "F014(세대주의 직계혈족)에 체크하지 않은 경우에만 작성합니다."
+    },
+    {
+      "field_id": "F017",
+      "depends_on": "F015",
+      "relation": "F015(세대원의 배우자)에 체크한 경우 세대주와의 관계를 작성합니다."
+    },
+    {
+      "field_id": "F017",
+      "depends_on": "F016",
+      "relation": "F016(세대원의 직계혈족)에 체크한 경우 세대주와의 관계를 작성합니다."
+    }
+  ],
+  "uncertain_items": [
+    {
+      "field_id": "F011",
+      "reason": "한글 성명이 없는 외국인의 경우 빈칸으로 두는지 여부가 서식에 적혀 있지 않습니다."
+    },
+    {
+      "field_id": "F019",
+      "reason": "세대주가 신청인 본인인 경우에도 서명해야 하는지, 제3자인 세대주만 서명하는지 불명확합니다."
+    },
+    {
+      "field_id": "F023",
+      "reason": "한글 성명이 없는 외국인의 경우 빈칸으로 두는지 여부가 서식에 적혀 있지 않습니다."
+    },
+    {
+      "field_id": "F042",
+      "reason": "항목명에는 기록ㆍ정정ㆍ변경 대상자와의 관계만 적혀 있어 삭제 신청 시에도 적는지 불명확합니다."
+    }
+  ],
+  "validation": {
+    "warnings": []
+  }
+}

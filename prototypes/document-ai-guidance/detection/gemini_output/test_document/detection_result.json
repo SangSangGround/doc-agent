@@ -1,0 +1,527 @@
+{
+  "source": "gemini",
+  "model": "gemini-4-hydrogen",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_document.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 21,
+  "class_counts": {
+    "check_box": 15,
+    "input_field": 6,
+    "signature_field": 0
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "주택을 소유한 사실이 없음 - 예",
+      "box_2d": [
+        210,
+        576,
+        222,
+        595
+      ],
+      "bbox_xyxy_px": [
+        1741.824,
+        846.72,
+        1799.28,
+        895.104
+      ],
+      "center_px": {
+        "x": 1770.552,
+        "y": 870.912
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "주택을 소유한 사실이 없음 - 아니오",
+      "box_2d": [
+        208,
+        619,
+        220,
+        638
+      ],
+      "bbox_xyxy_px": [
+        1871.856,
+        838.656,
+        1929.312,
+        887.04
+      ],
+      "center_px": {
+        "x": 1900.584,
+        "y": 862.848
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F003",
+      "class_name": "input_field",
+      "label": "생애최초 주택 취득자(본인) 성명",
+      "box_2d": [
+        261,
+        394,
+        286,
+        504
+      ],
+      "bbox_xyxy_px": [
+        1191.456,
+        1052.352,
+        1524.096,
+        1153.152
+      ],
+      "center_px": {
+        "x": 1357.776,
+        "y": 1102.752
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "생애최초 주택 취득자(본인) 주민등록번호",
+      "box_2d": [
+        258,
+        503,
+        283,
+        640
+      ],
+      "bbox_xyxy_px": [
+        1521.072,
+        1040.256,
+        1935.36,
+        1141.056
+      ],
+      "center_px": {
+        "x": 1728.216,
+        "y": 1090.656
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "생애최초 주택 취득자(본인) 주택소유 사실 여부",
+      "box_2d": [
+        254,
+        639,
+        280,
+        792
+      ],
+      "bbox_xyxy_px": [
+        1932.336,
+        1024.128,
+        2395.008,
+        1128.96
+      ],
+      "center_px": {
+        "x": 2163.672,
+        "y": 1076.544
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "그 배우자 성명",
+      "box_2d": [
+        285,
+        394,
+        311,
+        506
+      ],
+      "bbox_xyxy_px": [
+        1191.456,
+        1149.12,
+        1530.144,
+        1253.952
+      ],
+      "center_px": {
+        "x": 1360.8,
+        "y": 1201.536
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "label": "그 배우자 주민등록번호",
+      "box_2d": [
+        282,
+        505,
+        308,
+        642
+      ],
+      "bbox_xyxy_px": [
+        1527.12,
+        1137.024,
+        1941.408,
+        1241.856
+      ],
+      "center_px": {
+        "x": 1734.264,
+        "y": 1189.44
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "그 배우자 주택소유 사실 여부",
+      "box_2d": [
+        278,
+        641,
+        304,
+        795
+      ],
+      "bbox_xyxy_px": [
+        1938.384,
+        1120.896,
+        2404.08,
+        1225.728
+      ],
+      "center_px": {
+        "x": 2171.232,
+        "y": 1173.312
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "label": "상속으로 주택 공유지분 - 처분하였음",
+      "box_2d": [
+        361,
+        377,
+        372,
+        396
+      ],
+      "bbox_xyxy_px": [
+        1140.048,
+        1455.552,
+        1197.504,
+        1499.904
+      ],
+      "center_px": {
+        "x": 1168.776,
+        "y": 1477.728
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F010",
+      "class_name": "check_box",
+      "label": "상속으로 주택 공유지분 - 처분하지 않았음",
+      "box_2d": [
+        359,
+        481,
+        370,
+        500
+      ],
+      "bbox_xyxy_px": [
+        1454.544,
+        1447.488,
+        1512.0,
+        1491.84
+      ],
+      "center_px": {
+        "x": 1483.272,
+        "y": 1469.664
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F011",
+      "class_name": "check_box",
+      "label": "상속으로 주택 공유지분 - 해당사항 없음",
+      "box_2d": [
+        357,
+        601,
+        368,
+        620
+      ],
+      "bbox_xyxy_px": [
+        1817.424,
+        1439.424,
+        1874.88,
+        1483.776
+      ],
+      "center_px": {
+        "x": 1846.152,
+        "y": 1461.6
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F012",
+      "class_name": "check_box",
+      "label": "다른 지역으로 이주 종전 주택 - 처분하였음",
+      "box_2d": [
+        423,
+        349,
+        434,
+        368
+      ],
+      "bbox_xyxy_px": [
+        1055.376,
+        1705.536,
+        1112.832,
+        1749.888
+      ],
+      "center_px": {
+        "x": 1084.104,
+        "y": 1727.712
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F013",
+      "class_name": "check_box",
+      "label": "다른 지역으로 이주 종전 주택 - 처분하지 않았음",
+      "box_2d": [
+        420,
+        442,
+        431,
+        461
+      ],
+      "bbox_xyxy_px": [
+        1336.608,
+        1693.44,
+        1394.064,
+        1737.792
+      ],
+      "center_px": {
+        "x": 1365.336,
+        "y": 1715.616
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "label": "다른 지역으로 이주 종전 주택 - 해당사항 없음",
+      "box_2d": [
+        417,
+        561,
+        428,
+        580
+      ],
+      "bbox_xyxy_px": [
+        1696.464,
+        1681.344,
+        1753.92,
+        1725.696
+      ],
+      "center_px": {
+        "x": 1725.192,
+        "y": 1703.52
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "label": "전용면적 20㎡ 이하 주택 - 2호 이상 소유하고 있음",
+      "box_2d": [
+        510,
+        293,
+        521,
+        312
+      ],
+      "bbox_xyxy_px": [
+        886.032,
+        2056.32,
+        943.488,
+        2100.672
+      ],
+      "center_px": {
+        "x": 914.76,
+        "y": 2078.496
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "label": "전용면적 20㎡ 이하 주택 - 1호만 소유하고 있음",
+      "box_2d": [
+        506,
+        453,
+        517,
+        472
+      ],
+      "bbox_xyxy_px": [
+        1369.872,
+        2040.192,
+        1427.328,
+        2084.544
+      ],
+      "center_px": {
+        "x": 1398.6,
+        "y": 2062.368
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F017",
+      "class_name": "check_box",
+      "label": "전용면적 20㎡ 이하 주택 - 처분하였음",
+      "box_2d": [
+        502,
+        596,
+        513,
+        615
+      ],
+      "bbox_xyxy_px": [
+        1802.304,
+        2024.064,
+        1859.76,
+        2068.416
+      ],
+      "center_px": {
+        "x": 1831.032,
+        "y": 2046.24
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F018",
+      "class_name": "check_box",
+      "label": "전용면적 20㎡ 이하 주택 - 해당사항 없음",
+      "box_2d": [
+        499,
+        689,
+        510,
+        708
+      ],
+      "bbox_xyxy_px": [
+        2083.536,
+        2011.968,
+        2140.992,
+        2056.32
+      ],
+      "center_px": {
+        "x": 2112.264,
+        "y": 2034.144
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F019",
+      "class_name": "check_box",
+      "label": "전세사기피해주택 - 처분하였음",
+      "box_2d": [
+        576,
+        304,
+        587,
+        323
+      ],
+      "bbox_xyxy_px": [
+        919.296,
+        2322.432,
+        976.752,
+        2366.784
+      ],
+      "center_px": {
+        "x": 948.024,
+        "y": 2344.608
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F020",
+      "class_name": "check_box",
+      "label": "전세사기피해주택 - 처분하지 않았음",
+      "box_2d": [
+        572,
+        425,
+        583,
+        444
+      ],
+      "bbox_xyxy_px": [
+        1285.2,
+        2306.304,
+        1342.656,
+        2350.656
+      ],
+      "center_px": {
+        "x": 1313.928,
+        "y": 2328.48
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F021",
+      "class_name": "check_box",
+      "label": "전세사기피해주택 - 해당사항 없음",
+      "box_2d": [
+        569,
+        546,
+        580,
+        565
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        2294.208,
+        1708.56,
+        2338.56
+      ],
+      "center_px": {
+        "x": 1679.832,
+        "y": 2316.384
+      },
+      "confidence": null,
+      "navigation_verified": false
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1573,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 509
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "output_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 1394
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1573,
+    "total_output_tokens": 1394,
+    "total_thought_tokens": 2183,
+    "total_tokens": 5150,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 123.131
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1.0",
+  "document_id": "synthetic_a",
+  "title": "가상 민원 신청서 A (테스트용)",
+  "description": "신청 유형에 따라 작성 항목이 달라지는 가상의 서식입니다. 실제 관공서 양식이 아닙니다.",
+  "application_types": [
+    {"id": "type_001", "name": "기록", "aliases": ["신규 기록"], "description": "기록 신청"},
+    {"id": "type_002", "name": "삭제", "aliases": ["기록 삭제"], "description": "삭제 신청"}
+  ],
+  "sections": [
+    {"id": "section_001", "title": "신청인 정보", "field_ids": ["F001", "F002", "F003"]},
+    {"id": "section_002", "title": "확인 및 서명", "field_ids": ["F004"]}
+  ],
+  "fields": [
+    {"id": "F001", "name": "신청인 이름", "kind": "input_field", "section_id": "section_001", "role": "applicant", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "신청인의 이름을 작성하는 칸입니다.", "source_text": "신청인 성명", "review_required": false},
+    {"id": "F002", "name": "기록 대상자", "kind": "input_field", "section_id": "section_001", "role": "applicant", "requirement": "unknown", "condition": "", "applicable_type_ids": ["type_001"], "explanation": "기록할 대상자를 작성하는 칸입니다.", "source_text": "기록 대상", "review_required": false},
+    {"id": "F003", "name": "접수번호", "kind": "input_field", "section_id": "section_001", "role": "official", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "접수 처리 영역입니다.", "source_text": "담당자 기재", "review_required": false},
+    {"id": "F004", "name": "신청인 서명", "kind": "signature_field", "section_id": "section_002", "role": "applicant", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "서명하는 칸입니다.", "source_text": "신청인 서명", "review_required": false}
+  ],
+  "choice_groups": []
+}

@@ -1,0 +1,21 @@
+# 원작성자 .venv_scan (Python 3.12.10, Windows) 기준 버전
+mediapipe==1.2.3
+opencv-contrib-python==5.1.0.95
+numpy==2.5.5
+pillow==13.0.0
+google-genai==3.6.1
+httpx==0.29.0
+SpeechRecognition==3.17.0
+PyAudio==0.2.14
+sounddevice==0.5.6
+docaligner_docsaid==1.1.1
+groq==1.7.0
+
+# 선택: --tts-backend pyttsx3 사용 시
+# pyttsx3
+# pywin32
+# 선택: OCR·RF-DETR 실험 (ocr/, detection/rfdetr_test.py, 별도 .venv_ocr 권장)
+# paddleocr==3.3.0
+# paddlepaddle==3.2.0
+# pytesseract
+# inference-sdk

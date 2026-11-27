@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.1.0",
+  "document_id": "synthetic_b",
+  "title": "가상 참가 신청서 B (테스트용)",
+  "description": "신청 유형 구분이 없고 선택 체크박스가 포함된 가상의 서식입니다. 실제 관공서 양식이 아닙니다.",
+  "application_types": [],
+  "sections": [
+    {"id": "section_001", "title": "신청 정보", "field_ids": ["F001", "F002", "F003"]}
+  ],
+  "fields": [
+    {"id": "F001", "name": "참가자 이름", "kind": "input_field", "section_id": "section_001", "role": "applicant", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "참가자의 이름입니다.", "source_text": "성명", "review_required": false},
+    {"id": "F002", "name": "동의", "kind": "check_box", "section_id": "section_001", "role": "applicant", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "동의 체크란입니다.", "source_text": "동의", "review_required": true},
+    {"id": "F003", "name": "담당자 확인", "kind": "signature_field", "section_id": "section_001", "role": "official", "requirement": "unknown", "condition": "", "applicable_type_ids": [], "explanation": "담당자 작성란입니다.", "source_text": "담당자 확인", "review_required": false}
+  ],
+  "choice_groups": []
+}

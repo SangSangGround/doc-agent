@@ -1,0 +1,323 @@
+{
+  "schema": "a4_navigation_manifest_v1",
+  "coordinate_frame": "paper plane, x-right y-down, units mm, origin top-left",
+  "paper_width_mm": 210.0,
+  "paper_height_mm": 297.0,
+  "source_image": "detection\\test_images\\document2.jpg",
+  "source_image_sha256": "c42313190161766ec73614e4470e69271b68f10a52f099f19c2405b3c4592cc8",
+  "source_targets_sha256": "5f7721297300f8315be9071f25a331726ea2e2752bc4e22bfc3bb363ba423704",
+  "reference_corners_px_TL_TR_BR_BL": [
+    [
+      134.52000427246094,
+      53.7599983215332
+    ],
+    [
+      2841.053955078125,
+      32.25600051879883
+    ],
+    [
+      2997.095947265625,
+      3924.47998046875
+    ],
+    [
+      123.75800323486328,
+      4005.1201171875
+    ]
+  ],
+  "homography_reference_px_to_mm": [
+    [
+      0.07653617237821321,
+      0.0002084554031446975,
+      -10.306852797438223
+    ],
+    [
+      0.0006346393433828817,
+      0.07987691149988663,
+      -4.379554315346498
+    ],
+    [
+      -4.967607550222329e-06,
+      1.580317495801139e-05,
+      1.0
+    ]
+  ],
+  "approved_fields_count": 16,
+  "skipped_approval_counts": {
+    "not_approved": 11
+  },
+  "fields": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "신규",
+      "target_source_px": {
+        "x": 893.81,
+        "y": 464.62
+      },
+      "target_mm": {
+        "x": 58.03,
+        "y": 33.204
+      },
+      "source_candidate_status": "candidate_needs_validation",
+      "role": "applicant",
+      "approval_method": "candidate_checked_on_paper",
+      "note": "실제 종이에서 위치 확인 - 다중 안내 테스트"
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "변경",
+      "target_source_px": {
+        "x": 1263.94,
+        "y": 459.7
+      },
+      "target_mm": {
+        "x": 86.441,
+        "y": 33.109
+      },
+      "source_candidate_status": "candidate_needs_validation",
+      "role": "applicant",
+      "approval_method": "candidate_checked_on_paper",
+      "note": ""
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "해지",
+      "target_source_px": {
+        "x": 1633.08,
+        "y": 452.81
+      },
+      "target_mm": {
+        "x": 114.887,
+        "y": 32.857
+      },
+      "source_candidate_status": "candidate_needs_validation",
+      "role": "applicant",
+      "approval_method": "candidate_checked_on_paper",
+      "note": "실제 종이에서 위치 확인 - 다중 안내 테스트"
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "신청인 성명",
+      "target_source_px": {
+        "x": 798.85,
+        "y": 681.33
+      },
+      "target_mm": {
+        "x": 50.632,
+        "y": 50.209
+      },
+      "source_candidate_status": "candidate_needs_validation",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "target_source_px": {
+        "x": 1554.64,
+        "y": 665.71
+      },
+      "target_mm": {
+        "x": 108.515,
+        "y": 49.643
+      },
+      "source_candidate_status": "signature_area_manual_review_required",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "신청인 주민등록번호",
+      "target_source_px": {
+        "x": 2160.0,
+        "y": 648.61
+      },
+      "target_mm": {
+        "x": 155.221,
+        "y": 48.824
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "label": "신청인 우편번호",
+      "target_source_px": {
+        "x": 984.38,
+        "y": 777.39
+      },
+      "target_mm": {
+        "x": 64.717,
+        "y": 57.912
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "신청인 주소",
+      "target_source_px": {
+        "x": 1314.0,
+        "y": 773.31
+      },
+      "target_mm": {
+        "x": 89.911,
+        "y": 57.894
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "신청인 휴대전화번호",
+      "target_source_px": {
+        "x": 1021.12,
+        "y": 847.76
+      },
+      "target_mm": {
+        "x": 67.461,
+        "y": 63.457
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 우편번호",
+      "target_source_px": {
+        "x": 978.45,
+        "y": 938.5
+      },
+      "target_mm": {
+        "x": 64.136,
+        "y": 70.503
+      },
+      "source_candidate_status": "candidate_needs_validation",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 주소지",
+      "target_source_px": {
+        "x": 749.57,
+        "y": 1022.88
+      },
+      "target_mm": {
+        "x": 46.695,
+        "y": 76.845
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "label": "년",
+      "target_source_px": {
+        "x": 2084.43,
+        "y": 1696.08
+      },
+      "target_mm": {
+        "x": 147.16,
+        "y": 130.278
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "label": "월",
+      "target_source_px": {
+        "x": 2296.77,
+        "y": 1690.71
+      },
+      "target_mm": {
+        "x": 163.331,
+        "y": 130.135
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F025",
+      "class_name": "input_field",
+      "label": "일",
+      "target_source_px": {
+        "x": 2447.63,
+        "y": 1688.41
+      },
+      "target_mm": {
+        "x": 174.838,
+        "y": 130.149
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F026",
+      "class_name": "input_field",
+      "label": "신청인",
+      "target_source_px": {
+        "x": 2067.1,
+        "y": 2662.91
+      },
+      "target_mm": {
+        "x": 143.879,
+        "y": 203.174
+      },
+      "source_candidate_status": "weak_proposal_review_only",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F027",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "target_source_px": {
+        "x": 2381.12,
+        "y": 2665.42
+      },
+      "target_mm": {
+        "x": 167.419,
+        "y": 203.861
+      },
+      "source_candidate_status": "signature_area_manual_review_required",
+      "role": "applicant",
+      "approval_method": "manually_adjusted",
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    }
+  ],
+  "safety_note": "Developer-reviewed targets only. Homography assumes flat A4 page, fixed camera/paper, finger tip on page; parallax and physical error remain unmeasured. Not validated for independent use."
+}
