@@ -1,0 +1,1210 @@
+{
+  "source": "gemini",
+  "model": "gemini-3.8-flash",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document5.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 15,
+  "class_counts": {
+    "check_box": 5,
+    "input_field": 9,
+    "signature_field": 1
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "input_field",
+      "label": "성명",
+      "box_2d": [
+        229,
+        216,
+        254,
+        376
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        923.328,
+        1137.024,
+        1024.128
+      ],
+      "center_px": {
+        "x": 895.104,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        653.184,
+        923.328,
+        1137.024,
+        1024.128
+      ],
+      "original_center_px": {
+        "x": 895.104,
+        "y": 973.728
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 3.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        653.625,
+        919.406,
+        1141.875,
+        1019.812
+      ],
+      "refined_center_px": {
+        "x": 897.665,
+        "y": 969.361
+      },
+      "refined_polygon_px": [
+        [
+          653.625,
+          923.344
+        ],
+        [
+          1137.938,
+          921.375
+        ],
+        [
+          1139.906,
+          1015.875
+        ],
+        [
+          657.562,
+          1017.844
+        ]
+      ],
+      "center_shift_px": 5.063,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F002",
+      "class_name": "input_field",
+      "label": "생년월일",
+      "box_2d": [
+        228,
+        503,
+        254,
+        657
+      ],
+      "bbox_xyxy_px": [
+        1521.072,
+        919.296,
+        1986.768,
+        1024.128
+      ],
+      "center_px": {
+        "x": 1753.92,
+        "y": 971.712
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1521.072,
+        919.296,
+        1986.768,
+        1024.128
+      ],
+      "original_center_px": {
+        "x": 1753.92,
+        "y": 971.712
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 4.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1512.0,
+        921.375,
+        1996.312,
+        1021.781
+      ],
+      "refined_center_px": {
+        "x": 1752.746,
+        "y": 969.61
+      },
+      "refined_polygon_px": [
+        [
+          1512.0,
+          923.344
+        ],
+        [
+          1990.406,
+          921.375
+        ],
+        [
+          1994.344,
+          1015.875
+        ],
+        [
+          1515.938,
+          1019.812
+        ]
+      ],
+      "center_shift_px": 2.407,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "남",
+      "box_2d": [
+        237,
+        688,
+        246,
+        699
+      ],
+      "bbox_xyxy_px": [
+        2080.512,
+        955.584,
+        2113.776,
+        991.872
+      ],
+      "center_px": {
+        "x": 2097.144,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2080.512,
+        955.584,
+        2113.776,
+        991.872
+      ],
+      "original_center_px": {
+        "x": 2097.144,
+        "y": 973.728
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "closed_checkbox",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        2080.969,
+        958.781,
+        2114.438,
+        992.25
+      ],
+      "refined_center_px": {
+        "x": 2097.703,
+        "y": 975.516
+      },
+      "refined_polygon_px": [
+        [
+          2080.969,
+          962.719
+        ],
+        [
+          2082.938,
+          990.281
+        ],
+        [
+          2112.469,
+          990.281
+        ],
+        [
+          2110.5,
+          958.781
+        ]
+      ],
+      "center_shift_px": 1.873,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F004",
+      "class_name": "check_box",
+      "label": "여",
+      "box_2d": [
+        237,
+        722,
+        246,
+        733
+      ],
+      "bbox_xyxy_px": [
+        2183.328,
+        955.584,
+        2216.592,
+        991.872
+      ],
+      "center_px": {
+        "x": 2199.96,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2183.328,
+        955.584,
+        2216.592,
+        991.872
+      ],
+      "original_center_px": {
+        "x": 2199.96,
+        "y": 973.728
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "closed_checkbox",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.2
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        2183.344,
+        958.781,
+        2216.812,
+        992.25
+      ],
+      "refined_center_px": {
+        "x": 2200.078,
+        "y": 975.516
+      },
+      "refined_polygon_px": [
+        [
+          2187.281,
+          958.781
+        ],
+        [
+          2185.312,
+          990.281
+        ],
+        [
+          2214.844,
+          990.281
+        ],
+        [
+          2214.844,
+          960.75
+        ]
+      ],
+      "center_shift_px": 1.792,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "기저질환",
+      "box_2d": [
+        254,
+        216,
+        277,
+        376
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        1024.128,
+        1137.024,
+        1116.864
+      ],
+      "center_px": {
+        "x": 895.104,
+        "y": 1070.496
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        653.184,
+        1024.128,
+        1137.024,
+        1116.864
+      ],
+      "original_center_px": {
+        "x": 895.104,
+        "y": 1070.496
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 4.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        655.594,
+        1019.812,
+        1143.844,
+        1116.281
+      ],
+      "refined_center_px": {
+        "x": 899.103,
+        "y": 1067.964
+      },
+      "refined_polygon_px": [
+        [
+          655.594,
+          1023.75
+        ],
+        [
+          1137.938,
+          1021.781
+        ],
+        [
+          1141.875,
+          1112.344
+        ],
+        [
+          659.531,
+          1114.312
+        ]
+      ],
+      "center_shift_px": 4.733,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "주민등록번호(선택)",
+      "box_2d": [
+        254,
+        500,
+        277,
+        744
+      ],
+      "bbox_xyxy_px": [
+        1512.0,
+        1024.128,
+        2249.856,
+        1116.864
+      ],
+      "center_px": {
+        "x": 1880.928,
+        "y": 1070.496
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1512.0,
+        1024.128,
+        2249.856,
+        1116.864
+      ],
+      "original_center_px": {
+        "x": 1880.928,
+        "y": 1070.496
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 17.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1513.969,
+        1019.812,
+        2252.25,
+        1116.281
+      ],
+      "refined_center_px": {
+        "x": 1880.953,
+        "y": 1067.853
+      },
+      "refined_polygon_px": [
+        [
+          2250.281,
+          1029.656
+        ],
+        [
+          2248.312,
+          1112.344
+        ],
+        [
+          1513.969,
+          1112.344
+        ],
+        [
+          1515.938,
+          1021.781
+        ]
+      ],
+      "center_shift_px": 2.643,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "label": "전화번호",
+      "box_2d": [
+        276,
+        216,
+        297,
+        377
+      ],
+      "bbox_xyxy_px": [
+        653.184,
+        1112.832,
+        1140.048,
+        1197.504
+      ],
+      "center_px": {
+        "x": 896.616,
+        "y": 1155.168
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        653.184,
+        1112.832,
+        1140.048,
+        1197.504
+      ],
+      "original_center_px": {
+        "x": 896.616,
+        "y": 1155.168
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        655.594,
+        1118.25,
+        1145.812,
+        1193.062
+      ],
+      "refined_center_px": {
+        "x": 899.706,
+        "y": 1154.701
+      },
+      "refined_polygon_px": [
+        [
+          655.594,
+          1120.219
+        ],
+        [
+          1139.906,
+          1118.25
+        ],
+        [
+          1143.844,
+          1189.125
+        ],
+        [
+          657.562,
+          1191.094
+        ]
+      ],
+      "center_shift_px": 3.125,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "주소",
+      "box_2d": [
+        276,
+        501,
+        297,
+        744
+      ],
+      "bbox_xyxy_px": [
+        1515.024,
+        1112.832,
+        2249.856,
+        1197.504
+      ],
+      "center_px": {
+        "x": 1882.44,
+        "y": 1155.168
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1515.024,
+        1112.832,
+        2249.856,
+        1197.504
+      ],
+      "original_center_px": {
+        "x": 1882.44,
+        "y": 1155.168
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "empty_table_cell",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 14.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1513.969,
+        1116.281,
+        2252.25,
+        1193.062
+      ],
+      "refined_center_px": {
+        "x": 1881.71,
+        "y": 1154.077
+      },
+      "refined_polygon_px": [
+        [
+          2250.281,
+          1118.25
+        ],
+        [
+          2248.312,
+          1189.125
+        ],
+        [
+          1513.969,
+          1189.125
+        ],
+        [
+          1517.906,
+          1118.25
+        ]
+      ],
+      "center_shift_px": 1.313,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "label": "개인정보 및 민감정보 수집·이용에 관한 동의",
+      "box_2d": [
+        382,
+        160,
+        392,
+        173
+      ],
+      "bbox_xyxy_px": [
+        483.84,
+        1540.224,
+        523.152,
+        1580.544
+      ],
+      "center_px": {
+        "x": 503.496,
+        "y": 1560.384
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        483.84,
+        1540.224,
+        523.152,
+        1580.544
+      ],
+      "original_center_px": {
+        "x": 503.496,
+        "y": 1560.384
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "closed_checkbox",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        482.344,
+        1541.531,
+        525.656,
+        1580.906
+      ],
+      "refined_center_px": {
+        "x": 504.0,
+        "y": 1561.219
+      },
+      "refined_polygon_px": [
+        [
+          482.344,
+          1541.531
+        ],
+        [
+          484.312,
+          1578.938
+        ],
+        [
+          523.688,
+          1578.938
+        ],
+        [
+          521.719,
+          1541.531
+        ]
+      ],
+      "center_shift_px": 0.975,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F010",
+      "class_name": "check_box",
+      "label": "동의 여부 (예)",
+      "box_2d": [
+        687,
+        615,
+        696,
+        627
+      ],
+      "bbox_xyxy_px": [
+        1859.76,
+        2769.984,
+        1896.048,
+        2806.272
+      ],
+      "center_px": {
+        "x": 1877.904,
+        "y": 2788.128
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1859.76,
+        2769.984,
+        1896.048,
+        2806.272
+      ],
+      "original_center_px": {
+        "x": 1877.904,
+        "y": 2788.128
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "closed_checkbox",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        1862.438,
+        2772.0,
+        1895.906,
+        2805.469
+      ],
+      "refined_center_px": {
+        "x": 1879.172,
+        "y": 2788.734
+      },
+      "refined_polygon_px": [
+        [
+          1862.438,
+          2772.0
+        ],
+        [
+          1862.438,
+          2803.5
+        ],
+        [
+          1893.938,
+          2803.5
+        ],
+        [
+          1893.938,
+          2773.969
+        ]
+      ],
+      "center_shift_px": 1.405,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F011",
+      "class_name": "check_box",
+      "label": "동의 여부 (아니오)",
+      "box_2d": [
+        686,
+        670,
+        696,
+        682
+      ],
+      "bbox_xyxy_px": [
+        2026.08,
+        2765.952,
+        2062.368,
+        2806.272
+      ],
+      "center_px": {
+        "x": 2044.224,
+        "y": 2786.112
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2026.08,
+        2765.952,
+        2062.368,
+        2806.272
+      ],
+      "original_center_px": {
+        "x": 2044.224,
+        "y": 2786.112
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "closed_checkbox",
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": [
+        2027.812,
+        2770.031,
+        2061.281,
+        2803.5
+      ],
+      "refined_center_px": {
+        "x": 2044.547,
+        "y": 2786.766
+      },
+      "refined_polygon_px": [
+        [
+          2057.344,
+          2770.031
+        ],
+        [
+          2027.812,
+          2772.0
+        ],
+        [
+          2029.781,
+          2801.531
+        ],
+        [
+          2059.312,
+          2801.531
+        ]
+      ],
+      "center_shift_px": 0.729,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "normal"
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        706,
+        394,
+        724,
+        461
+      ],
+      "bbox_xyxy_px": [
+        1191.456,
+        2846.592,
+        1394.064,
+        2919.168
+      ],
+      "center_px": {
+        "x": 1292.76,
+        "y": 2882.88
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1191.456,
+        2846.592,
+        1394.064,
+        2919.168
+      ],
+      "original_center_px": {
+        "x": 1292.76,
+        "y": 2882.88
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 1.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        706,
+        480,
+        724,
+        540
+      ],
+      "bbox_xyxy_px": [
+        1451.52,
+        2846.592,
+        1632.96,
+        2919.168
+      ],
+      "center_px": {
+        "x": 1542.24,
+        "y": 2882.88
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1451.52,
+        2846.592,
+        1632.96,
+        2919.168
+      ],
+      "original_center_px": {
+        "x": 1542.24,
+        "y": 2882.88
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 0.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "unknown",
+        "reason": "작성 주체를 확정할 문서 규칙 없음",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F014",
+      "class_name": "input_field",
+      "label": "신청인",
+      "box_2d": [
+        736,
+        439,
+        755,
+        625
+      ],
+      "bbox_xyxy_px": [
+        1327.536,
+        2967.552,
+        1890.0,
+        3044.16
+      ],
+      "center_px": {
+        "x": 1608.768,
+        "y": 3005.856
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1327.536,
+        2967.552,
+        1890.0,
+        3044.16
+      ],
+      "original_center_px": {
+        "x": 1608.768,
+        "y": 3005.856
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "partial_line_evidence",
+        "candidate_count": 1,
+        "method": "underline_baseline",
+        "geometry_sides": {
+          "bottom": 0.762,
+          "right": 0.818
+        },
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 3.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": {
+        "x": 1647.159,
+        "y": 3014.479
+      },
+      "role_assessment": {
+        "role": "applicant_possible",
+        "reason": "일반 인적사항 용어, 해당 문서의 작성 주체 확인 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    },
+    {
+      "id": "F015",
+      "class_name": "signature_field",
+      "label": "(서명 또는 인)",
+      "box_2d": [
+        734,
+        633,
+        752,
+        730
+      ],
+      "bbox_xyxy_px": [
+        1914.192,
+        2959.488,
+        2207.52,
+        3032.064
+      ],
+      "center_px": {
+        "x": 2060.856,
+        "y": 2995.776
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1914.192,
+        2959.488,
+        2207.52,
+        3032.064
+      ],
+      "original_center_px": {
+        "x": 2060.856,
+        "y": 2995.776
+      },
+      "navigation_allowed": false,
+      "review_required": true,
+      "refinement": {
+        "status": "needs_review",
+        "reason": "signature_area_requires_review",
+        "candidate_count": 0,
+        "method": null,
+        "shaded_appearance": {
+          "shaded_appearance": "not_obvious",
+          "brightness_delta": 2.0
+        }
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null,
+      "review_suggestion_px": null,
+      "role_assessment": {
+        "role": "signature_review",
+        "reason": "인쇄된 서명 문구와 실제 서명 공간 구분 필요",
+        "source": "label_heuristic",
+        "review_required": true
+      },
+      "review_priority": "high"
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1219,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 155
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1219,
+    "total_output_tokens": 720,
+    "total_thought_tokens": 1324,
+    "total_tokens": 3263,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 23.123,
+  "refinement": {
+    "method": "local_geometry_v2",
+    "working_image_size": [
+      1536,
+      2048
+    ],
+    "preview_rescaled": false,
+    "api_calls": 0,
+    "navigation_verified": false,
+    "note": "candidate matches are NOT ground-truth or finger-navigation validation",
+    "counts": {
+      "matched_candidate": 11,
+      "unresolved": 2,
+      "needs_review": 2
+    },
+    "class_counts": {
+      "check_box": {
+        "matched_candidate": 5
+      },
+      "input_field": {
+        "matched_candidate": 6,
+        "unresolved": 2,
+        "needs_review": 1
+      },
+      "signature_field": {
+        "needs_review": 1
+      }
+    },
+    "role_counts": {
+      "applicant_possible": 5,
+      "unknown": 9,
+      "signature_review": 1
+    },
+    "source_detection_json": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document5\\detection_result.json"
+  }
+}

@@ -1,0 +1,572 @@
+{
+  "source": "gemini",
+  "model": "gemini-4-hydrogen",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document3.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 11,
+  "class_counts": {
+    "check_box": 5,
+    "input_field": 5,
+    "signature_field": 1
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "개인정보 수집 및 활용 동의 확인",
+      "box_2d": [
+        172,
+        796,
+        187,
+        835
+      ],
+      "bbox_xyxy_px": [
+        2407.104,
+        693.504,
+        2525.04,
+        753.984
+      ],
+      "center_px": {
+        "x": 2466.072,
+        "y": 723.744
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2407.104,
+        693.504,
+        2525.04,
+        753.984
+      ],
+      "original_center_px": {
+        "x": 2466.072,
+        "y": 723.744
+      },
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair"
+      },
+      "refined_bbox_xyxy_px": [
+        2411.719,
+        698.906,
+        2520.0,
+        750.094
+      ],
+      "refined_center_px": {
+        "x": 2465.859,
+        "y": 724.5
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 0.785
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "유의사항 1 확인",
+      "box_2d": [
+        330,
+        808,
+        344,
+        839
+      ],
+      "bbox_xyxy_px": [
+        2443.392,
+        1330.56,
+        2537.136,
+        1387.008
+      ],
+      "center_px": {
+        "x": 2490.264,
+        "y": 1358.784
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2443.392,
+        1330.56,
+        2537.136,
+        1387.008
+      ],
+      "original_center_px": {
+        "x": 2490.264,
+        "y": 1358.784
+      },
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair"
+      },
+      "refined_bbox_xyxy_px": [
+        2449.125,
+        1334.812,
+        2533.781,
+        1384.031
+      ],
+      "refined_center_px": {
+        "x": 2491.453,
+        "y": 1359.422
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 1.349
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "유의사항 2 확인",
+      "box_2d": [
+        375,
+        810,
+        388,
+        842
+      ],
+      "bbox_xyxy_px": [
+        2449.44,
+        1512.0,
+        2546.208,
+        1564.416
+      ],
+      "center_px": {
+        "x": 2497.824,
+        "y": 1538.208
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2449.44,
+        1512.0,
+        2546.208,
+        1564.416
+      ],
+      "original_center_px": {
+        "x": 2497.824,
+        "y": 1538.208
+      },
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair"
+      },
+      "refined_bbox_xyxy_px": [
+        2455.031,
+        1512.0,
+        2541.656,
+        1561.219
+      ],
+      "refined_center_px": {
+        "x": 2498.344,
+        "y": 1536.609
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 1.681
+    },
+    {
+      "id": "F004",
+      "class_name": "check_box",
+      "label": "유의사항 3 확인",
+      "box_2d": [
+        409,
+        812,
+        422,
+        844
+      ],
+      "bbox_xyxy_px": [
+        2455.488,
+        1649.088,
+        2552.256,
+        1701.504
+      ],
+      "center_px": {
+        "x": 2503.872,
+        "y": 1675.296
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2455.488,
+        1649.088,
+        2552.256,
+        1701.504
+      ],
+      "original_center_px": {
+        "x": 2503.872,
+        "y": 1675.296
+      },
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair"
+      },
+      "refined_bbox_xyxy_px": [
+        2460.938,
+        1651.781,
+        2547.562,
+        1701.0
+      ],
+      "refined_center_px": {
+        "x": 2504.25,
+        "y": 1676.391
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 1.158
+    },
+    {
+      "id": "F005",
+      "class_name": "check_box",
+      "label": "유의사항 4 확인",
+      "box_2d": [
+        436,
+        813,
+        449,
+        845
+      ],
+      "bbox_xyxy_px": [
+        2458.512,
+        1757.952,
+        2555.28,
+        1810.368
+      ],
+      "center_px": {
+        "x": 2506.896,
+        "y": 1784.16
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2458.512,
+        1757.952,
+        2555.28,
+        1810.368
+      ],
+      "original_center_px": {
+        "x": 2506.896,
+        "y": 1784.16
+      },
+      "refinement": {
+        "status": "matched_candidate",
+        "reason": "geometry_matched",
+        "candidate_count": 1,
+        "method": "bracket_pair"
+      },
+      "refined_bbox_xyxy_px": [
+        2464.875,
+        1765.969,
+        2551.5,
+        1815.188
+      ],
+      "refined_center_px": {
+        "x": 2508.188,
+        "y": 1790.578
+      },
+      "refined_polygon_px": null,
+      "center_shift_px": 6.547
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "신청일 년",
+      "box_2d": [
+        825,
+        685,
+        840,
+        742
+      ],
+      "bbox_xyxy_px": [
+        2071.44,
+        3326.4,
+        2243.808,
+        3386.88
+      ],
+      "center_px": {
+        "x": 2157.624,
+        "y": 3356.64
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2071.44,
+        3326.4,
+        2243.808,
+        3386.88
+      ],
+      "original_center_px": {
+        "x": 2157.624,
+        "y": 3356.64
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "label": "신청일 월",
+      "box_2d": [
+        825,
+        758,
+        840,
+        801
+      ],
+      "bbox_xyxy_px": [
+        2292.192,
+        3326.4,
+        2422.224,
+        3386.88
+      ],
+      "center_px": {
+        "x": 2357.208,
+        "y": 3356.64
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2292.192,
+        3326.4,
+        2422.224,
+        3386.88
+      ],
+      "original_center_px": {
+        "x": 2357.208,
+        "y": 3356.64
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "신청일 일",
+      "box_2d": [
+        824,
+        816,
+        839,
+        855
+      ],
+      "bbox_xyxy_px": [
+        2467.584,
+        3322.368,
+        2585.52,
+        3382.848
+      ],
+      "center_px": {
+        "x": 2526.552,
+        "y": 3352.608
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2467.584,
+        3322.368,
+        2585.52,
+        3382.848
+      ],
+      "original_center_px": {
+        "x": 2526.552,
+        "y": 3352.608
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "label": "신청인(대리 신청인) 성명",
+      "box_2d": [
+        850,
+        636,
+        868,
+        771
+      ],
+      "bbox_xyxy_px": [
+        1923.264,
+        3427.2,
+        2331.504,
+        3499.776
+      ],
+      "center_px": {
+        "x": 2127.384,
+        "y": 3463.488
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1923.264,
+        3427.2,
+        2331.504,
+        3499.776
+      ],
+      "original_center_px": {
+        "x": 2127.384,
+        "y": 3463.488
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    },
+    {
+      "id": "F010",
+      "class_name": "signature_field",
+      "label": "신청인(대리 신청인) 서명 또는 인",
+      "box_2d": [
+        848,
+        772,
+        865,
+        871
+      ],
+      "bbox_xyxy_px": [
+        2334.528,
+        3419.136,
+        2633.904,
+        3487.68
+      ],
+      "center_px": {
+        "x": 2484.216,
+        "y": 3453.408
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        2334.528,
+        3419.136,
+        2633.904,
+        3487.68
+      ],
+      "original_center_px": {
+        "x": 2484.216,
+        "y": 3453.408
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "signature_not_supported",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "신청인과의 관계",
+      "box_2d": [
+        871,
+        638,
+        888,
+        747
+      ],
+      "bbox_xyxy_px": [
+        1929.312,
+        3511.872,
+        2258.928,
+        3580.416
+      ],
+      "center_px": {
+        "x": 2094.12,
+        "y": 3546.144
+      },
+      "confidence": null,
+      "navigation_verified": false,
+      "original_bbox_xyxy_px": [
+        1929.312,
+        3511.872,
+        2258.928,
+        3580.416
+      ],
+      "original_center_px": {
+        "x": 2094.12,
+        "y": 3546.144
+      },
+      "refinement": {
+        "status": "unresolved",
+        "reason": "no_supported_geometry",
+        "candidate_count": 0,
+        "method": null
+      },
+      "refined_bbox_xyxy_px": null,
+      "refined_center_px": null,
+      "refined_polygon_px": null,
+      "center_shift_px": null
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1573,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 509
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "output_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 673
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1573,
+    "total_output_tokens": 673,
+    "total_thought_tokens": 1656,
+    "total_tokens": 3902,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 18.648,
+  "refinement": {
+    "method": "local_geometry_v1",
+    "working_image_size": [
+      1536,
+      2048
+    ],
+    "preview_rescaled": false,
+    "api_calls": 0,
+    "navigation_verified": false,
+    "counts": {
+      "matched_candidate": 5,
+      "unresolved": 6
+    },
+    "source_detection_json": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document3\\detection_result.json"
+  }
+}

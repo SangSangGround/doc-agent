@@ -1,0 +1,665 @@
+{
+  "source": "gemini",
+  "model": "gemini-4-hydrogen",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document2.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 27,
+  "class_counts": {
+    "check_box": 12,
+    "input_field": 13,
+    "signature_field": 2
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "신규",
+      "box_2d": [
+        107,
+        273,
+        125,
+        314
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        431.424,
+        949.536,
+        504.0
+      ],
+      "center_px": {
+        "x": 887.544,
+        "y": 467.712
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "변경",
+      "box_2d": [
+        105,
+        383,
+        123,
+        424
+      ],
+      "bbox_xyxy_px": [
+        1158.192,
+        423.36,
+        1282.176,
+        495.936
+      ],
+      "center_px": {
+        "x": 1220.184,
+        "y": 459.648
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "해지",
+      "box_2d": [
+        102,
+        520,
+        121,
+        563
+      ],
+      "bbox_xyxy_px": [
+        1572.48,
+        411.264,
+        1702.512,
+        487.872
+      ],
+      "center_px": {
+        "x": 1637.496,
+        "y": 449.568
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "접수 번호",
+      "box_2d": [
+        141,
+        195,
+        158,
+        368
+      ],
+      "bbox_xyxy_px": [
+        589.68,
+        568.512,
+        1112.832,
+        637.056
+      ],
+      "center_px": {
+        "x": 851.256,
+        "y": 602.784
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "접수일",
+      "box_2d": [
+        138,
+        418,
+        155,
+        608
+      ],
+      "bbox_xyxy_px": [
+        1264.032,
+        556.416,
+        1838.592,
+        624.96
+      ],
+      "center_px": {
+        "x": 1551.312,
+        "y": 590.688
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "신청인 성명",
+      "box_2d": [
+        160,
+        260,
+        185,
+        505
+      ],
+      "bbox_xyxy_px": [
+        786.24,
+        645.12,
+        1527.12,
+        745.92
+      ],
+      "center_px": {
+        "x": 1156.68,
+        "y": 695.52
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "box_2d": [
+        159,
+        505,
+        183,
+        607
+      ],
+      "bbox_xyxy_px": [
+        1527.12,
+        641.088,
+        1835.568,
+        737.856
+      ],
+      "center_px": {
+        "x": 1681.344,
+        "y": 689.472
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "신청인 주민등록번호",
+      "box_2d": [
+        154,
+        706,
+        181,
+        853
+      ],
+      "bbox_xyxy_px": [
+        2134.944,
+        620.928,
+        2579.472,
+        729.792
+      ],
+      "center_px": {
+        "x": 2357.208,
+        "y": 675.36
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "label": "신청인 우편번호",
+      "box_2d": [
+        186,
+        318,
+        199,
+        412
+      ],
+      "bbox_xyxy_px": [
+        961.632,
+        749.952,
+        1245.888,
+        802.368
+      ],
+      "center_px": {
+        "x": 1103.76,
+        "y": 776.16
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "신청인 주소",
+      "box_2d": [
+        182,
+        420,
+        199,
+        853
+      ],
+      "bbox_xyxy_px": [
+        1270.08,
+        733.824,
+        2579.472,
+        802.368
+      ],
+      "center_px": {
+        "x": 1924.776,
+        "y": 768.096
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "신청인 휴대전화번호",
+      "box_2d": [
+        201,
+        323,
+        217,
+        853
+      ],
+      "bbox_xyxy_px": [
+        976.752,
+        810.432,
+        2579.472,
+        874.944
+      ],
+      "center_px": {
+        "x": 1778.112,
+        "y": 842.688
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 우편번호",
+      "box_2d": [
+        224,
+        318,
+        238,
+        413
+      ],
+      "bbox_xyxy_px": [
+        961.632,
+        903.168,
+        1248.912,
+        959.616
+      ],
+      "center_px": {
+        "x": 1105.272,
+        "y": 931.392
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F013",
+      "class_name": "input_field",
+      "label": "신청 대상 건물ㆍ시설 주소지",
+      "box_2d": [
+        236,
+        224,
+        267,
+        853
+      ],
+      "bbox_xyxy_px": [
+        677.376,
+        951.552,
+        2579.472,
+        1076.544
+      ],
+      "center_px": {
+        "x": 1628.424,
+        "y": 1014.048
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "label": "전입신고 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        271,
+        546,
+        285,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1092.672,
+        1723.68,
+        1149.12
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1120.896
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "label": "주소 변경 또는 정정 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        289,
+        546,
+        302,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1165.248,
+        1723.68,
+        1217.664
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1191.456
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "label": "세대주 변경 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        307,
+        546,
+        320,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1651.104,
+        1237.824,
+        1723.68,
+        1290.24
+      ],
+      "center_px": {
+        "x": 1687.392,
+        "y": 1264.032
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F017",
+      "class_name": "check_box",
+      "label": "주민등록증 발급ㆍ재발급 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        325,
+        547,
+        338,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1654.128,
+        1310.4,
+        1723.68,
+        1362.816
+      ],
+      "center_px": {
+        "x": 1688.904,
+        "y": 1336.608
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F018",
+      "class_name": "check_box",
+      "label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 휴대전화 문자 등의 전송",
+      "box_2d": [
+        342,
+        547,
+        355,
+        570
+      ],
+      "bbox_xyxy_px": [
+        1654.128,
+        1378.944,
+        1723.68,
+        1431.36
+      ],
+      "center_px": {
+        "x": 1688.904,
+        "y": 1405.152
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F019",
+      "class_name": "check_box",
+      "label": "주민등록표 열람 또는 등ㆍ초본 교부 사실 우편",
+      "box_2d": [
+        339,
+        761,
+        353,
+        785
+      ],
+      "bbox_xyxy_px": [
+        2301.264,
+        1366.848,
+        2373.84,
+        1423.296
+      ],
+      "center_px": {
+        "x": 2337.552,
+        "y": 1395.072
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F020",
+      "class_name": "check_box",
+      "label": "신규",
+      "box_2d": [
+        405,
+        195,
+        419,
+        223
+      ],
+      "bbox_xyxy_px": [
+        589.68,
+        1632.96,
+        674.352,
+        1689.408
+      ],
+      "center_px": {
+        "x": 632.016,
+        "y": 1661.184
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F021",
+      "class_name": "check_box",
+      "label": "변경",
+      "box_2d": [
+        404,
+        275,
+        417,
+        303
+      ],
+      "bbox_xyxy_px": [
+        831.6,
+        1628.928,
+        916.272,
+        1681.344
+      ],
+      "center_px": {
+        "x": 873.936,
+        "y": 1655.136
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F022",
+      "class_name": "check_box",
+      "label": "해지",
+      "box_2d": [
+        403,
+        354,
+        416,
+        383
+      ],
+      "bbox_xyxy_px": [
+        1070.496,
+        1624.896,
+        1158.192,
+        1677.312
+      ],
+      "center_px": {
+        "x": 1114.344,
+        "y": 1651.104
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "label": "년",
+      "box_2d": [
+        414,
+        686,
+        428,
+        736
+      ],
+      "bbox_xyxy_px": [
+        2074.464,
+        1669.248,
+        2225.664,
+        1725.696
+      ],
+      "center_px": {
+        "x": 2150.064,
+        "y": 1697.472
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        414,
+        756,
+        427,
+        788
+      ],
+      "bbox_xyxy_px": [
+        2286.144,
+        1669.248,
+        2382.912,
+        1721.664
+      ],
+      "center_px": {
+        "x": 2334.528,
+        "y": 1695.456
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F025",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        413,
+        806,
+        426,
+        840
+      ],
+      "bbox_xyxy_px": [
+        2437.344,
+        1665.216,
+        2540.16,
+        1717.632
+      ],
+      "center_px": {
+        "x": 2488.752,
+        "y": 1691.424
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F026",
+      "class_name": "input_field",
+      "label": "신청인",
+      "box_2d": [
+        654,
+        675,
+        669,
+        775
+      ],
+      "bbox_xyxy_px": [
+        2041.2,
+        2636.928,
+        2343.6,
+        2697.408
+      ],
+      "center_px": {
+        "x": 2192.4,
+        "y": 2667.168
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F027",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "box_2d": [
+        653,
+        775,
+        668,
+        872
+      ],
+      "bbox_xyxy_px": [
+        2343.6,
+        2632.896,
+        2636.928,
+        2693.376
+      ],
+      "center_px": {
+        "x": 2490.264,
+        "y": 2663.136
+      },
+      "confidence": null,
+      "navigation_verified": false
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1573,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 509
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "output_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 1612
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1573,
+    "total_output_tokens": 1612,
+    "total_thought_tokens": 2173,
+    "total_tokens": 5358,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 34.147
+}

@@ -1,0 +1,1296 @@
+{
+  "source": "Gemini + refine_detections.py v2 + offline writable_targets v2",
+  "algorithm_version": "writable_targets_v2",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright original image pixels",
+  "preview_rescaled": false,
+  "api_calls": 0,
+  "navigation_allowed": false,
+  "navigation_verified": false,
+  "note": "Every candidate is provisional. No OCR text coordinates or physical-mm ground truth has been verified. Signatures are never auto-targeted.",
+  "counts": {
+    "candidate_needs_validation": 33,
+    "excluded_official_possible": 4,
+    "signature_area_manual_review_required": 2,
+    "weak_proposal_review_only": 3
+  },
+  "targets": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "기록",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        836.719,
+        370.125,
+        952.875,
+        437.062
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        836.72,
+        370.12,
+        952.88,
+        437.06
+      ],
+      "target_px": {
+        "x": 894.8,
+        "y": 403.59
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "정정ㆍ변경",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1141.875,
+        370.125,
+        1260.0,
+        437.062
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1141.88,
+        370.12,
+        1260.0,
+        437.06
+      ],
+      "target_px": {
+        "x": 1200.94,
+        "y": 403.59
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "삭제",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1671.469,
+        364.219,
+        1787.625,
+        431.156
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1671.47,
+        364.22,
+        1787.62,
+        431.16
+      ],
+      "target_px": {
+        "x": 1729.55,
+        "y": 397.69
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "접수 번호",
+      "role_gate": "excluded_official_possible",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        403.594,
+        622.125,
+        1145.812,
+        746.156
+      ],
+      "candidate_method": null,
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "excluded_official_possible",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "신청일",
+      "role_gate": "excluded_official_possible",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1151.719,
+        620.156,
+        1941.188,
+        742.219
+      ],
+      "candidate_method": null,
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "excluded_official_possible",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "관계 기관 통보",
+      "role_gate": "excluded_official_possible",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1947.094,
+        620.156,
+        2628.281,
+        744.188
+      ],
+      "candidate_method": null,
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "excluded_official_possible",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "label": "관계 기관 통보 인",
+      "role_gate": "excluded_official_possible",
+      "source_refinement_status": "needs_review",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        2525.04,
+        681.408,
+        2615.76,
+        737.856
+      ],
+      "candidate_method": null,
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "excluded_official_possible",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F008",
+      "class_name": "check_box",
+      "label": "「출입국관리법」 제31조에 따라 등록한 외국인",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        838.688,
+        807.188,
+        911.531,
+        852.469
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        838.69,
+        807.19,
+        911.53,
+        852.47
+      ],
+      "target_px": {
+        "x": 875.11,
+        "y": 829.83
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "label": "「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        838.688,
+        870.188,
+        907.594,
+        913.5
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        838.69,
+        870.19,
+        907.59,
+        913.5
+      ],
+      "target_px": {
+        "x": 873.14,
+        "y": 891.84
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "로마자 성명",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1118.25,
+        931.219,
+        1549.406,
+        1015.875
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1137.0,
+        944.0,
+        1420.0,
+        979.0
+      ],
+      "target_px": {
+        "x": 1278.5,
+        "y": 961.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "한글 성명",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1118.25,
+        1013.906,
+        1551.375,
+        1104.469
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1137.0,
+        1027.0,
+        1421.0,
+        1064.0
+      ],
+      "target_px": {
+        "x": 1279.0,
+        "y": 1045.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1994.344,
+        929.25,
+        2646.0,
+        1100.531
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2017.0,
+        946.0,
+        2454.0,
+        1026.0
+      ],
+      "target_px": {
+        "x": 2235.5,
+        "y": 986.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F013",
+      "class_name": "check_box",
+      "label": "세대주의 배우자",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1135.969,
+        1116.281,
+        1208.812,
+        1159.594
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1135.97,
+        1116.28,
+        1208.81,
+        1159.59
+      ],
+      "target_px": {
+        "x": 1172.39,
+        "y": 1137.94
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "label": "세대주의 직계혈족",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1135.969,
+        1167.469,
+        1208.812,
+        1212.75
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1135.97,
+        1167.47,
+        1208.81,
+        1212.75
+      ],
+      "target_px": {
+        "x": 1172.39,
+        "y": 1190.11
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "label": "세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1135.969,
+        1222.594,
+        1210.781,
+        1267.875
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1135.97,
+        1222.59,
+        1210.78,
+        1267.88
+      ],
+      "target_px": {
+        "x": 1173.38,
+        "y": 1245.23
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "label": "세대원의 직계혈족",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1135.969,
+        1275.75,
+        1208.812,
+        1319.062
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        1135.97,
+        1275.75,
+        1208.81,
+        1319.06
+      ],
+      "target_px": {
+        "x": 1172.39,
+        "y": 1297.41
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F017",
+      "class_name": "input_field",
+      "label": "세대주와의 관계",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1116.281,
+        1328.906,
+        2655.072,
+        1523.812
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1139.0,
+        1345.0,
+        2215.0,
+        1416.0
+      ],
+      "target_px": {
+        "x": 1677.0,
+        "y": 1380.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.01602
+    },
+    {
+      "id": "F018",
+      "class_name": "input_field",
+      "label": "세대주 성명",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1118.25,
+        1527.75,
+        1553.344,
+        1699.031
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1304.0,
+        1544.0,
+        1534.0,
+        1605.0
+      ],
+      "target_px": {
+        "x": 1419.0,
+        "y": 1574.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.01262
+    },
+    {
+      "id": "F019",
+      "class_name": "signature_field",
+      "label": "세대주 서명 또는 인",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "needs_review",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        1251.936,
+        1628.928,
+        1542.24,
+        1693.44
+      ],
+      "candidate_method": "no_signature_guess_without_ocr_or_manual_region",
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "signature_area_manual_review_required",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F020",
+      "class_name": "input_field",
+      "label": "세대주 주민등록번호",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1998.281,
+        1521.844,
+        2661.12,
+        1695.094
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2021.0,
+        1538.0,
+        2466.0,
+        1620.0
+      ],
+      "target_px": {
+        "x": 2243.5,
+        "y": 1579.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.006
+    },
+    {
+      "id": "F021",
+      "class_name": "input_field",
+      "label": "주소 (시ㆍ도) (시ㆍ군ㆍ구)",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1116.281,
+        1695.094,
+        2664.144,
+        1838.812
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1909.0,
+        1758.0,
+        2570.0,
+        1822.0
+      ],
+      "target_px": {
+        "x": 2239.5,
+        "y": 1790.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F022",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 대상자 로마자 성명",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1118.25,
+        1876.219,
+        1498.219,
+        1956.938
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1217.0,
+        1900.0,
+        1466.0,
+        1933.0
+      ],
+      "target_px": {
+        "x": 1341.5,
+        "y": 1916.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.00158
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 대상자 한글 성명",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1118.25,
+        1958.906,
+        1498.219,
+        2045.531
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1176.0,
+        1993.0,
+        1425.0,
+        2028.0
+      ],
+      "target_px": {
+        "x": 1300.5,
+        "y": 2010.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 외국인등록번호 또는 국내거소신고번호",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1947.094,
+        1874.25,
+        2673.216,
+        2043.562
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1970.0,
+        1936.0,
+        2460.0,
+        2015.0
+      ],
+      "target_px": {
+        "x": 2215.0,
+        "y": 1975.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F025",
+      "class_name": "check_box",
+      "label": "성명",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        830.812,
+        2073.094,
+        903.656,
+        2116.406
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        830.81,
+        2073.09,
+        903.66,
+        2116.41
+      ],
+      "target_px": {
+        "x": 867.23,
+        "y": 2094.75
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F026",
+      "class_name": "check_box",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        830.812,
+        2128.219,
+        903.656,
+        2171.531
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        830.81,
+        2128.22,
+        903.66,
+        2171.53
+      ],
+      "target_px": {
+        "x": 867.23,
+        "y": 2149.88
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F027",
+      "class_name": "check_box",
+      "label": "세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        830.812,
+        2185.312,
+        901.688,
+        2228.625
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        830.81,
+        2185.31,
+        901.69,
+        2228.62
+      ],
+      "target_px": {
+        "x": 866.25,
+        "y": 2206.97
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F028",
+      "class_name": "check_box",
+      "label": "그 밖의 변경사항",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        828.844,
+        2238.469,
+        901.688,
+        2281.781
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        828.84,
+        2238.47,
+        901.69,
+        2281.78
+      ],
+      "target_px": {
+        "x": 865.27,
+        "y": 2260.12
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F029",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 전",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        809.156,
+        2309.344,
+        1488.375,
+        2577.094
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        832.0,
+        2326.0,
+        1288.0,
+        2462.0
+      ],
+      "target_px": {
+        "x": 1060.0,
+        "y": 2394.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.01485
+    },
+    {
+      "id": "F030",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 후",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1953.0,
+        2305.406,
+        2679.264,
+        2569.219
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2056.0,
+        2419.0,
+        2547.0,
+        2553.0
+      ],
+      "target_px": {
+        "x": 2301.5,
+        "y": 2486.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F031",
+      "class_name": "input_field",
+      "label": "삭제 신청 대상자 성명",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        807.188,
+        2604.656,
+        1488.375,
+        2781.844
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        830.0,
+        2621.0,
+        1288.0,
+        2705.0
+      ],
+      "target_px": {
+        "x": 1059.0,
+        "y": 2663.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.00866
+    },
+    {
+      "id": "F032",
+      "class_name": "input_field",
+      "label": "삭제 신청 외국인등록번호 또는 국내거소신고번호",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1954.969,
+        2604.656,
+        2682.288,
+        2779.875
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2059.0,
+        2621.0,
+        2551.0,
+        2703.0
+      ],
+      "target_px": {
+        "x": 2305.0,
+        "y": 2662.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.00543
+    },
+    {
+      "id": "F033",
+      "class_name": "check_box",
+      "label": "기록",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        2504.25,
+        2931.469,
+        2579.062,
+        2978.719
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        2504.25,
+        2931.47,
+        2579.06,
+        2978.72
+      ],
+      "target_px": {
+        "x": 2541.66,
+        "y": 2955.09
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F034",
+      "class_name": "check_box",
+      "label": "정정ㆍ변경",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        383.906,
+        3010.219,
+        468.562,
+        3057.469
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        383.91,
+        3010.22,
+        468.56,
+        3057.47
+      ],
+      "target_px": {
+        "x": 426.23,
+        "y": 3033.84
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F035",
+      "class_name": "check_box",
+      "label": "삭제",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        769.781,
+        3010.219,
+        854.438,
+        3057.469
+      ],
+      "candidate_method": "existing_v2_checkbox_match",
+      "writable_region_xyxy_px": [
+        769.78,
+        3010.22,
+        854.44,
+        3057.47
+      ],
+      "target_px": {
+        "x": 812.11,
+        "y": 3033.84
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F036",
+      "class_name": "input_field",
+      "label": "년",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "unresolved",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        2147.04,
+        3076.416,
+        2283.12,
+        3132.864
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2153.0,
+        3085.0,
+        2242.0,
+        3108.0
+      ],
+      "target_px": {
+        "x": 2197.5,
+        "y": 3096.5
+      },
+      "candidate_status": "weak_proposal_review_only",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F037",
+      "class_name": "input_field",
+      "label": "월",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "unresolved",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        2334.528,
+        3076.416,
+        2467.584,
+        3132.864
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2341.0,
+        3085.0,
+        2427.0,
+        3108.0
+      ],
+      "target_px": {
+        "x": 2384.0,
+        "y": 3096.5
+      },
+      "candidate_status": "weak_proposal_review_only",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F038",
+      "class_name": "input_field",
+      "label": "일",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "unresolved",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        2509.92,
+        3076.416,
+        2642.976,
+        3132.864
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        2516.0,
+        3085.0,
+        2603.0,
+        3108.0
+      ],
+      "target_px": {
+        "x": 2559.5,
+        "y": 3096.5
+      },
+      "candidate_status": "weak_proposal_review_only",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F039",
+      "class_name": "input_field",
+      "label": "신청인 성명",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        578.812,
+        3291.75,
+        1248.188,
+        3508.312
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        751.0,
+        3308.0,
+        1201.0,
+        3415.0
+      ],
+      "target_px": {
+        "x": 976.0,
+        "y": 3361.5
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.00766
+    },
+    {
+      "id": "F040",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "needs_review",
+      "region_source": "gemini_box_unverified",
+      "source_box_xyxy_px": [
+        937.44,
+        3435.264,
+        1227.744,
+        3495.744
+      ],
+      "candidate_method": "no_signature_guess_without_ocr_or_manual_region",
+      "writable_region_xyxy_px": null,
+      "target_px": null,
+      "candidate_status": "signature_area_manual_review_required",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance."
+    },
+    {
+      "id": "F041",
+      "class_name": "input_field",
+      "label": "신청인 연락처",
+      "role_gate": "role_unverified",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1248.188,
+        3287.812,
+        1953.0,
+        3506.344
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1271.0,
+        3367.0,
+        1746.0,
+        3475.0
+      ],
+      "target_px": {
+        "x": 1508.5,
+        "y": 3421.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.0
+    },
+    {
+      "id": "F042",
+      "class_name": "input_field",
+      "label": "기록ㆍ정정ㆍ변경 대상자와의 관계",
+      "role_gate": "conditional_review",
+      "source_refinement_status": "matched_candidate",
+      "region_source": "refined_box",
+      "source_box_xyxy_px": [
+        1956.938,
+        3287.812,
+        2727.648,
+        3502.406
+      ],
+      "candidate_method": "low_ink_subregion_v2",
+      "writable_region_xyxy_px": [
+        1979.0,
+        3380.0,
+        2502.0,
+        3486.0
+      ],
+      "target_px": {
+        "x": 2240.5,
+        "y": 3433.0
+      },
+      "candidate_status": "candidate_needs_validation",
+      "requires_manual_review": true,
+      "navigation_allowed": false,
+      "navigation_verified": false,
+      "coordinate_system": "EXIF-upright original image pixels",
+      "warning": "Candidate only. NOT OCR-validated, physical-mm measured, or authorized for guidance.",
+      "ink_fraction_after_dilation": 0.00157
+    }
+  ],
+  "source_image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document1.jpg",
+  "source_refinement_json": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\refinement_output\\document1\\refined_detection_result.json"
+}

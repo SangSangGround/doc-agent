@@ -1,0 +1,43 @@
+﻿id,class_name,label,status,method,reason,role,review_priority,center_shift_px,navigation_allowed
+F001,check_box,기록,matched_candidate,bracket_pair,geometry_matched,unknown,normal,7.706,False
+F002,check_box,정정ㆍ변경,matched_candidate,bracket_pair,geometry_matched,conditional,normal,9.121,False
+F003,check_box,삭제,matched_candidate,bracket_pair,geometry_matched,unknown,normal,37.623,False
+F004,input_field,접수 번호,matched_candidate,line_supported_cell,border_evidence,official_possible,low_official,0.909,False
+F005,input_field,신청일,matched_candidate,line_supported_cell,border_evidence,official_possible,low_official,2.26,False
+F006,input_field,관계 기관 통보,matched_candidate,line_supported_cell,border_evidence,official_possible,low_official,1.253,False
+F007,signature_field,관계 기관 통보 인,needs_review,,signature_area_requires_review,official_possible,low_official,,False
+F008,check_box,「출입국관리법」 제31조에 따라 등록한 외국인,matched_candidate,bracket_pair,geometry_matched,unknown,normal,3.286,False
+F009,check_box,「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포,matched_candidate,bracket_pair,geometry_matched,unknown,normal,7.2,False
+F010,input_field,로마자 성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,0.591,False
+F011,input_field,한글 성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,6.055,False
+F012,input_field,외국인등록번호 또는 국내거소신고번호,matched_candidate,line_supported_cell,border_evidence,applicant_possible,normal,3.909,False
+F013,check_box,세대주의 배우자,matched_candidate,bracket_pair,geometry_matched,conditional,normal,2.292,False
+F014,check_box,세대주의 직계혈족,matched_candidate,bracket_pair,geometry_matched,conditional,normal,2.497,False
+F015,check_box,세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자,matched_candidate,bracket_pair,geometry_matched,conditional,normal,3.155,False
+F016,check_box,세대원의 직계혈족,matched_candidate,bracket_pair,geometry_matched,conditional,normal,2.286,False
+F017,input_field,세대주와의 관계,matched_candidate,line_supported_cell,border_evidence,unknown,normal,0.992,False
+F018,input_field,세대주 성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,1.52,False
+F019,signature_field,세대주 서명 또는 인,needs_review,,signature_area_requires_review,signature_review,high,,False
+F020,input_field,세대주 주민등록번호,matched_candidate,line_supported_cell,border_evidence,applicant_possible,normal,4.341,False
+F021,input_field,주소 (시ㆍ도) (시ㆍ군ㆍ구),matched_candidate,line_supported_cell,border_evidence,applicant_possible,normal,2.961,False
+F022,input_field,정정ㆍ변경 신청 대상자 로마자 성명,matched_candidate,empty_table_cell,geometry_matched,conditional,normal,1.312,False
+F023,input_field,정정ㆍ변경 신청 대상자 한글 성명,matched_candidate,empty_table_cell,geometry_matched,conditional,normal,4.928,False
+F024,input_field,정정ㆍ변경 신청 외국인등록번호 또는 국내거소신고번호,matched_candidate,line_supported_cell,border_evidence,conditional,normal,4.166,False
+F025,check_box,성명,matched_candidate,bracket_pair,geometry_matched,applicant_possible,normal,0.666,False
+F026,check_box,외국인등록번호 또는 국내거소신고번호,matched_candidate,bracket_pair,geometry_matched,applicant_possible,normal,1.048,False
+F027,check_box,세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계,matched_candidate,bracket_pair,geometry_matched,conditional,normal,3.847,False
+F028,check_box,그 밖의 변경사항,matched_candidate,bracket_pair,geometry_matched,unknown,normal,3.426,False
+F029,input_field,정정ㆍ변경 전,matched_candidate,empty_table_cell,geometry_matched,conditional,normal,4.723,False
+F030,input_field,정정ㆍ변경 후,matched_candidate,line_supported_cell,border_evidence,conditional,normal,0.254,False
+F031,input_field,삭제 신청 대상자 성명,matched_candidate,line_supported_cell,border_evidence,conditional,normal,0.214,False
+F032,input_field,삭제 신청 외국인등록번호 또는 국내거소신고번호,matched_candidate,line_supported_cell,border_evidence,conditional,normal,1.33,False
+F033,check_box,기록,matched_candidate,bracket_pair,geometry_matched,unknown,normal,38.712,False
+F034,check_box,정정ㆍ변경,matched_candidate,bracket_pair,geometry_matched,conditional,normal,0.28,False
+F035,check_box,삭제,matched_candidate,bracket_pair,geometry_matched,unknown,normal,0.288,False
+F036,input_field,년,unresolved,,no_supported_geometry,unknown,high,,False
+F037,input_field,월,unresolved,,no_supported_geometry,unknown,high,,False
+F038,input_field,일,unresolved,,no_supported_geometry,unknown,high,,False
+F039,input_field,신청인 성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,5.794,False
+F040,signature_field,신청인 서명 또는 인,needs_review,,signature_area_requires_review,signature_review,high,,False
+F041,input_field,신청인 연락처,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,2.024,False
+F042,input_field,기록ㆍ정정ㆍ변경 대상자와의 관계,matched_candidate,line_supported_cell,border_evidence,conditional,normal,0.263,False

@@ -1,0 +1,1010 @@
+{
+  "source": "gemini",
+  "model": "gemini-4-hydrogen",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document1.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 42,
+  "class_counts": {
+    "check_box": 16,
+    "input_field": 23,
+    "signature_field": 3
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "check_box",
+      "label": "기록",
+      "box_2d": [
+        89,
+        276,
+        108,
+        313
+      ],
+      "bbox_xyxy_px": [
+        834.624,
+        358.848,
+        946.512,
+        435.456
+      ],
+      "center_px": {
+        "x": 890.568,
+        "y": 397.152
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F002",
+      "class_name": "check_box",
+      "label": "정정ㆍ변경",
+      "box_2d": [
+        89,
+        377,
+        108,
+        413
+      ],
+      "bbox_xyxy_px": [
+        1140.048,
+        358.848,
+        1248.912,
+        435.456
+      ],
+      "center_px": {
+        "x": 1194.48,
+        "y": 397.152
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F003",
+      "class_name": "check_box",
+      "label": "삭제",
+      "box_2d": [
+        89,
+        542,
+        108,
+        577
+      ],
+      "bbox_xyxy_px": [
+        1639.008,
+        358.848,
+        1744.848,
+        435.456
+      ],
+      "center_px": {
+        "x": 1691.928,
+        "y": 397.152
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "접수 번호",
+      "box_2d": [
+        154,
+        133,
+        185,
+        379
+      ],
+      "bbox_xyxy_px": [
+        402.192,
+        620.928,
+        1146.096,
+        745.92
+      ],
+      "center_px": {
+        "x": 774.144,
+        "y": 683.424
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "신청일",
+      "box_2d": [
+        154,
+        381,
+        185,
+        642
+      ],
+      "bbox_xyxy_px": [
+        1152.144,
+        620.928,
+        1941.408,
+        745.92
+      ],
+      "center_px": {
+        "x": 1546.776,
+        "y": 683.424
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "관계 기관 통보",
+      "box_2d": [
+        154,
+        644,
+        185,
+        869
+      ],
+      "bbox_xyxy_px": [
+        1947.456,
+        620.928,
+        2627.856,
+        745.92
+      ],
+      "center_px": {
+        "x": 2287.656,
+        "y": 683.424
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F007",
+      "class_name": "signature_field",
+      "label": "관계 기관 통보 인",
+      "box_2d": [
+        169,
+        835,
+        183,
+        865
+      ],
+      "bbox_xyxy_px": [
+        2525.04,
+        681.408,
+        2615.76,
+        737.856
+      ],
+      "center_px": {
+        "x": 2570.4,
+        "y": 709.632
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F008",
+      "class_name": "check_box",
+      "label": "「출입국관리법」 제31조에 따라 등록한 외국인",
+      "box_2d": [
+        199,
+        275,
+        211,
+        304
+      ],
+      "bbox_xyxy_px": [
+        831.6,
+        802.368,
+        919.296,
+        850.752
+      ],
+      "center_px": {
+        "x": 875.448,
+        "y": 826.56
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F009",
+      "class_name": "check_box",
+      "label": "「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포",
+      "box_2d": [
+        213,
+        275,
+        226,
+        304
+      ],
+      "bbox_xyxy_px": [
+        831.6,
+        858.816,
+        919.296,
+        911.232
+      ],
+      "center_px": {
+        "x": 875.448,
+        "y": 885.024
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "로마자 성명",
+      "box_2d": [
+        231,
+        369,
+        252,
+        513
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        931.392,
+        1551.312,
+        1016.064
+      ],
+      "center_px": {
+        "x": 1333.584,
+        "y": 973.728
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "한글 성명",
+      "box_2d": [
+        253,
+        369,
+        275,
+        513
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1020.096,
+        1551.312,
+        1108.8
+      ],
+      "center_px": {
+        "x": 1333.584,
+        "y": 1064.448
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F012",
+      "class_name": "input_field",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "box_2d": [
+        231,
+        661,
+        274,
+        875
+      ],
+      "bbox_xyxy_px": [
+        1998.864,
+        931.392,
+        2646.0,
+        1104.768
+      ],
+      "center_px": {
+        "x": 2322.432,
+        "y": 1018.08
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F013",
+      "class_name": "check_box",
+      "label": "세대주의 배우자",
+      "box_2d": [
+        276,
+        373,
+        288,
+        401
+      ],
+      "bbox_xyxy_px": [
+        1127.952,
+        1112.832,
+        1212.624,
+        1161.216
+      ],
+      "center_px": {
+        "x": 1170.288,
+        "y": 1137.024
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F014",
+      "class_name": "check_box",
+      "label": "세대주의 직계혈족",
+      "box_2d": [
+        290,
+        373,
+        301,
+        401
+      ],
+      "bbox_xyxy_px": [
+        1127.952,
+        1169.28,
+        1212.624,
+        1213.632
+      ],
+      "center_px": {
+        "x": 1170.288,
+        "y": 1191.456
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F015",
+      "class_name": "check_box",
+      "label": "세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자",
+      "box_2d": [
+        303,
+        373,
+        315,
+        401
+      ],
+      "bbox_xyxy_px": [
+        1127.952,
+        1221.696,
+        1212.624,
+        1270.08
+      ],
+      "center_px": {
+        "x": 1170.288,
+        "y": 1245.888
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F016",
+      "class_name": "check_box",
+      "label": "세대원의 직계혈족",
+      "box_2d": [
+        316,
+        373,
+        328,
+        401
+      ],
+      "bbox_xyxy_px": [
+        1127.952,
+        1274.112,
+        1212.624,
+        1322.496
+      ],
+      "center_px": {
+        "x": 1170.288,
+        "y": 1298.304
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F017",
+      "class_name": "input_field",
+      "label": "세대주와의 관계",
+      "box_2d": [
+        330,
+        369,
+        378,
+        878
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1330.56,
+        2655.072,
+        1524.096
+      ],
+      "center_px": {
+        "x": 1885.464,
+        "y": 1427.328
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F018",
+      "class_name": "input_field",
+      "label": "세대주 성명",
+      "box_2d": [
+        379,
+        369,
+        421,
+        513
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1528.128,
+        1551.312,
+        1697.472
+      ],
+      "center_px": {
+        "x": 1333.584,
+        "y": 1612.8
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F019",
+      "class_name": "signature_field",
+      "label": "세대주 서명 또는 인",
+      "box_2d": [
+        404,
+        414,
+        420,
+        510
+      ],
+      "bbox_xyxy_px": [
+        1251.936,
+        1628.928,
+        1542.24,
+        1693.44
+      ],
+      "center_px": {
+        "x": 1397.088,
+        "y": 1661.184
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F020",
+      "class_name": "input_field",
+      "label": "세대주 주민등록번호",
+      "box_2d": [
+        379,
+        661,
+        421,
+        880
+      ],
+      "bbox_xyxy_px": [
+        1998.864,
+        1528.128,
+        2661.12,
+        1697.472
+      ],
+      "center_px": {
+        "x": 2329.992,
+        "y": 1612.8
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F021",
+      "class_name": "input_field",
+      "label": "주소 (시ㆍ도) (시ㆍ군ㆍ구)",
+      "box_2d": [
+        422,
+        369,
+        453,
+        881
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1701.504,
+        2664.144,
+        1826.496
+      ],
+      "center_px": {
+        "x": 1890.0,
+        "y": 1764.0
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F022",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 대상자 로마자 성명",
+      "box_2d": [
+        465,
+        369,
+        486,
+        495
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1874.88,
+        1496.88,
+        1959.552
+      ],
+      "center_px": {
+        "x": 1306.368,
+        "y": 1917.216
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F023",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 대상자 한글 성명",
+      "box_2d": [
+        487,
+        369,
+        508,
+        495
+      ],
+      "bbox_xyxy_px": [
+        1115.856,
+        1963.584,
+        1496.88,
+        2048.256
+      ],
+      "center_px": {
+        "x": 1306.368,
+        "y": 2005.92
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F024",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 신청 외국인등록번호 또는 국내거소신고번호",
+      "box_2d": [
+        465,
+        646,
+        508,
+        884
+      ],
+      "bbox_xyxy_px": [
+        1953.504,
+        1874.88,
+        2673.216,
+        2048.256
+      ],
+      "center_px": {
+        "x": 2313.36,
+        "y": 1961.568
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F025",
+      "class_name": "check_box",
+      "label": "성명",
+      "box_2d": [
+        513,
+        273,
+        526,
+        301
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        2068.416,
+        910.224,
+        2120.832
+      ],
+      "center_px": {
+        "x": 867.888,
+        "y": 2094.624
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F026",
+      "class_name": "check_box",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "box_2d": [
+        527,
+        273,
+        539,
+        301
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        2124.864,
+        910.224,
+        2173.248
+      ],
+      "center_px": {
+        "x": 867.888,
+        "y": 2149.056
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F027",
+      "class_name": "check_box",
+      "label": "세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계",
+      "box_2d": [
+        540,
+        273,
+        553,
+        301
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        2177.28,
+        910.224,
+        2229.696
+      ],
+      "center_px": {
+        "x": 867.888,
+        "y": 2203.488
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F028",
+      "class_name": "check_box",
+      "label": "그 밖의 변경사항",
+      "box_2d": [
+        554,
+        273,
+        566,
+        301
+      ],
+      "bbox_xyxy_px": [
+        825.552,
+        2233.728,
+        910.224,
+        2282.112
+      ],
+      "center_px": {
+        "x": 867.888,
+        "y": 2257.92
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F029",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 전",
+      "box_2d": [
+        572,
+        267,
+        637,
+        492
+      ],
+      "bbox_xyxy_px": [
+        807.408,
+        2306.304,
+        1487.808,
+        2568.384
+      ],
+      "center_px": {
+        "x": 1147.608,
+        "y": 2437.344
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F030",
+      "class_name": "input_field",
+      "label": "정정ㆍ변경 후",
+      "box_2d": [
+        572,
+        646,
+        637,
+        886
+      ],
+      "bbox_xyxy_px": [
+        1953.504,
+        2306.304,
+        2679.264,
+        2568.384
+      ],
+      "center_px": {
+        "x": 2316.384,
+        "y": 2437.344
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F031",
+      "class_name": "input_field",
+      "label": "삭제 신청 대상자 성명",
+      "box_2d": [
+        646,
+        267,
+        690,
+        492
+      ],
+      "bbox_xyxy_px": [
+        807.408,
+        2604.672,
+        1487.808,
+        2782.08
+      ],
+      "center_px": {
+        "x": 1147.608,
+        "y": 2693.376
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F032",
+      "class_name": "input_field",
+      "label": "삭제 신청 외국인등록번호 또는 국내거소신고번호",
+      "box_2d": [
+        646,
+        646,
+        690,
+        887
+      ],
+      "bbox_xyxy_px": [
+        1953.504,
+        2604.672,
+        2682.288,
+        2782.08
+      ],
+      "center_px": {
+        "x": 2317.896,
+        "y": 2693.376
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F033",
+      "class_name": "check_box",
+      "label": "기록",
+      "box_2d": [
+        728,
+        811,
+        742,
+        845
+      ],
+      "bbox_xyxy_px": [
+        2452.464,
+        2935.296,
+        2555.28,
+        2991.744
+      ],
+      "center_px": {
+        "x": 2503.872,
+        "y": 2963.52
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F034",
+      "class_name": "check_box",
+      "label": "정정ㆍ변경",
+      "box_2d": [
+        745,
+        125,
+        760,
+        157
+      ],
+      "bbox_xyxy_px": [
+        378.0,
+        3003.84,
+        474.768,
+        3064.32
+      ],
+      "center_px": {
+        "x": 426.384,
+        "y": 3034.08
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F035",
+      "class_name": "check_box",
+      "label": "삭제",
+      "box_2d": [
+        745,
+        252,
+        760,
+        285
+      ],
+      "bbox_xyxy_px": [
+        762.048,
+        3003.84,
+        861.84,
+        3064.32
+      ],
+      "center_px": {
+        "x": 811.944,
+        "y": 3034.08
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F036",
+      "class_name": "input_field",
+      "label": "년",
+      "box_2d": [
+        763,
+        710,
+        777,
+        755
+      ],
+      "bbox_xyxy_px": [
+        2147.04,
+        3076.416,
+        2283.12,
+        3132.864
+      ],
+      "center_px": {
+        "x": 2215.08,
+        "y": 3104.64
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F037",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        763,
+        772,
+        777,
+        816
+      ],
+      "bbox_xyxy_px": [
+        2334.528,
+        3076.416,
+        2467.584,
+        3132.864
+      ],
+      "center_px": {
+        "x": 2401.056,
+        "y": 3104.64
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F038",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        763,
+        830,
+        777,
+        874
+      ],
+      "bbox_xyxy_px": [
+        2509.92,
+        3076.416,
+        2642.976,
+        3132.864
+      ],
+      "center_px": {
+        "x": 2576.448,
+        "y": 3104.64
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F039",
+      "class_name": "input_field",
+      "label": "신청인 성명",
+      "box_2d": [
+        815,
+        190,
+        868,
+        412
+      ],
+      "bbox_xyxy_px": [
+        574.56,
+        3286.08,
+        1245.888,
+        3499.776
+      ],
+      "center_px": {
+        "x": 910.224,
+        "y": 3392.928
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F040",
+      "class_name": "signature_field",
+      "label": "신청인 서명 또는 인",
+      "box_2d": [
+        852,
+        310,
+        867,
+        406
+      ],
+      "bbox_xyxy_px": [
+        937.44,
+        3435.264,
+        1227.744,
+        3495.744
+      ],
+      "center_px": {
+        "x": 1082.592,
+        "y": 3465.504
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F041",
+      "class_name": "input_field",
+      "label": "신청인 연락처",
+      "box_2d": [
+        816,
+        413,
+        868,
+        646
+      ],
+      "bbox_xyxy_px": [
+        1248.912,
+        3290.112,
+        1953.504,
+        3499.776
+      ],
+      "center_px": {
+        "x": 1601.208,
+        "y": 3394.944
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F042",
+      "class_name": "input_field",
+      "label": "기록ㆍ정정ㆍ변경 대상자와의 관계",
+      "box_2d": [
+        816,
+        647,
+        868,
+        902
+      ],
+      "bbox_xyxy_px": [
+        1956.528,
+        3290.112,
+        2727.648,
+        3499.776
+      ],
+      "center_px": {
+        "x": 2342.088,
+        "y": 3394.944
+      },
+      "confidence": null,
+      "navigation_verified": false
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1573,
+    "input_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 509
+      },
+      {
+        "modality": "image",
+        "tokens": 1064
+      }
+    ],
+    "output_tokens_by_modality": [
+      {
+        "modality": "text",
+        "tokens": 2551
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1573,
+    "total_output_tokens": 2551,
+    "total_thought_tokens": 3015,
+    "total_tokens": 7139,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 31.984
+}

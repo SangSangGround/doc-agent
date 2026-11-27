@@ -1,0 +1,314 @@
+{
+  "source": "gemini",
+  "model": "gemini-3.8-flash",
+  "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document4.jpg",
+  "image_width": 3024,
+  "image_height": 4032,
+  "coordinate_system": "EXIF-upright input image pixels, top-left origin, xyxy edges",
+  "navigation_verified": false,
+  "total": 12,
+  "class_counts": {
+    "check_box": 0,
+    "input_field": 11,
+    "signature_field": 1
+  },
+  "detections": [
+    {
+      "id": "F001",
+      "class_name": "input_field",
+      "label": "발급신청일",
+      "box_2d": [
+        147,
+        312,
+        196,
+        560
+      ],
+      "bbox_xyxy_px": [
+        943.488,
+        592.704,
+        1693.44,
+        790.272
+      ],
+      "center_px": {
+        "x": 1318.464,
+        "y": 691.488
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F002",
+      "class_name": "input_field",
+      "label": "사진",
+      "box_2d": [
+        198,
+        658,
+        340,
+        814
+      ],
+      "bbox_xyxy_px": [
+        1989.792,
+        798.336,
+        2461.536,
+        1370.88
+      ],
+      "center_px": {
+        "x": 2225.664,
+        "y": 1084.608
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F003",
+      "class_name": "input_field",
+      "label": "성명",
+      "box_2d": [
+        216,
+        212,
+        246,
+        312
+      ],
+      "bbox_xyxy_px": [
+        641.088,
+        870.912,
+        943.488,
+        991.872
+      ],
+      "center_px": {
+        "x": 792.288,
+        "y": 931.392
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "label": "주민등록번호(외국인등록번호 또는 국내거소신고번호)",
+      "box_2d": [
+        216,
+        312,
+        246,
+        658
+      ],
+      "bbox_xyxy_px": [
+        943.488,
+        870.912,
+        1989.792,
+        991.872
+      ],
+      "center_px": {
+        "x": 1466.64,
+        "y": 931.392
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "label": "영문명",
+      "box_2d": [
+        246,
+        265,
+        292,
+        658
+      ],
+      "bbox_xyxy_px": [
+        801.36,
+        991.872,
+        1989.792,
+        1177.344
+      ],
+      "center_px": {
+        "x": 1395.576,
+        "y": 1084.608
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "label": "주소",
+      "box_2d": [
+        292,
+        252,
+        342,
+        658
+      ],
+      "bbox_xyxy_px": [
+        762.048,
+        1177.344,
+        1989.792,
+        1378.944
+      ],
+      "center_px": {
+        "x": 1375.92,
+        "y": 1278.144
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "label": "주장애 및 장애 정도",
+      "box_2d": [
+        362,
+        142,
+        396,
+        486
+      ],
+      "bbox_xyxy_px": [
+        429.408,
+        1459.584,
+        1469.664,
+        1596.672
+      ],
+      "center_px": {
+        "x": 949.536,
+        "y": 1528.128
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "label": "부장애 및 장애 정도",
+      "box_2d": [
+        362,
+        486,
+        396,
+        820
+      ],
+      "bbox_xyxy_px": [
+        1469.664,
+        1459.584,
+        2479.68,
+        1596.672
+      ],
+      "center_px": {
+        "x": 1974.672,
+        "y": 1528.128
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "label": "년",
+      "box_2d": [
+        476,
+        646,
+        492,
+        679
+      ],
+      "bbox_xyxy_px": [
+        1953.504,
+        1919.232,
+        2053.296,
+        1983.744
+      ],
+      "center_px": {
+        "x": 2003.4,
+        "y": 1951.488
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "label": "월",
+      "box_2d": [
+        476,
+        700,
+        492,
+        735
+      ],
+      "bbox_xyxy_px": [
+        2116.8,
+        1919.232,
+        2222.64,
+        1983.744
+      ],
+      "center_px": {
+        "x": 2169.72,
+        "y": 1951.488
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "label": "일",
+      "box_2d": [
+        476,
+        755,
+        492,
+        792
+      ],
+      "bbox_xyxy_px": [
+        2283.12,
+        1919.232,
+        2395.008,
+        1983.744
+      ],
+      "center_px": {
+        "x": 2339.064,
+        "y": 1951.488
+      },
+      "confidence": null,
+      "navigation_verified": false
+    },
+    {
+      "id": "F012",
+      "class_name": "signature_field",
+      "label": "직인",
+      "box_2d": [
+        534,
+        513,
+        615,
+        622
+      ],
+      "bbox_xyxy_px": [
+        1551.312,
+        2153.088,
+        1880.928,
+        2479.68
+      ],
+      "center_px": {
+        "x": 1716.12,
+        "y": 2316.384
+      },
+      "confidence": null,
+      "navigation_verified": false
+    }
+  ],
+  "rejected": [],
+  "usage": {
+    "initial_input_tokens": 1219,
+    "input_tokens_by_modality": [
+      {
+        "modality": "image",
+        "tokens": 1064
+      },
+      {
+        "modality": "text",
+        "tokens": 155
+      }
+    ],
+    "total_cached_tokens": 0,
+    "total_input_tokens": 1219,
+    "total_output_tokens": 575,
+    "total_thought_tokens": 13983,
+    "total_tokens": 15777,
+    "total_tool_use_tokens": 0
+  },
+  "latency_seconds": 126.354
+}

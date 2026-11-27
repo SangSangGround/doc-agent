@@ -1,0 +1,348 @@
+{
+  "schema": "document_workflow_v1",
+  "document_id": "document4",
+  "provenance": {
+    "generator": "gemini",
+    "model": "gemini-3.8-flash",
+    "latency_seconds": 19.406,
+    "usage": {
+      "cached_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 454
+        },
+        {
+          "modality": "image",
+          "tokens": 401
+        }
+      ],
+      "initial_input_tokens": 2269,
+      "input_tokens_by_modality": [
+        {
+          "modality": "image",
+          "tokens": 1064
+        },
+        {
+          "modality": "text",
+          "tokens": 1205
+        }
+      ],
+      "total_cached_tokens": 855,
+      "total_input_tokens": 2269,
+      "total_output_tokens": 1388,
+      "total_thought_tokens": 0,
+      "total_tokens": 3657,
+      "total_tool_use_tokens": 0
+    },
+    "generated_at": "2026-11-28T02:54:53",
+    "image": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\test_images\\document4.jpg",
+    "image_sha256": "fea6a7aae47b5d771625df73900514e9b2123d2e603390ad8dd642c978cce87e",
+    "detection_result": "C:\\Users\\LG\\Documents\\공모전\\KT&G\\hand-tracking\\detection\\gemini_output\\document4\\detection_result.json",
+    "detection_sha256": "cfdf2fb299ab32c00d8ea40bb64c69e675d083038249381331f56659b03a4d49",
+    "ocr_text": null,
+    "ai_inferred": true,
+    "human_reviewed": false,
+    "note": ""
+  },
+  "title": "장애인등록증 발급신청 확인서",
+  "description": "장애인등록증의 발급 또는 재발급을 신청하였음을 임시로 증명하고 확인받기 위한 서식입니다.",
+  "selection_question": "",
+  "application_types": [],
+  "sections": [
+    {
+      "id": "sec_application_info",
+      "title": "신청 정보",
+      "description": "발급신청일과 신청인 인적사항을 입력하고 사진을 부착하는 란입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006"
+      ]
+    },
+    {
+      "id": "sec_disability_info",
+      "title": "장애 정보",
+      "description": "주장애 및 부장애 정보를 입력하는 란입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F007",
+        "F008"
+      ]
+    },
+    {
+      "id": "sec_official_confirmation",
+      "title": "발급 및 확인 관인",
+      "description": "확인 일자 및 행정관청의 직인을 날인하는 발급기관 란입니다.",
+      "applies_to": [
+        "all"
+      ],
+      "field_ids": [
+        "F009",
+        "F010",
+        "F011",
+        "F012"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "F001",
+      "class_name": "input_field",
+      "detected_label": "발급신청일",
+      "name": "발급신청일",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "장애인등록증 발급을 신청하는 연월일을 적습니다.",
+      "source_quote": "발급신청일",
+      "aliases": [
+        "발급신청일",
+        "신청일",
+        "발급신청일자"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F002",
+      "class_name": "input_field",
+      "detected_label": "사진",
+      "name": "사진",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 규격(3.5cm×4.5cm) 사진을 부착합니다.",
+      "source_quote": "사진 (3.5㎝×4.5㎝)",
+      "aliases": [
+        "사진",
+        "증명사진",
+        "얼굴사진"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F003",
+      "class_name": "input_field",
+      "detected_label": "성명",
+      "name": "성명",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "장애인 본인의 한글 성명을 적습니다.",
+      "source_quote": "성명",
+      "aliases": [
+        "성명",
+        "이름",
+        "신청인이름"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F004",
+      "class_name": "input_field",
+      "detected_label": "주민등록번호(외국인등록번호 또는 국내거소신고번호)",
+      "name": "주민등록번호",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "주민등록번호(외국인등록번호 또는 국내거소신고번호)를 적습니다.",
+      "source_quote": "주민등록번호(외국인등록번호 또는 국내거소신고번호)",
+      "aliases": [
+        "주민등록번호",
+        "주민등록번호외국인등록번호또는국내거소신고번호",
+        "주민등록번호외국인등록번호",
+        "국내거소신고번호",
+        "주민번호",
+        "외국인등록번호"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F005",
+      "class_name": "input_field",
+      "detected_label": "영문명",
+      "name": "영문명",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "본인의 영문 성명을 여권과 동일하게 적습니다.",
+      "source_quote": "영문명",
+      "aliases": [
+        "영문명",
+        "영문이름",
+        "영어성명"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F006",
+      "class_name": "input_field",
+      "detected_label": "주소",
+      "name": "주소",
+      "role": "applicant",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "신청인의 현재 주민등록 주소를 적습니다.",
+      "source_quote": "주소",
+      "aliases": [
+        "주소",
+        "거주지",
+        "주소지"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F007",
+      "class_name": "input_field",
+      "detected_label": "주장애 및 장애 정도",
+      "name": "주장애 및 장애 정도",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "선택 기재 항목으로 주된 장애 유형과 장애 정도를 적습니다.",
+      "source_quote": "주장애 및 장애 정도 ※ 기재여부 선택 가능",
+      "aliases": [
+        "주장애및장애정도",
+        "주장애",
+        "장애정도"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F008",
+      "class_name": "input_field",
+      "detected_label": "부장애 및 장애 정도",
+      "name": "부장애 및 장애 정도",
+      "role": "applicant",
+      "requirement": "optional",
+      "condition_text": "",
+      "description": "선택 기재 항목으로 부장애 유형과 장애 정도가 있는 경우 적습니다.",
+      "source_quote": "부장애 및 장애 정도 ※ 기재여부 선택 가능",
+      "aliases": [
+        "부장애및장애정도",
+        "부장애"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F009",
+      "class_name": "input_field",
+      "detected_label": "년",
+      "name": "확인일자 년",
+      "role": "official",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "확인서를 발급하는 연도를 담당자가 적습니다.",
+      "source_quote": "년",
+      "aliases": [
+        "확인일자년",
+        "년",
+        "발급연도"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F010",
+      "class_name": "input_field",
+      "detected_label": "월",
+      "name": "확인일자 월",
+      "role": "official",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "확인서를 발급하는 월을 담당자가 적습니다.",
+      "source_quote": "월",
+      "aliases": [
+        "확인일자월",
+        "월",
+        "발급월"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F011",
+      "class_name": "input_field",
+      "detected_label": "일",
+      "name": "확인일자 일",
+      "role": "official",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "확인서를 발급하는 일을 담당자가 적습니다.",
+      "source_quote": "일",
+      "aliases": [
+        "확인일자일",
+        "일",
+        "발급일"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    },
+    {
+      "id": "F012",
+      "class_name": "signature_field",
+      "detected_label": "직인",
+      "name": "시장·군수·구청장 직인",
+      "role": "official",
+      "requirement": "required",
+      "condition_text": "",
+      "description": "관할 시장·군수·구청장의 직인을 날인하는 곳입니다.",
+      "source_quote": "시장·군수·구청장 직인",
+      "aliases": [
+        "시장군수구청장직인",
+        "시장",
+        "군수",
+        "구청장직인",
+        "직인",
+        "관인"
+      ],
+      "confidence": "high",
+      "choice_group_id": null,
+      "selects_application_type": null,
+      "uncertain": false
+    }
+  ],
+  "choice_groups": [],
+  "dependencies": [],
+  "uncertain_items": [],
+  "validation": {
+    "warnings": []
+  }
+}

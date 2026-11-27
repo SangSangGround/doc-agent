@@ -1,0 +1,13 @@
+﻿id,class_name,label,status,method,reason,role,review_priority,center_shift_px,navigation_allowed
+F001,input_field,발급신청일,matched_candidate,line_supported_cell,border_evidence,unknown,normal,2.526,False
+F002,input_field,사진,matched_candidate,empty_table_cell,geometry_matched,unknown,normal,12.196,False
+F003,input_field,성명,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,33.984,False
+F004,input_field,주민등록번호(외국인등록번호 또는 국내거소신고번호),matched_candidate,line_supported_cell,border_evidence,applicant_possible,normal,6.702,False
+F005,input_field,영문명,matched_candidate,empty_table_cell,geometry_matched,unknown,normal,80.594,False
+F006,input_field,주소,matched_candidate,empty_table_cell,geometry_matched,applicant_possible,normal,56.873,False
+F007,input_field,주장애 및 장애 정도,matched_candidate,line_supported_cell,border_evidence,unknown,normal,6.909,False
+F008,input_field,부장애 및 장애 정도,matched_candidate,line_supported_cell,border_evidence,unknown,normal,0.977,False
+F009,input_field,년,unresolved,,no_supported_geometry,unknown,high,,False
+F010,input_field,월,unresolved,,no_supported_geometry,unknown,high,,False
+F011,input_field,일,unresolved,,no_supported_geometry,unknown,high,,False
+F012,signature_field,직인,needs_review,,signature_area_requires_review,unknown,high,,False

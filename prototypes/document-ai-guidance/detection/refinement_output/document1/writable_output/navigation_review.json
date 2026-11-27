@@ -1,0 +1,730 @@
+{
+  "schema": "navigation_review_v1",
+  "source_targets_sha256": "42611feab8db1b437f282710c0c1c138f978526cecde9269adcbbe59eb870206",
+  "instructions": "Approve only after checking the point on paper and who should fill it. For signatures/weak candidates supply manual_target_px and a note.",
+  "fields": [
+    {
+      "id": "F001",
+      "label": "기록",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 894.8,
+        "y": 403.59
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 890.05,
+        "y": 398.72
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F002",
+      "label": "정정ㆍ변경",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1200.94,
+        "y": 403.59
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F003",
+      "label": "삭제",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1729.55,
+        "y": 397.69
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1730.52,
+        "y": 399.53
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F004",
+      "label": "접수 번호",
+      "class_name": "input_field",
+      "candidate_status": "excluded_official_possible",
+      "suggested_target_px": null,
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F005",
+      "label": "신청일",
+      "class_name": "input_field",
+      "candidate_status": "excluded_official_possible",
+      "suggested_target_px": null,
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F006",
+      "label": "관계 기관 통보",
+      "class_name": "input_field",
+      "candidate_status": "excluded_official_possible",
+      "suggested_target_px": null,
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F007",
+      "label": "관계 기관 통보 인",
+      "class_name": "signature_field",
+      "candidate_status": "excluded_official_possible",
+      "suggested_target_px": null,
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F008",
+      "label": "「출입국관리법」 제31조에 따라 등록한 외국인",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 875.11,
+        "y": 829.83
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 877.25,
+        "y": 830.85
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F009",
+      "label": "「재외동포의 출입국과 법적 지위에 관한 법률」 제6조에 따라 국내거소신고를 한 외국국적동포",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 873.14,
+        "y": 891.84
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 871.65,
+        "y": 893.3
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F010",
+      "label": "로마자 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1278.5,
+        "y": 961.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1182.98,
+        "y": 970.01
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F011",
+      "label": "한글 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1279.0,
+        "y": 1045.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1179.0,
+        "y": 1054.0
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F012",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2235.5,
+        "y": 986.0
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2055.4,
+        "y": 1007.79
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F013",
+      "label": "세대주의 배우자",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1172.39,
+        "y": 1137.94
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F014",
+      "label": "세대주의 직계혈족",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1172.39,
+        "y": 1190.11
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F015",
+      "label": "세대원(세대주의 「민법」 제779조에 따른 가족의 범위로 한정한다)의 배우자",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1173.38,
+        "y": 1245.23
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F016",
+      "label": "세대원의 직계혈족",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1172.39,
+        "y": 1297.41
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F017",
+      "label": "세대주와의 관계",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1677.0,
+        "y": 1380.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1186.49,
+        "y": 1383.55
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F018",
+      "label": "세대주 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1419.0,
+        "y": 1574.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1167.97,
+        "y": 1582.4
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F019",
+      "label": "세대주 서명 또는 인",
+      "class_name": "signature_field",
+      "candidate_status": "signature_area_manual_review_required",
+      "suggested_target_px": null,
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1295.96,
+        "y": 1662.86
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F020",
+      "label": "세대주 주민등록번호",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2243.5,
+        "y": 1579.0
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2048.71,
+        "y": 1591.17
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F021",
+      "label": "주소 (시ㆍ도) (시ㆍ군ㆍ구)",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2239.5,
+        "y": 1790.0
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1325.17,
+        "y": 1774.21
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F022",
+      "label": "정정ㆍ변경 신청 대상자 로마자 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1341.5,
+        "y": 1916.5
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F023",
+      "label": "정정ㆍ변경 신청 대상자 한글 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1300.5,
+        "y": 2010.5
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F024",
+      "label": "정정ㆍ변경 신청 외국인등록번호 또는 국내거소신고번호",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2215.0,
+        "y": 1975.5
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F025",
+      "label": "성명",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 867.23,
+        "y": 2094.75
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 861.14,
+        "y": 2096.26
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F026",
+      "label": "외국인등록번호 또는 국내거소신고번호",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 867.23,
+        "y": 2149.88
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 862.94,
+        "y": 2149.5
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F027",
+      "label": "세대주 또는 세대원과 대상자(외국인 또는 외국국적동포) 사이의 가족관계",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 866.25,
+        "y": 2206.97
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F028",
+      "label": "그 밖의 변경사항",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 865.27,
+        "y": 2260.12
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 863.65,
+        "y": 2254.99
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F029",
+      "label": "정정ㆍ변경 전",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1060.0,
+        "y": 2394.0
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F030",
+      "label": "정정ㆍ변경 후",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2301.5,
+        "y": 2486.0
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F031",
+      "label": "삭제 신청 대상자 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1059.0,
+        "y": 2663.0
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F032",
+      "label": "삭제 신청 외국인등록번호 또는 국내거소신고번호",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2305.0,
+        "y": 2662.0
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F033",
+      "label": "기록",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2541.66,
+        "y": 2955.09
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2536.92,
+        "y": 2952.73
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F034",
+      "label": "정정ㆍ변경",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 426.23,
+        "y": 3033.84
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    },
+    {
+      "id": "F035",
+      "label": "삭제",
+      "class_name": "check_box",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 812.11,
+        "y": 3033.84
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 811.04,
+        "y": 3034.83
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F036",
+      "label": "년",
+      "class_name": "input_field",
+      "candidate_status": "weak_proposal_review_only",
+      "suggested_target_px": {
+        "x": 2197.5,
+        "y": 3096.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2162.29,
+        "y": 3104.0
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F037",
+      "label": "월",
+      "class_name": "input_field",
+      "candidate_status": "weak_proposal_review_only",
+      "suggested_target_px": {
+        "x": 2384.0,
+        "y": 3096.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2347.72,
+        "y": 3102.93
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F038",
+      "label": "일",
+      "class_name": "input_field",
+      "candidate_status": "weak_proposal_review_only",
+      "suggested_target_px": {
+        "x": 2559.5,
+        "y": 3096.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 2522.09,
+        "y": 3105.6
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F039",
+      "label": "신청인 성명",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 976.0,
+        "y": 3361.5
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 690.67,
+        "y": 3395.7
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F040",
+      "label": "신청인 서명 또는 인",
+      "class_name": "signature_field",
+      "candidate_status": "signature_area_manual_review_required",
+      "suggested_target_px": null,
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 979.15,
+        "y": 3469.41
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F041",
+      "label": "신청인 연락처",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 1508.5,
+        "y": 3421.0
+      },
+      "approved": true,
+      "verified_on_paper": true,
+      "role": "applicant",
+      "condition_confirmed": false,
+      "manual_target_px": {
+        "x": 1348.14,
+        "y": 3405.04
+      },
+      "note": "Operator clicked original-image target and explicitly attested on-paper location, applicant role; prototype guidance, physical accuracy not independently measured."
+    },
+    {
+      "id": "F042",
+      "label": "기록ㆍ정정ㆍ변경 대상자와의 관계",
+      "class_name": "input_field",
+      "candidate_status": "candidate_needs_validation",
+      "suggested_target_px": {
+        "x": 2240.5,
+        "y": 3433.0
+      },
+      "approved": false,
+      "verified_on_paper": false,
+      "role": "unknown",
+      "condition_confirmed": false,
+      "manual_target_px": null,
+      "note": ""
+    }
+  ]
+}
